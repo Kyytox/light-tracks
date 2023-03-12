@@ -17,7 +17,7 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, lstFollows }) {
         var isFollowed = false;
 
         if (isLoggedIn) {
-            // check if user is followed
+            // check if artist is followed by user
             isFollowed = checkFollowed(lstFollows, album.a_id_user);
         }
 

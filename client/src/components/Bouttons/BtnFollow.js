@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { Button } from "@mui/material";
-import { followUser, unfollowUser } from "../../Globals/FctsFollow";
+import { changeBtnFollow, followUser, unfollowUser } from "../../Globals/FctsFollow";
 
 
 function BtnFollow({ idUser, isLoggedIn, idUserFollow, isFollowedProp }) {
@@ -25,8 +25,10 @@ function BtnFollow({ idUser, isLoggedIn, idUserFollow, isFollowedProp }) {
         // call addFavoris or removeFavoris
         if (isFollowed) {
             unfollowUser(data, token);
+            changeBtnFollow(idUserFollow, "Follow");
         } else {
             followUser(data, token);
+            changeBtnFollow(idUserFollow, "Unfollow");
         }
     };
     
