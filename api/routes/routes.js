@@ -9,6 +9,7 @@ import { generateUniqueName, convertFileAudio } from "../FunctionsAlbum.js";
 import { buyAlbum } from "../FonctionsBuy.js";
 import { getCollection, getFavoris, getMyAlbums, addFavoris, deleteFavoris, getSalesFavoris, getAlbumInFavorisOrSales,deleteAlbum } from "../FonctionsProfile.js";
 import { getFollows, getFollowsByIdUser, followUser, unfollowUser } from "../FonctionsFollow.js";
+import {getUserById} from "../FonctionsUser.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -65,7 +66,7 @@ router.post("/convertFileAudio", uploadConvertFile.single("file"), convertFileAu
 // Buy
 router.post("/buyAlbum", buyAlbum);
 
-// User Profile
+// Profile
 router.get("/getCollection", authenticateToken, getCollection);
 router.get("/getFavoris", authenticateToken, getFavoris);
 router.get("/getMyAlbums", authenticateToken, getMyAlbums);
@@ -81,6 +82,10 @@ router.get("/getFollows",authenticateToken, getFollows);
 router.get("/getFollowsByIdUser",authenticateToken, getFollowsByIdUser);
 router.post("/followUser",authenticateToken, followUser);
 router.post("/unfollowUser",authenticateToken, unfollowUser);
+
+
+// User 
+router.get("/getUserById",authenticateToken, getUserById);
 
 
 
