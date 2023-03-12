@@ -44,7 +44,6 @@ function PageAlbum() {
             
             const rep = getFollowsByIdUser(data, token);
             rep.then((data) => {
-                console.log("checkFollowed");
                 setIsFollowed(checkFollowed(data, lstTracks[0].t_id_user));
             }
             );
@@ -65,7 +64,7 @@ function PageAlbum() {
         axios
             .post(backendUrl + "/buyAlbum", data)
             .then((response) => {
-                console.log("response", response);
+                console.log(response);
             })
             .catch((error) => {
                 console.error(error);

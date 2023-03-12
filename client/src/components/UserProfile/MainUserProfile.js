@@ -1,11 +1,16 @@
 import React, { useState, useContext, useEffect } from "react";
+import { AuthContext } from "../../Services/AuthContext";
+import { useLocation, useNavigate } from "react-router-dom";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+
+// components
 import UserWantlist from "./UserWantlist";
 import UserCollections from "./UserCollections";
 import UserMyAlbums from "./UserMyAlbums";
-import { useLocation, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../Services/AuthContext";
+import UserMyFollows from "./UserMyFollows";
+
+
 
 function MainUserProfile() {
     const location = useLocation();
@@ -13,7 +18,7 @@ function MainUserProfile() {
     const { username } = useContext(AuthContext);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const tabPaths = ["collection", "wantlist", "myalbums"];
+    const tabPaths = ["collection", "wantlist", "myalbums", "myfollows"];
     const [tabIndex, setTabIndex] = useState(() => {
       const index = tabPaths.findIndex(path => location.pathname.includes(path));
       return index >= 0 ? index : 0;
@@ -39,10 +44,12 @@ function MainUserProfile() {
                 <Tab label="My Collection" />
                 <Tab label="Wantlist" />
                 <Tab label="My Albums" />
+                <Tab label="My Follows" />
             </Tabs>
             {tabIndex === 0 && <UserCollections />}
             {tabIndex === 1 && <UserWantlist />}
             {tabIndex === 2 && <UserMyAlbums />}
+            {tabIndex === 3 && <UserMyFollows />}
         </div>
     );
 }

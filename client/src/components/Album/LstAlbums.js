@@ -1,10 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import BtnFavorisAlbum from "../Favoris/BtnFavorisAlbum";
 import BtnFollow from "../Bouttons/BtnFollow";
-import { checkFollowed } from "../../Globals/FctsFollow";
+import { getLocalStorage } from "../../Globals/GlobalFunctions";
+import { getFollows, checkFollowed } from "../../Globals/FctsFollow";
 
-function LstAlbums({ idUser, isLoggedIn, lstAlbums, lstFollows }) {
+function LstAlbums({ idUser, isLoggedIn, lstAlbums }) {
+    
+    const [lstFollows, setLstFollows] = useState([]);
+    
+    useEffect(() => {
+        if (isLoggedIn) {
+
+            const token = getLocalStorage("token");
+
+            // get follows
+            const rep = getFollows(idUser, token);
+            rep.then((data) => {
+                setLstFollows(data);
+            });
+        }
+    }, [isLoggedIn, idUser]);
+
+    
     // create a map to display
     // lst albums is an array of objects
     const LstDisplayAlbums = lstAlbums.map((album, key) => {
@@ -15,6 +33,7 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, lstFollows }) {
         };
         const stateLocation = { album: album };
         var isFollowed = false;
+
 
         if (isLoggedIn) {
             // check if artist is followed by user
