@@ -8,6 +8,7 @@ import { getAudioFileStream } from "../AwsS3.js";
 import { generateUniqueName, convertFileAudio } from "../FunctionsAlbum.js";
 import { buyAlbum } from "../FonctionsBuy.js";
 import { getCollection, getFavoris, getMyAlbums, addFavoris, deleteFavoris, getSalesFavoris, getAlbumInFavorisOrSales,deleteAlbum } from "../FonctionsProfile.js";
+import { followUser, unfollowUser } from "../FonctionsFollow.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -52,6 +53,7 @@ router.post("/verifyUser", checkToken);
 // Album
 router.post("/createAlbum", upload.array("file"), createAlbum);
 router.get("/countAlbumUser", countAlbumUser);
+router.post("/deleteAlbum",authenticateToken, deleteAlbum);
 
 // Explorer
 router.get("/getAlbums", getAlbums);
@@ -67,10 +69,17 @@ router.post("/buyAlbum", buyAlbum);
 router.get("/getCollection", authenticateToken, getCollection);
 router.get("/getFavoris", authenticateToken, getFavoris);
 router.get("/getMyAlbums", authenticateToken, getMyAlbums);
-router.post("/addFavoris", addFavoris);
-router.post("/deleteFavoris", deleteFavoris);
 router.get("/getSalesFavoris", authenticateToken, getSalesFavoris);
 router.get("/getAlbumInFavorisOrSales", authenticateToken, getAlbumInFavorisOrSales);
-router.post("/deleteAlbum",authenticateToken, deleteAlbum);
+
+// Favoris
+router.post("/addFavoris", addFavoris);
+router.post("/deleteFavoris", deleteFavoris);
+
+// Follow
+router.post("/followUser", followUser);
+router.post("/unfollowUser", unfollowUser);
+
+
 
 export default router;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import BtnDeleteAlbum from "./BtnDeleteAlbum";
+import BtnDeleteAlbum from "../Bouttons/BtnDeleteAlbum";
 
 function LstMyAlbums({ idUser, isLoggedIn, lstAlbums }) {
     

@@ -38,10 +38,13 @@ export async function removeFavoris(data) {
 // change btn Favoris in function of favoris and sales of user
 export function changeBtnFavoris(data) {
     console.log("changeBtnFavoris");
+    console.log("data", data);
+
 
     // browse data, for each album check if source == sale or favoris
     // if sale, remove icone favoris and add text "Album purchased"
     // if favoris, change color of icone favoris
+    
     data.map((album) => {
         if (album.source === "sale") {
             // remove icone favoris
@@ -62,4 +65,17 @@ export function changeBtnFavoris(data) {
             document.getElementById(`fav-album-${album.album_id}`).style.color = colorsFav.primary;
         }
     });
+}
+
+
+// Follow / Unfollow
+export async function followUser(data, token) {
+    console.log("followUser");
+    const response = await axios.post(backendUrl + "/followUser", data, {headers: { Authorization: `Bearer ${token}` }});
+    return response.status === 200 ? response.status : null;
+}
+export async function unfollowUser(data, token) {
+    console.log("unfollowUser");
+    const response = await axios.post(backendUrl + "/unfollowUser", data, {headers: { Authorization: `Bearer ${token}` }});
+    return response.status === 200 ? response.status : null;
 }

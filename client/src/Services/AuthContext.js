@@ -26,6 +26,7 @@ const AuthProvider = ({ children }) => {
         setIsLoggedIn(false);
         removeAllLocalStorage();
         navigate("/");
+        window.location.reload();
     };
 
     const removeAllLocalStorage = () => {

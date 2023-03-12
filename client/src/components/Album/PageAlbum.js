@@ -63,7 +63,6 @@ function PageAlbum() {
                         <p className="card-text">{track.t_nb_listen}</p>
                         <p className="card-text">{track.t_lyrics}</p>
                         <audio controls>
-                            // concat path and file name to get the full path
                             <source src={"https://d3s5ffas0ydxtp.cloudfront.net/" + track.t_file_path + "/" + track.t_file_name_mp3} type="audio/mpeg" />
                         </audio>
                         {isLoggedIn && (

@@ -26,6 +26,7 @@ function MainExplorer() {
             });
 
         if (isLoggedIn) {
+            console.log("isLoggedIn", isLoggedIn);
             const token = getLocalStorage("token");
             axios
                 .get(backendUrl + "/getSalesFavoris", { params: { idUser: idUser }, headers: { Authorization: `Bearer ${token}` } })
@@ -40,8 +41,7 @@ function MainExplorer() {
     }, [checkToken]);
 
     // change btnFavoris
-    useLayoutEffect(() => {
-        if (lstSalesFavoris.length === 0) return;
+    useLayoutEffect(() => {           
         changeBtnFavoris(lstSalesFavoris);
     }, [lstAlbums]);
 
