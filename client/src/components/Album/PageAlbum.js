@@ -6,6 +6,8 @@ import { Button } from "@mui/material";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { AuthContext } from "../../Services/AuthContext";
 import BtnFavoris from "../Favoris/BtnFavorisAlbum";
+import BtnFollow from "../Bouttons/BtnFollow";
+import { getFollowsByIdUser, checkFollowed } from "../../Globals/FctsFollow";
 
 function PageAlbum() {
     const { isLoggedIn, checkToken } = useContext(AuthContext);
@@ -14,6 +16,7 @@ function PageAlbum() {
     const infosAlbum = location.state?.album;
     const [lstTracks, setLstTracks] = useState([]);
     const idUser = getLocalStorage("id");
+    const [isFollowed, setIsFollowed] = useState(false);
 
     // create use effect to get all tracks from album use axios post call /getTracks with id album in body
     useEffect(() => {
@@ -28,6 +31,25 @@ function PageAlbum() {
                 console.error(error);
             });
     }, [checkToken]);
+
+    useEffect(() => {
+        if (isLoggedIn && lstTracks.length > 0) {
+
+            const token = getLocalStorage("token");
+            
+            const data = {
+                idUser: idUser,
+                idArtist: lstTracks[0].t_id_user,
+            };
+            
+            const rep = getFollowsByIdUser(data, token);
+            rep.then((data) => {
+                console.log("checkFollowed");
+                setIsFollowed(checkFollowed(data, lstTracks[0].t_id_user));
+            }
+            );
+        }
+    }, [lstTracks,isLoggedIn]);
 
     const ClickBuyAlbum = async (idAlbum, idTrack, idTrackAlbum, price) => {
         // create const data with infosAlbum
@@ -84,6 +106,7 @@ function PageAlbum() {
         <div>
             <h1>Album : {infosAlbum.a_title}</h1>
             <h2>Artist : {infosAlbum.a_artist}</h2>
+            <BtnFollow idUser={idUser} isLoggedIn={isLoggedIn} idUserFollow={infosAlbum.a_id_user} isFollowedProp={isFollowed} />
             <img
                 src={"https://d3s5ffas0ydxtp.cloudfront.net/" + infosAlbum.a_cover_path + "/" + infosAlbum.a_cover}
                 className="card-img-top"

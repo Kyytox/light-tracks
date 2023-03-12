@@ -20,6 +20,26 @@ export const getFollows = (req, res) => {
 }
 
 
+// get follows by user id and id of user to follow
+export const getFollowsByIdUser = (req, res) => {
+    console.log("API /getFollowsByIdUser");
+    console.log("req.query", req.query);
+
+    pool.query(
+        "SELECT * FROM public.follows WHERE fo_id_user = $1 AND fo_id_user_follow = $2",
+        [req.query.idUser, req.query.idUserFollow],
+        (err, result) => {
+            if (err) {
+                console.error("Error executing SELECT:", err);
+            } else {
+                res.send(result.rows);
+            }
+        }
+    );
+}
+
+
+
 export const followUser = (req, res) => {
     console.log("API /followUser");
     console.log("req.body", req.body);

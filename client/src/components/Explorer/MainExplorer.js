@@ -10,6 +10,7 @@ import { getFollows } from "../../Globals/FctsFollow";
 function MainExplorer() {
     const [lstAlbums, setLstAlbums] = useState([]);
     const [lstSalesFavoris, setLstSalesFavoris] = useState([]);
+    const [lstFollows, setLstFollows] = useState([]);
     const date = new Date();
     const { idUser, isLoggedIn, checkToken } = useContext(AuthContext);
 
@@ -40,21 +41,25 @@ function MainExplorer() {
                 });
 
             // get follows
-            const rep = getFollows(idUser, setLstSalesFavoris);
-            console.log("rep", rep);
-
+            const rep = getFollows(idUser, token);
+            rep.then((data) => {
+                setLstFollows(data);
+            }
+            );
         }
     }, [checkToken]);
 
     // change btnFavoris
-    useLayoutEffect(() => {           
-        changeBtnFavoris(lstSalesFavoris);
-    }, [lstAlbums]);
+    useLayoutEffect(() => {
+        if (lstAlbums.length > 0 && lstSalesFavoris.length > 0) {
+            changeBtnFavoris(lstSalesFavoris);
+        }
+    }, [lstAlbums, lstSalesFavoris]);
 
     return (
         <div>
             <h1>Explorer</h1>
-            <LstAlbums idUser={idUser} isLoggedIn={isLoggedIn} lstAlbums={lstAlbums} />
+            <LstAlbums idUser={idUser} isLoggedIn={isLoggedIn} lstAlbums={lstAlbums} lstFollows={lstFollows} />
         </div>
     );
 }

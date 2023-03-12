@@ -8,7 +8,7 @@ import { getAudioFileStream } from "../AwsS3.js";
 import { generateUniqueName, convertFileAudio } from "../FunctionsAlbum.js";
 import { buyAlbum } from "../FonctionsBuy.js";
 import { getCollection, getFavoris, getMyAlbums, addFavoris, deleteFavoris, getSalesFavoris, getAlbumInFavorisOrSales,deleteAlbum } from "../FonctionsProfile.js";
-import { getFollows, followUser, unfollowUser } from "../FonctionsFollow.js";
+import { getFollows, getFollowsByIdUser, followUser, unfollowUser } from "../FonctionsFollow.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -78,6 +78,7 @@ router.post("/deleteFavoris", deleteFavoris);
 
 // Follow
 router.get("/getFollows",authenticateToken, getFollows);
+router.get("/getFollowsByIdUser",authenticateToken, getFollowsByIdUser);
 router.post("/followUser",authenticateToken, followUser);
 router.post("/unfollowUser",authenticateToken, unfollowUser);
 

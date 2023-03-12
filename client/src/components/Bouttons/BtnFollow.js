@@ -1,17 +1,19 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { Button } from "@mui/material";
 import { followUser, unfollowUser } from "../../Globals/FctsFollow";
 
 
-function BtnFollow({ idUser, isLoggedIn, idUserFollow}) {
-    const [isFollowed, setIsFollowed] = useState(false);
+function BtnFollow({ idUser, isLoggedIn, idUserFollow, isFollowedProp }) {
+    const [isFollowed, setIsFollowed] = useState(isFollowedProp);
+
+    useEffect(() => {
+        setIsFollowed(isFollowedProp);
+    }, [isFollowedProp]);
 
     const toggleFollow = () => {
         setIsFollowed(!isFollowed);
-
-        console.log("isFollowed", isFollowed);
 
         const data = {
             idUser: idUser,
