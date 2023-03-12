@@ -67,15 +67,3 @@ export function changeBtnFavoris(data) {
     });
 }
 
-
-// Follow / Unfollow
-export async function followUser(data, token) {
-    console.log("followUser");
-    const response = await axios.post(backendUrl + "/followUser", data, {headers: { Authorization: `Bearer ${token}` }});
-    return response.status === 200 ? response.status : null;
-}
-export async function unfollowUser(data, token) {
-    console.log("unfollowUser");
-    const response = await axios.post(backendUrl + "/unfollowUser", data, {headers: { Authorization: `Bearer ${token}` }});
-    return response.status === 200 ? response.status : null;
-}

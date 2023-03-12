@@ -2,7 +2,7 @@ import React, {useState} from "react";
 
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { Button } from "@mui/material";
-import { followUser, unfollowUser } from "../../Globals/GlobalFunctions";
+import { followUser, unfollowUser } from "../../Globals/FctsFollow";
 
 
 function BtnFollow({ idUser, isLoggedIn, idUserFollow}) {

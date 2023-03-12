@@ -5,6 +5,7 @@ import LstAlbums from "../Album/LstAlbums";
 import { AuthContext } from "../../Services/AuthContext";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { changeBtnFavoris } from "../../Globals/GlobalFunctions";
+import { getFollows } from "../../Globals/FctsFollow";
 
 function MainExplorer() {
     const [lstAlbums, setLstAlbums] = useState([]);
@@ -37,6 +38,11 @@ function MainExplorer() {
                 .catch((error) => {
                     console.error(error);
                 });
+
+            // get follows
+            const rep = getFollows(idUser, setLstSalesFavoris);
+            console.log("rep", rep);
+
         }
     }, [checkToken]);
 
