@@ -2,8 +2,8 @@
 import pool from "./database/database.js";
 
 
-export const getFollowers = (req, res) => {
-    console.log("API /getFollowers");
+export const getFollows = (req, res) => {
+    console.log("API /getFollows");
     console.log("req.query", req.query);
 
     pool.query(
