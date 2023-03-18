@@ -127,9 +127,6 @@ function SignUp() {
         }
     };
 
-    console.log("values", values);
-    console.log("errors", errors);
-
     return (
         <div>
             {succesConnect.success ? (

@@ -97,7 +97,7 @@ function AlbumAdder({ album, ImgInputRef, onAlbumChange, handleImgDelete }) {
                     variant="outlined"
                     value={album.descr.value}
                     multiline
-                    rows={4}
+                    rows={10}
                     onChange={(e) => onAlbumChange("descr", e.target.value)}
                 />
                 {/* style Musics */}
