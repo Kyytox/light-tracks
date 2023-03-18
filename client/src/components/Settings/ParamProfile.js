@@ -45,32 +45,26 @@ function ParamProfile() {
     });
 
 
+    //  check value and set value
     const handleChanges = (key, value) => {
-        if (key === "avatar") {
-            // if value is url type set value
-            if (value.startsWith("http")) {
-                setValues({ ...values, [key]: value });
-            } else {
-                setErrors({ ...errors, [key]: true });
-                setHelperText({ ...helperText, [key]: "Url not valid" });
-            }
-        }
+        // check if value has a valid format
+        const isValid = key === "avatar" && value.startsWith("http")
+            || key === "email" && value.includes("@")
+            || key === "bio";
 
-        if (key === "email") {
-            // if value is email type set value
-            if (value.includes("@")) {
-                setValues({ ...values, [key]: value });
-            } else {
-                setErrors({ ...errors, [key]: true });
-                setHelperText({ ...helperText, [key]: "Email not valid" });
-            }
-        }
-
-        if (key === "bio") {
+        
+        if (isValid) {
             setValues({ ...values, [key]: value });
+            setErrors({ ...errors, [key]: false });
+            setHelperText({ ...helperText, [key]: "" });
+        } else {
+            const errText = key === "avatar" ? "Url not valid" : "Email not valid";
+            setErrors({ ...errors, [key]: true });
+            setHelperText({ ...helperText, [key]: errText });
         }
     };
 
+    // submit form
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("submit");
