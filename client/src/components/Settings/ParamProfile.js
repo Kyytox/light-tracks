@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-
+import axios from 'axios';
 
 // lib Material UI
 import TextField from "@mui/material/TextField";
@@ -11,7 +11,7 @@ import Avatar from '@mui/material/Avatar';
 // lib Components en global variables en functions
 import { AuthContext } from "../../Services/AuthContext";
 import { backendUrl } from "../../Globals/GlobalVariables";
-import { setLocalStorage, getLocalStorage } from "../../Globals/GlobalFunctions";
+import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { countries } from './Countries';
 
 
@@ -69,6 +69,36 @@ function ParamProfile() {
         e.preventDefault();
         console.log("submit");
         console.log("values", values);
+        const token = getLocalStorage("token");
+
+        if (isLoggedIn) {
+            // check if all errors are false send data to server at /updateUser
+            if (!errors.avatar && !errors.bio && !errors.email) {
+                console.log("no errors");
+                const data = {
+                    id: idUser,
+                    avatar: values.avatar,
+                    bio: values.bio,
+                    email: values.email,
+                    code_country: values.code_country,
+                    country: values.country,
+                };
+                axios
+                    .post(backendUrl + "/updateUser", data, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    })
+                    .then((response) => {
+                        console.log(response);
+                    }
+                    )
+                    .catch((error) => {
+                        console.error(error);
+                    }
+                    );
+            }
+        }
     };
 
 

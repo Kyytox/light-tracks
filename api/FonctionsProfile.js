@@ -147,8 +147,6 @@ export const getAlbumInFavorisOrSales = (req, res) => {
 };
 
 
-
-
 // delete album from the user id with album id 
 export const deleteAlbum = async (req, res) => {
     console.log("API /deleteAlbum");

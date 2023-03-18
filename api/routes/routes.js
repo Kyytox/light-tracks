@@ -9,7 +9,7 @@ import { generateUniqueName, convertFileAudio } from "../FunctionsAlbum.js";
 import { buyAlbum } from "../FonctionsBuy.js";
 import { getCollection, getFavoris, getMyAlbums, addFavoris, deleteFavoris, getSalesFavoris, getAlbumInFavorisOrSales,deleteAlbum } from "../FonctionsProfile.js";
 import { getFollows, getFollowsByIdUser, followUser, unfollowUser } from "../FonctionsFollow.js";
-import {getUserById} from "../FonctionsUser.js";
+import { getUserById, updateUser} from "../FonctionsUser.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -86,6 +86,7 @@ router.post("/unfollowUser",authenticateToken, unfollowUser);
 
 // User 
 router.get("/getUserById",authenticateToken, getUserById);
+router.post("/updateUser",authenticateToken, updateUser);
 
 
 
