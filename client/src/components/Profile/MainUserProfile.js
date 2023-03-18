@@ -9,9 +9,7 @@ import UserWantlist from "./UserWantlist";
 import UserCollections from "./UserCollections";
 import UserMyAlbums from "./UserMyAlbums";
 import UserMyFollows from "./UserMyFollows";
-import ParamProfile from "../Settings/ParamProfile";
-
-
+import MainSettings from "../Settings/MainSettings";
 
 
 function MainUserProfile() {
@@ -20,7 +18,7 @@ function MainUserProfile() {
     const { username } = useContext(AuthContext);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const tabPaths = ["collection", "wantlist", "myalbums", "myfollows", "settings Profile", "settings App"];
+    const tabPaths = ["collection", "wantlist", "myalbums", "myfollows", "Settings"];
     const [tabIndex, setTabIndex] = useState(() => {
       const index = tabPaths.findIndex(path => location.pathname.includes(path));
       return index >= 0 ? index : 0;
@@ -47,15 +45,13 @@ function MainUserProfile() {
                 <Tab label="Wantlist" />
                 <Tab label="My Albums" />
                 <Tab label="My Follows" />
-                <Tab label="Settings Profile" />
-                <Tab label="Settings App" />
+                <Tab label="Settings" />
             </Tabs>
             {tabIndex === 0 && <UserCollections />}
             {tabIndex === 1 && <UserWantlist />}
             {tabIndex === 2 && <UserMyAlbums />}
             {tabIndex === 3 && <UserMyFollows />}
-            {tabIndex === 4 && <ParamProfile />}
-            {/* {tabIndex === 5 && <ParamProfile />} */}
+            {tabIndex === 4 && <MainSettings />}
         </div>
     );
 }

@@ -1,6 +1,5 @@
 import pool from "./database/database.js";
 
-
 // get infos of user by id
 export const getUserById = (req, res) => {
     console.log("API /getUserById");
@@ -19,30 +18,35 @@ export const getUserById = (req, res) => {
             }
         }
     );
-}
-
+};
 
 // update user infos
 export const updateUser = (req, res) => {
     console.log("API /updateUser");
     console.log("req.body", req.body);
 
-    // update user infos
-    pool.query(
-        `UPDATE public.users 
-        SET u_avatar = $1, 
-        u_bio = $2, 
-        u_email = $3, 
-        u_code_country = $4, 
-        u_name_country = $5 
-        WHERE u_id = $6`,
-        [req.body.avatar, req.body.bio, req.body.email, req.body.code_country, req.body.country, req.body.id],
-        (err, result) => {
-            if (err) {
-                console.error("Error executing UPDATE:", err);
-            } else {
-                res.send({ succes: "User updated" });
+    // create text for update
+    var textUpdate = "UPDATE public.users SET ";
+    for (const [key, value] of Object.entries(req.body)) {
+        if (key !== "id") {
+            console.log(`${key}: ${value}`);
+            if (value !== "") {
+                textUpdate += `u_${key} = '${value}', `;
             }
         }
-    );
-}
+    }
+
+    textUpdate = textUpdate.slice(0, -2); // remove the last comma and space
+    textUpdate += ` WHERE u_id = ${req.body.id}`;
+
+    console.log("textUpdate", textUpdate);
+
+    // update user infos
+    pool.query(textUpdate, [], (err, result) => {
+        if (err) {
+            console.error("Error executing UPDATE:", err);
+        } else {
+            res.send({ succes: "User updated" });
+        }
+    });
+};

@@ -7,7 +7,23 @@ import Chip from "@mui/material/Chip";
 import Autocomplete from "@mui/material/Autocomplete";
 
 function AlbumAdder({ album, ImgInputRef, onAlbumChange, handleImgDelete }) {
-    const musicStyles = ["Blues", "Classical", "Country", "Dance", "Electronic", "Folk", "Hip-Hop", "Jazz", "Latin", "Metal", "Pop", "R&B", "Reggae", "Rock", "Soul"];
+    const musicStyles = [
+        "Blues",
+        "Classical",
+        "Country",
+        "Dance",
+        "Electronic",
+        "Folk",
+        "Hip-Hop",
+        "Jazz",
+        "Latin",
+        "Metal",
+        "Pop",
+        "R&B",
+        "Reggae",
+        "Rock",
+        "Soul",
+    ];
 
     return (
         <div>
@@ -33,7 +49,11 @@ function AlbumAdder({ album, ImgInputRef, onAlbumChange, handleImgDelete }) {
                 {album.image.value && (
                     <>
                         <img src={album.image.url} alt="album-cover" style={{ width: "75px" }} />
-                        <Button variant="contained" color="secondary" onClick={(e) => handleImgDelete("image")}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={(e) => handleImgDelete("image")}
+                        >
                             X
                         </Button>
                     </>
@@ -115,9 +135,20 @@ function AlbumAdder({ album, ImgInputRef, onAlbumChange, handleImgDelete }) {
                     options={musicStyles}
                     getOptionLabel={(option) => option}
                     freeSolo
-                    renderTags={(value, getTagProps) => value.map((option, index) => <Chip variant="outlined" label={option} {...getTagProps({ index })} />)}
+                    renderTags={(value, getTagProps) =>
+                        value.map((option, index) => (
+                            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                        ))
+                    }
                     renderInput={(params) => (
-                        <TextField {...params} error={album.styles.error} variant="outlined" label="styles" placeholder="Search" helperText={album.styles.msg} />
+                        <TextField
+                            {...params}
+                            error={album.styles.error}
+                            variant="outlined"
+                            label="styles"
+                            placeholder="Search"
+                            helperText={album.styles.msg}
+                        />
                     )}
                 />
             </div>

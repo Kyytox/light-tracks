@@ -1,26 +1,24 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
 
 // lib Material UI
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Box from '@mui/material/Box';
-import Autocomplete from '@mui/material/Autocomplete';
-import Avatar from '@mui/material/Avatar';
+import Box from "@mui/material/Box";
+import Autocomplete from "@mui/material/Autocomplete";
+import Avatar from "@mui/material/Avatar";
+import Chip from "@mui/material/Chip";
+import Autocomplete from "@mui/material/Autocomplete";
 
 // lib Components en global variables en functions
 import { AuthContext } from "../../Services/AuthContext";
 import { backendUrl } from "../../Globals/GlobalVariables";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
-import { countries } from './Countries';
-
-
+import { countries } from "./Countries";
 
 function ParamProfile() {
-
     const { isLoggedIn } = useContext(AuthContext);
     const idUser = getLocalStorage("id");
-
 
     const [values, setValues] = useState({
         avatar: "",
@@ -44,15 +42,14 @@ function ParamProfile() {
         country: "",
     });
 
-
     //  check value and set value
     const handleChanges = (key, value) => {
         // check if value has a valid format
-        const isValid = key === "avatar" && value.startsWith("http")
-            || key === "email" && value.includes("@")
-            || key === "bio";
+        const isValid =
+            (key === "avatar" && value.startsWith("http")) ||
+            (key === "email" && value.includes("@")) ||
+            key === "bio";
 
-        
         if (isValid) {
             setValues({ ...values, [key]: value });
             setErrors({ ...errors, [key]: false });
@@ -81,7 +78,7 @@ function ParamProfile() {
                     bio: values.bio,
                     email: values.email,
                     code_country: values.code_country,
-                    country: values.country,
+                    name_country: values.country,
                 };
                 axios
                     .post(backendUrl + "/updateUser", data, {
@@ -91,16 +88,13 @@ function ParamProfile() {
                     })
                     .then((response) => {
                         console.log(response);
-                    }
-                    )
+                    })
                     .catch((error) => {
                         console.error(error);
-                    }
-                    );
+                    });
             }
         }
     };
-
 
     return (
         <div>
@@ -139,7 +133,7 @@ function ParamProfile() {
                     type="email"
                     name="email"
                     placeholder="Email"
-                    onChange={(e) => { 
+                    onChange={(e) => {
                         handleChanges("email", e.target.value);
                     }}
                     error={errors.email}
@@ -152,34 +146,74 @@ function ParamProfile() {
                     autoHighlight
                     getOptionLabel={(option) => option.label}
                     renderOption={(props, option) => (
-                        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                        <img
-                            loading="lazy"
-                            width="20"
-                            src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                            srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                            alt=""
-                        />
-                        {option.label} ({option.code})
+                        <Box component="li" sx={{ "& > img": { mr: 2, flexShrink: 0 } }} {...props}>
+                            <img
+                                loading="lazy"
+                                width="20"
+                                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                                alt=""
+                            />
+                            {option.label} ({option.code})
                         </Box>
                     )}
                     renderInput={(params) => (
                         <TextField
-                        {...params}
-                        label="Choose a country"
-                        inputProps={{
-                            ...params.inputProps,
-                        }}
+                            {...params}
+                            label="Choose a country"
+                            inputProps={{
+                                ...params.inputProps,
+                            }}
                         />
                     )}
                     onChange={(e, value) => {
                         console.log("value", value);
-                        setValues({ ...values, ["code_country"]: value.code, ["country"]: value.label });
+                        setValues({
+                            ...values,
+                            ["code_country"]: value.code,
+                            ["country"]: value.label,
+                        });
                     }}
                 />
-                <Button variant="contained" type='submit'>Save</Button>
+                {/* Styles Music */}
+                <Autocomplete
+                    required
+                    value={album.styles.value}
+                    onChange={(e, newValue) =>
+                        onAlbumChange(
+                            "styles",
+                            newValue.map((option) => option)
+                        )
+                    }
+                    multiple
+                    id="album-styles"
+                    options={musicStyles}
+                    getOptionLabel={(option) => option}
+                    freeSolo
+                    renderTags={(value, getTagProps) =>
+                        value.map((option, index) => (
+                            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                        ))
+                    }
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            error={album.styles.error}
+                            variant="outlined"
+                            label="styles"
+                            placeholder="Search"
+                            helperText={album.styles.msg}
+                        />
+                    )}
+                />
+                ;
+                <Button variant="contained" type="submit">
+                    Save
+                </Button>
             </form>
-            <Button variant="contained" color='error'>Delete Account</Button>
+            <Button variant="contained" color="error">
+                Delete Account
+            </Button>
         </div>
     );
 }
