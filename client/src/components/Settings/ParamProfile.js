@@ -21,29 +21,13 @@ function ParamProfile() {
 
     const [lstGenres, setLstGenres] = useState([]);
 
-    const [values, setValues] = useState({
-        avatar: "",
-        bio: "",
-        email: "",
-        code_country: "",
-        country: "",
-        styles: [],
-    });
-    const [errors, setErrors] = useState({
-        avatar: false,
-        bio: false,
-        email: false,
-        code_country: false,
-        country: false,
-        styles: false,
-    });
-    const [helperText, setHelperText] = useState({
-        avatar: "",
-        bio: "",
-        email: "",
-        code_country: "",
-        country: "",
-        styles: "",
+    const [lstParams, setLstParams] = useState({
+        avatar: { value: "", error: false, helperText: "" },
+        bio: { value: "", error: false, helperText: "" },
+        email: { value: "", error: false, helperText: "" },
+        code_country: { value: "", error: false, helperText: "" },
+        country: { value: "", error: false, helperText: "" },
+        styles: { value: [], error: false, helperText: "" },
     });
 
     useEffect(() => {
@@ -61,7 +45,20 @@ function ParamProfile() {
                 },
             })
             .then((response) => {
-                setValues(response.data);
+                // setValues(response.data);
+                console.log(response.data);
+                setLstParams({
+                    avatar: { value: response.data.avatar, error: false, helperText: "" },
+                    bio: { value: response.data.bio, error: false, helperText: "" },
+                    email: { value: response.data.email, error: false, helperText: "" },
+                    code_country: {
+                        value: response.data.code_country,
+                        error: false,
+                        helperText: "",
+                    },
+                    country: { value: response.data.country, error: false, helperText: "" },
+                    styles: { value: response.data.styles, error: false, helperText: "" },
+                });
             })
             .catch((error) => {
                 console.error(error);
@@ -89,13 +86,13 @@ function ParamProfile() {
             key === "bio";
 
         if (isValid) {
-            setValues({ ...values, [key]: value });
-            setErrors({ ...errors, [key]: false });
-            setHelperText({ ...helperText, [key]: "" });
+            setLstParams({ ...lstParams, [key]: { value: value, error: false, helperText: "" } });
         } else {
             const errText = key === "avatar" ? "Url not valid" : "Email not valid";
-            setErrors({ ...errors, [key]: true });
-            setHelperText({ ...helperText, [key]: errText });
+            setLstParams({
+                ...lstParams,
+                [key]: { value: value, error: true, helperText: errText },
+            });
         }
     };
 
@@ -105,20 +102,19 @@ function ParamProfile() {
         e.preventDefault();
         const token = getLocalStorage("token");
 
-        const styles = values.styles.map((style) => style.id);
-        console.log("styles", styles);
+        const styles = lstParams.styles.value.map((style) => style.id);
 
         if (isLoggedIn) {
             // check if all errors are false send data to server at /updateUser
-            if (!errors.avatar && !errors.bio && !errors.email) {
+            if (!lstParams.avatar.error && !lstParams.bio.error && !lstParams.email.error) {
                 console.log("no errors");
                 const data = {
                     id: idUser,
-                    avatar: values.avatar,
-                    bio: values.bio,
-                    email: values.email,
-                    code_country: values.code_country,
-                    name_country: values.country,
+                    avatar: lstParams.avatar.value,
+                    bio: lstParams.bio.value,
+                    email: lstParams.email.value,
+                    code_country: lstParams.code_country.value,
+                    name_country: lstParams.country.value,
                     styles_music: styles,
                 };
                 axios
@@ -140,7 +136,7 @@ function ParamProfile() {
     return (
         <div>
             <form onSubmit={handleSubmit}>
-                <Avatar alt="Avatar" src={values.avatar} />
+                <Avatar alt="Avatar" src={lstParams.avatar.value} />
                 <TextField
                     id="outlined-basic"
                     label="Avatar"
@@ -148,12 +144,12 @@ function ParamProfile() {
                     type="url"
                     name="avatar"
                     placeholder="Url Image"
-                    value={values.avatar}
+                    value={lstParams.avatar.value}
                     onChange={(e) => {
                         handleChanges("avatar", e.target.value);
                     }}
-                    error={errors.avatar}
-                    helperText={helperText.avatar}
+                    error={lstParams.avatar.error}
+                    helperText={lstParams.avatar.helperText}
                 />
                 <TextField
                     id="outlined-basic"
@@ -164,7 +160,7 @@ function ParamProfile() {
                     type="text"
                     name="bio"
                     placeholder="Bio"
-                    value={values.bio}
+                    value={lstParams.bio.value}
                     onChange={(e) => {
                         handleChanges("bio", e.target.value);
                     }}
@@ -176,24 +172,32 @@ function ParamProfile() {
                     type="email"
                     name="email"
                     placeholder="Email"
-                    value={values.email}
+                    value={lstParams.email.value}
                     onChange={(e) => {
                         handleChanges("email", e.target.value);
                     }}
-                    error={errors.email}
-                    helperText={helperText.email}
+                    error={lstParams.email.error}
+                    helperText={lstParams.email.helperText}
                 />
                 <Select
                     labelId="select-country"
                     id="select-country"
-                    value={values.code_country}
+                    value={lstParams.code_country.value}
                     label="Country"
                     onChange={(e) => {
-                        setValues({
-                            ...values,
-                            code_country: e.target.value,
-                            country: countries.find((country) => country.code === e.target.value)
-                                .label,
+                        setLstParams({
+                            ...lstParams,
+                            code_country: {
+                                value: e.target.value,
+                                error: false,
+                                helperText: "",
+                            },
+                            country: {
+                                value: countries.find((country) => country.code === e.target.value)
+                                    .label,
+                                error: false,
+                                helperText: "",
+                            },
                         });
                     }}
                 >
@@ -212,11 +216,9 @@ function ParamProfile() {
                 </Select>
                 {/* Genres Music */}
                 <SelectGenres
-                    setValues={setValues}
-                    values={values}
+                    lstValues={lstParams}
+                    setLstValues={setLstParams}
                     lstGenres={lstGenres}
-                    errors={errors}
-                    helperText={helperText}
                 />
                 <Button variant="contained" type="submit">
                     Save

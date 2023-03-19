@@ -21,7 +21,10 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                             InputLabelProps={{ shrink: true }}
                             onChange={(e) => onTrackChange(index, "title", e.target.value)}
                             error={music.title.error}
-                            helperText={music.title.msg || "leave blank to put the same name of upload track"}
+                            helperText={
+                                music.title.helperText ||
+                                "leave blank to put the same name of upload track"
+                            }
                         />
                         {/* Artist */}
                         <TextField
@@ -32,7 +35,10 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                             InputLabelProps={{ shrink: true }}
                             onChange={(e) => onTrackChange(index, "artist", e.target.value)}
                             error={music.artist.error}
-                            helperText={music.artist.msg || "leave blank to put the same Album artist"}
+                            helperText={
+                                music.artist.helperText ||
+                                "leave blank to put the same Album artist"
+                            }
                         />
                         {/* file */}
                         <Button
@@ -44,17 +50,27 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                             color={(music.fileOrigin.error && "error") || "primary"}
                         >
                             Upload file track .mp3, .wav, .flac
-                            <input type="file" accept=".mp3, .wav, .flac" ref={fileInputRef} hidden />
+                            <input
+                                type="file"
+                                accept=".mp3, .wav, .flac"
+                                ref={fileInputRef}
+                                hidden
+                            />
                         </Button>
                         <FormHelperText error={music.fileOrigin.error} color="error">
-                            {music.fileOrigin.msg}
+                            {music.fileOrigin.helperText}
                         </FormHelperText>
                         {music.fileOrigin.value && (
                             <>
                                 <p>
-                                    {music.fileOrigin.value.name} {(music.fileOrigin.value.size / (1024 * 1024)).toFixed(2)} Mo
+                                    {music.fileOrigin.value.name}{" "}
+                                    {(music.fileOrigin.value.size / (1024 * 1024)).toFixed(2)} Mo
                                 </p>
-                                <Button variant="contained" color="secondary" onClick={(e) => handleFileDelete(index, "file")}>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={(e) => handleFileDelete(index, "file")}
+                                >
                                     X
                                 </Button>
                             </>
@@ -69,7 +85,7 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                             type="number"
                             onChange={(e) => onTrackChange(index, "price", e.target.value)}
                             error={music.price.error}
-                            helperText={music.price.msg}
+                            helperText={music.price.helperText}
                             InputProps={{
                                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
                             }}
@@ -86,10 +102,16 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                             }}
                             onChange={(e) => onTrackChange(index, "date_release", e.target.value)}
                             // error={music.date_release.error}
-                            // helperText={music.date_release.msg || "leave blank to put the same Album date realease"}
+                            // helperText={music.date_release.helperText || "leave blank to put the same Album date realease"}
                         />
                         {/* Lyrics */}
-                        <TextField id="track-lyrics" label="lyrics" variant="outlined" value={lstTrack.Lyrics} onChange={(e) => onTrackChange(index, "lyrics", e.target.value)} />
+                        <TextField
+                            id="track-lyrics"
+                            label="lyrics"
+                            variant="outlined"
+                            value={lstTrack.Lyrics}
+                            onChange={(e) => onTrackChange(index, "lyrics", e.target.value)}
+                        />
                         {/* nb listens */}
                         <TextField
                             id="track-nb_listens"
@@ -97,9 +119,11 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                             variant="outlined"
                             type="number"
                             value={music.nb_listens.value}
-                            onChange={(e) => onTrackChange(index, "nb_listens", parseInt(e.target.value))}
+                            onChange={(e) =>
+                                onTrackChange(index, "nb_listens", parseInt(e.target.value))
+                            }
                             error={music.nb_listens.error}
-                            helperText={music.nb_listens.msg}
+                            helperText={music.nb_listens.helperText}
                         />
                     </div>
                 ))}

@@ -10,26 +10,30 @@ import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 //         "./node_modules/@ffmpeg/core/dist/ffmpeg-core.js"
 // ).replace("file:", "");
 
+const FFmpegCoreLocation =
+    "/media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/core/dist/ffmpeg-core.js";
 
-const FFmpegCoreLocation = "/media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/core/dist/ffmpeg-core.js"
-  
 // const FFmpegWasmLocation = join(
 //     dirname(import.meta.url),
 //     "./node_modules/@ffmpeg/core/dist/ffmpeg-core.wasm"
 // );
-const FFmpegWasmLocation = "/media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/core/dist/ffmpeg-core.wasm"
-
+const FFmpegWasmLocation =
+    "/media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/core/dist/ffmpeg-core.wasm";
 
 // function for count number of album for a user
 export const countAlbumUser = (req, res) => {
     const idUser = req.query.idUser;
-    pool.query("SELECT COUNT(*) FROM public.albums WHERE a_id_user = ($1)", [idUser], (err, result) => {
-        if (err) {
-            console.error("Error executing INSERT INTO:", err);
-        } else {
-            res.send({ count: parseInt(result.rows[0].count) + 1 });
+    pool.query(
+        "SELECT COUNT(*) FROM public.albums WHERE a_id_user = ($1)",
+        [idUser],
+        (err, result) => {
+            if (err) {
+                console.error("Error executing INSERT INTO:", err);
+            } else {
+                res.send({ count: parseInt(result.rows[0].count) + 1 });
+            }
         }
-    });
+    );
 };
 
 // create app.post for retrieve data from client this data contain fomrData and file (image in format jpg and tracks in format mp3)
@@ -46,7 +50,7 @@ export const createAlbum = (req, res) => {
         price: req.body.price,
         date_release: req.body.date_release,
         descr: req.body.descr,
-        style: [req.body.styles],
+        style: req.body.styles.split(",").map((item) => parseInt(item)),
         cover: req.files[0].key.split("/").slice(-1)[0],
         coverPath: req.files[0].key.split("/").slice(0, -1).join("/"),
     };
@@ -60,7 +64,9 @@ export const createAlbum = (req, res) => {
         // if file is not mp3, push it
         if (!req.files[i].key.endsWith(".mp3")) {
             // retrive all index of req body who start with "track" and finish with var i
-            const track = Object.keys(req.body).filter((key) => key.startsWith("track") && key.endsWith(count));
+            const track = Object.keys(req.body).filter(
+                (key) => key.startsWith("track") && key.endsWith(count)
+            );
             /// browse const track and retrive the value of each index in req.body and insert into const tracks with dictionnary key:value (title: "title", artist: "artist", ...)
             const trackObj = {};
             track.forEach((key) => {
@@ -154,15 +160,14 @@ export const convertFileAudio = async (req, res) => {
     console.log("FFmpegCoreLocation", FFmpegCoreLocation);
     console.log("FFmpegWasmLocation", FFmpegWasmLocation);
 
-    
     const ffmpeg = createFFmpeg({
         // corePath: "/media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/core/dist/ffmpeg-core.js",
         // wasmPath: "./media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/ffmpeg/dist/ffmpeg.wasm",
         log: true,
         logger: ({ message }) => console.log(message),
-        progress: p => console.log(p)
+        progress: (p) => console.log(p),
     });
-    
+
     ffmpeg.setLogger(({ type, message }) => {
         console.log("logger", type, message);
         /*
@@ -172,15 +177,14 @@ export const convertFileAudio = async (req, res) => {
          * fferr: ffmpeg native stderr output
          * ffout: ffmpeg native stdout output
          */
-      });
+    });
 
     ffmpeg.setProgress(({ ratio }) => {
         console.log("progress", ratio);
         /*
          * ratio is a float number between 0 to 1.
          */
-      });
-
+    });
 
     // convert the file to mp3 and return the result
     try {
@@ -196,8 +200,6 @@ export const convertFileAudio = async (req, res) => {
         res.status(500).send("Erreur lors de la conversion");
     }
 };
-
-
 
 // create function for generate unique name for file
 export const generateUniqueName = (originalName) => {

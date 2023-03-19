@@ -5,8 +5,8 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import Chip from "@mui/material/Chip";
 
-function SelectGenres({ values, setValues, lstGenres, errors, helperText }) {
-    console.log("Select genres --- values", values);
+function SelectGenres({ lstValues, setLstValues, lstGenres }) {
+    console.log("Select genres --- values", lstValues);
 
     //
     // handle change for Styles
@@ -17,8 +17,10 @@ function SelectGenres({ values, setValues, lstGenres, errors, helperText }) {
         const newValues = newValue.map((value) => {
             return { id: value.gm_id, name: value.gm_name_genre };
         });
-
-        setValues({ ...values, styles: newValues });
+        setLstValues({
+            ...lstValues,
+            styles: { value: newValues, error: false, helperText: "" },
+        });
     };
 
     return (
@@ -26,7 +28,7 @@ function SelectGenres({ values, setValues, lstGenres, errors, helperText }) {
             {/* Styles Music */}
             <Autocomplete
                 required
-                value={values.styles.map((style) => {
+                value={lstValues.styles.value.map((style) => {
                     return { gm_id: style.id, gm_name_genre: style.name };
                 })}
                 onChange={(e, newValue) => {
@@ -49,11 +51,11 @@ function SelectGenres({ values, setValues, lstGenres, errors, helperText }) {
                 renderInput={(params) => (
                     <TextField
                         {...params}
-                        error={errors.styles}
+                        error={lstValues.styles.error}
                         variant="outlined"
                         label="styles"
                         placeholder="Search"
-                        helperText={helperText.styles}
+                        helperText={lstValues.styles.helperText}
                     />
                 )}
             />

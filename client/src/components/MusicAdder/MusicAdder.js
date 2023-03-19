@@ -12,26 +12,26 @@ function MusicAdder() {
     const idUser = getLocalStorage("id");
     const [idAlbum, setIdAlbum] = useState(0);
     const [album, setAlbum] = useState({
-        title: { value: "", error: false, msg: "" },
-        artist: { value: "", error: false, msg: "" },
-        image: { value: null, url: "", error: false, msg: "" },
-        price: { value: "", error: false, msg: "" },
-        descr: { value: "", error: false, msg: "" },
-        date_release: { value: "", error: false, msg: "" },
-        styles: { value: [], error: false, msg: "" },
+        title: { value: "", error: false, helperText: "" },
+        artist: { value: "", error: false, helperText: "" },
+        image: { value: null, url: "", error: false, helperText: "" },
+        price: { value: "", error: false, helperText: "" },
+        descr: { value: "", error: false, helperText: "" },
+        date_release: { value: "", error: false, helperText: "" },
+        styles: { value: [], error: false, helperText: "" },
     });
 
     const [lstTrack, setLstTrack] = useState([
         {
-            id: { value: 1, error: false, msg: "" },
-            title: { value: "", error: false, msg: "" },
-            artist: { value: "", error: false, msg: "" },
-            fileOrigin: { value: null, error: false, msg: "" },
-            fileMp3: { value: null, error: false, msg: "" },
-            price: { value: "", error: false, msg: "" },
-            date_release: { value: "", error: false, msg: "" },
-            lyrics: { value: "", error: false, msg: "" },
-            nb_listens: { value: 0, error: false, msg: "" },
+            id: { value: 1, error: false, helperText: "" },
+            title: { value: "", error: false, helperText: "" },
+            artist: { value: "", error: false, helperText: "" },
+            fileOrigin: { value: null, error: false, helperText: "" },
+            fileMp3: { value: null, error: false, helperText: "" },
+            price: { value: "", error: false, helperText: "" },
+            date_release: { value: "", error: false, helperText: "" },
+            lyrics: { value: "", error: false, helperText: "" },
+            nb_listens: { value: 0, error: false, helperText: "" },
         },
     ]);
 
@@ -74,7 +74,7 @@ function MusicAdder() {
                 ...album,
                 [field]: {
                     error: error,
-                    msg: error ? "This file format is not accepted" : "",
+                    helperText: error ? "This file format is not accepted" : "",
                     value: error ? null : value,
                     url: error ? "" : URL.createObjectURL(value),
                 },
@@ -83,7 +83,7 @@ function MusicAdder() {
         } else {
             setAlbum({
                 ...album,
-                [field]: { ...album[field], value: value, error: false, msg: "" },
+                [field]: { ...album[field], value: value, error: false, helperText: "" },
             });
         }
     };
@@ -99,7 +99,7 @@ function MusicAdder() {
             const errSize = value && value.size > 260000000;
             newMusicList[index]["fileOrigin"] = {
                 error: error || errSize,
-                msg: error
+                helperText: error
                     ? "This file format is not accepted"
                     : errSize
                     ? "the file size is greater than 260 MB"
@@ -120,7 +120,7 @@ function MusicAdder() {
                 ...newMusicList[index][field],
                 value: value,
                 error: false,
-                msg: "",
+                helperText: "",
             };
         }
 
@@ -146,7 +146,7 @@ function MusicAdder() {
                     type: "audio/mpeg",
                 });
                 console.log("blob", blob);
-                newMusicList[index]["fileMp3"] = { error: false, msg: "", value: blob };
+                newMusicList[index]["fileMp3"] = { error: false, helperText: "", value: blob };
             })
             .catch((err) => {
                 console.log(err);
@@ -161,7 +161,7 @@ function MusicAdder() {
     // function to delete a file of track
     const handleFileDelete = (index, field) => {
         const delMusicFile = [...lstTrack];
-        delMusicFile[index][field] = { error: false, msg: "", value: null };
+        delMusicFile[index][field] = { error: false, helperText: "", value: null };
         setLstTrack(delMusicFile);
         // quand on va faire le CSS il faudra récup le div du file input pour pouvoir reset le bon file input car actuelement on reset uniquement le dernier file input
         fileInputRef.current.value = null;
@@ -169,7 +169,7 @@ function MusicAdder() {
 
     // function to delete a image of album
     const handleImgDelete = (field) => {
-        setAlbum({ ...album, [field]: { error: false, msg: "", value: null } });
+        setAlbum({ ...album, [field]: { error: false, helperText: "", value: null } });
         ImgInputRef.current.value = null;
     };
 
@@ -197,7 +197,7 @@ function MusicAdder() {
                     newErrorAlbum[key] = {
                         ...newErrorAlbum[key],
                         error: true,
-                        msg: "This field is required",
+                        helperText: "This field is required",
                     };
                 }
             }
@@ -214,7 +214,7 @@ function MusicAdder() {
                         newErrorTrack[i][key] = {
                             ...newErrorTrack[i][key],
                             error: true,
-                            msg: "This field is required",
+                            helperText: "This field is required",
                         };
                     }
                 }
@@ -224,6 +224,12 @@ function MusicAdder() {
 
         console.log("album", album);
         console.log("lstTrack", lstTrack);
+
+        // collect all id in album.styles.value
+        const styles = [];
+        album.styles.value.forEach((style) => {
+            styles.push(style.id);
+        });
 
         // if no error, we send the form data to the server
         if (errorForm === false) {
@@ -239,7 +245,7 @@ function MusicAdder() {
             formData.append("price", album.price.value);
             formData.append("date_release", album.date_release.value);
             formData.append("descr", album.descr.value);
-            formData.append("styles", album.styles.value);
+            formData.append("styles", [styles]);
 
             // add the tracks data to the form data
             lstTrack.forEach((track, index) => {
@@ -253,8 +259,6 @@ function MusicAdder() {
                 formData.append(`trackLyrics${index + 1}`, track.lyrics.value);
                 formData.append(`trackNb_listens${index + 1}`, track.nb_listens.value);
             });
-
-            console.log("formData", formData);
 
             // call api create album with album data and lstTrack data with axios
             axios
@@ -307,18 +311,18 @@ function MusicAdder() {
         setLstTrack([
             ...lstTrack,
             {
-                id: { value: lstTrack.length + 1, error: false, msg: "" },
-                title: { value: "", error: false, msg: "" },
-                artist: { value: "", error: false, msg: "" },
-                fileOrigin: { value: null, error: false, msg: "" },
-                fileMp3: { value: null, error: false, msg: "" },
-                price: { value: "", error: false, msg: "" },
-                date_release: { value: "", error: false, msg: "" },
-                lyrics: { value: "", error: false, msg: "" },
+                id: { value: lstTrack.length + 1, error: false, helperText: "" },
+                title: { value: "", error: false, helperText: "" },
+                artist: { value: "", error: false, helperText: "" },
+                fileOrigin: { value: null, error: false, helperText: "" },
+                fileMp3: { value: null, error: false, helperText: "" },
+                price: { value: "", error: false, helperText: "" },
+                date_release: { value: "", error: false, helperText: "" },
+                lyrics: { value: "", error: false, helperText: "" },
                 nb_listens: {
                     value: lstTrack[lstTrack.length - 1].nb_listens.value,
                     error: false,
-                    msg: "",
+                    helperText: "",
                 },
             },
         ]);

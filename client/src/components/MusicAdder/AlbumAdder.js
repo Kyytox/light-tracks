@@ -46,7 +46,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                     <input type="file" accept=".jpg, .jpeg, .png" ref={ImgInputRef} hidden />
                 </Button>
                 <FormHelperText error={album.image.error} color="error">
-                    {album.image.msg}
+                    {album.image.helperText}
                 </FormHelperText>
                 {album.image.value && (
                     <>
@@ -69,7 +69,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                     value={album.title.value}
                     onChange={(e) => onAlbumChange("title", e.target.value)}
                     error={album.title.error}
-                    helperText={album.title.msg}
+                    helperText={album.title.helperText}
                 />
                 {/* artist */}
                 <TextField
@@ -80,7 +80,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                     value={album.artist.value}
                     onChange={(e) => onAlbumChange("artist", e.target.value)}
                     error={album.artist.error}
-                    helperText={album.artist.msg}
+                    helperText={album.artist.helperText}
                 />
                 {/* price */}
                 <TextField
@@ -92,7 +92,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                     type="number"
                     onChange={(e) => onAlbumChange("price", e.target.value)}
                     error={album.price.error}
-                    helperText={album.price.msg}
+                    helperText={album.price.helperText}
                     InputProps={{
                         startAdornment: <InputAdornment position="start">$</InputAdornment>,
                     }}
@@ -110,7 +110,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                     }}
                     onChange={(e) => onAlbumChange("date_release", e.target.value)}
                     // error={album.date_release.error}
-                    // helperText={album.date_release.msg}
+                    // helperText={album.date_release.helperText}
                 />
                 {/* description */}
                 <TextField
@@ -123,10 +123,10 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                     onChange={(e) => onAlbumChange("descr", e.target.value)}
                 />
 
-                <SelectGenres 
+                <SelectGenres lstValues={album} setLstValues={setAlbum} lstGenres={lstGenres} />
 
                 {/* style Musics */}
-                <Autocomplete
+                {/* <Autocomplete
                     required
                     value={album.styles.value}
                     onChange={(e, newValue) =>
@@ -157,10 +157,10 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                             variant="outlined"
                             label="styles"
                             placeholder="Search"
-                            helperText={album.styles.msg}
+                            helperText={album.styles.helperText}
                         />
                     )}
-                />
+                /> */}
             </div>
         </div>
     );
