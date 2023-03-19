@@ -8,17 +8,20 @@ import Box from "@mui/material/Box";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
-import Autocomplete from "@mui/material/Autocomplete";
+import MenuItem from "@mui/material/MenuItem";
 
 // lib Components en global variables en functions
 import { AuthContext } from "../../Services/AuthContext";
 import { backendUrl } from "../../Globals/GlobalVariables";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { countries } from "./Countries";
+import { Select } from "@mui/material";
 
 function ParamProfile() {
     const { isLoggedIn } = useContext(AuthContext);
     const idUser = getLocalStorage("id");
+
+    const [lstGenres, setLstGenres] = useState([]);
 
     const [values, setValues] = useState({
         avatar: "",
@@ -26,6 +29,7 @@ function ParamProfile() {
         email: "",
         code_country: "",
         country: "",
+        styles: [],
     });
     const [errors, setErrors] = useState({
         avatar: false,
@@ -33,6 +37,7 @@ function ParamProfile() {
         email: false,
         code_country: false,
         country: false,
+        styles: false,
     });
     const [helperText, setHelperText] = useState({
         avatar: "",
@@ -40,9 +45,44 @@ function ParamProfile() {
         email: "",
         code_country: "",
         country: "",
+        styles: "",
     });
 
-    //  check value and set value
+    useEffect(() => {
+        const token = getLocalStorage("token");
+
+        //
+        // get all genres from getGenres with axios
+        axios
+            .get(backendUrl + "/getGenres")
+            .then((response) => {
+                setLstGenres(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
+        //
+        // get Profile Infos
+        axios
+            .get(backendUrl + "/getProfileInfos", {
+                params: {
+                    idUser: idUser,
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((response) => {
+                setValues(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
+    //
+    // handle change for inputs
     const handleChanges = (key, value) => {
         // check if value has a valid format
         const isValid =
@@ -61,12 +101,27 @@ function ParamProfile() {
         }
     };
 
+    //
+    // handle change for Styles
+    const handleStyleChange = (newValue) => {
+        console.log("newValue", newValue);
+
+        // modify the key of newValues gm_id => id and gm_name_genre => name
+        const newValues = newValue.map((value) => {
+            return { id: value.gm_id, name: value.gm_name_genre };
+        });
+
+        setValues({ ...values, styles: newValues });
+    };
+
+    //
     // submit form
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("submit");
-        console.log("values", values);
         const token = getLocalStorage("token");
+
+        const styles = values.styles.map((style) => style.id);
+        console.log("styles", styles);
 
         if (isLoggedIn) {
             // check if all errors are false send data to server at /updateUser
@@ -79,9 +134,10 @@ function ParamProfile() {
                     email: values.email,
                     code_country: values.code_country,
                     name_country: values.country,
+                    styles_music: styles,
                 };
                 axios
-                    .post(backendUrl + "/updateUser", data, {
+                    .post(backendUrl + "/updateProfileInfos", data, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -96,6 +152,8 @@ function ParamProfile() {
         }
     };
 
+    console.log("values", values);
+
     return (
         <div>
             <form onSubmit={handleSubmit}>
@@ -107,6 +165,7 @@ function ParamProfile() {
                     type="url"
                     name="avatar"
                     placeholder="Url Image"
+                    value={values.avatar}
                     onChange={(e) => {
                         handleChanges("avatar", e.target.value);
                     }}
@@ -122,6 +181,7 @@ function ParamProfile() {
                     type="text"
                     name="bio"
                     placeholder="Bio"
+                    value={values.bio}
                     onChange={(e) => {
                         handleChanges("bio", e.target.value);
                     }}
@@ -133,76 +193,71 @@ function ParamProfile() {
                     type="email"
                     name="email"
                     placeholder="Email"
+                    value={values.email}
                     onChange={(e) => {
                         handleChanges("email", e.target.value);
                     }}
                     error={errors.email}
                     helperText={helperText.email}
                 />
-                <Autocomplete
-                    id="country-select"
-                    sx={{ width: 300 }}
-                    options={countries}
-                    autoHighlight
-                    getOptionLabel={(option) => option.label}
-                    renderOption={(props, option) => (
-                        <Box component="li" sx={{ "& > img": { mr: 2, flexShrink: 0 } }} {...props}>
+                <Select
+                    labelId="select-country"
+                    id="select-country"
+                    value={values.code_country}
+                    label="Country"
+                    onChange={(e) => {
+                        setValues({
+                            ...values,
+                            code_country: e.target.value,
+                            country: countries.find((country) => country.code === e.target.value)
+                                .label,
+                        });
+                    }}
+                >
+                    {countries.map((country) => (
+                        <MenuItem value={country.code}>
                             <img
                                 loading="lazy"
                                 width="20"
-                                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                                alt=""
+                                src={`https://flagcdn.com/w20/${country.code.toLowerCase()}.png`}
+                                srcSet={`https://flagcdn.com/w40/${country.code.toLowerCase()}.png 2x`}
+                                alt="country flag"
                             />
-                            {option.label} ({option.code})
-                        </Box>
-                    )}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Choose a country"
-                            inputProps={{
-                                ...params.inputProps,
-                            }}
-                        />
-                    )}
-                    onChange={(e, value) => {
-                        console.log("value", value);
-                        setValues({
-                            ...values,
-                            ["code_country"]: value.code,
-                            ["country"]: value.label,
-                        });
-                    }}
-                />
+                            &ensp;{country.label}
+                        </MenuItem>
+                    ))}
+                </Select>
                 {/* Styles Music */}
                 <Autocomplete
                     required
-                    value={album.styles.value}
-                    onChange={(e, newValue) =>
-                        onAlbumChange(
-                            "styles",
-                            newValue.map((option) => option)
-                        )
-                    }
+                    value={values.styles.map((style) => {
+                        return { gm_id: style.id, gm_name_genre: style.name };
+                    })}
+                    onChange={(e, newValue) => {
+                        handleStyleChange(newValue);
+                    }}
                     multiple
-                    id="album-styles"
-                    options={musicStyles}
-                    getOptionLabel={(option) => option}
+                    id="genres-music"
+                    options={lstGenres}
+                    getOptionLabel={(option) => option.gm_name_genre}
                     freeSolo
                     renderTags={(value, getTagProps) =>
                         value.map((option, index) => (
-                            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                            <Chip
+                                variant="outlined"
+                                label={option.gm_name_genre}
+                                {...getTagProps({ index })}
+                            />
                         ))
                     }
                     renderInput={(params) => (
                         <TextField
                             {...params}
-                            error={album.styles.error}
+                            error={errors.styles}
                             variant="outlined"
                             label="styles"
                             placeholder="Search"
-                            helperText={album.styles.msg}
+                            helperText={helperText.styles}
                         />
                     )}
                 />

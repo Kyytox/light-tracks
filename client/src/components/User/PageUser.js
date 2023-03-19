@@ -2,15 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import { backendUrl } from "../../Globals/GlobalVariables";
-import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { useLocation } from "react-router-dom";
 
 import { Avatar } from "@mui/material";
 
 function PageUser() {
-    const idUser = getLocalStorage("id");
-    const token = getLocalStorage("token");
-
     const location = useLocation();
     const idUserUrl = location.pathname.split("/")[2];
 
@@ -21,7 +17,6 @@ function PageUser() {
         axios
             .get(backendUrl + "/getUserById", {
                 params: { idUser: idUserUrl },
-                headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
                 setUserInfos(response.data[0]);
@@ -30,10 +25,8 @@ function PageUser() {
                 console.error(error);
             });
     }, []);
-            
 
     console.log("userInfos", userInfos);
-
 
     return (
         <div>

@@ -7,9 +7,21 @@ import { getAlbums, getTracks } from "../FunctionsExplorer.js";
 import { getAudioFileStream } from "../AwsS3.js";
 import { generateUniqueName, convertFileAudio } from "../FunctionsAlbum.js";
 import { buyAlbum } from "../FonctionsBuy.js";
-import { getCollection, getFavoris, getMyAlbums, addFavoris, deleteFavoris, getSalesFavoris, getAlbumInFavorisOrSales,deleteAlbum } from "../FonctionsProfile.js";
+import {
+    getProfileInfos,
+    updateProfileInfos,
+    getCollection,
+    getFavoris,
+    getMyAlbums,
+    addFavoris,
+    deleteFavoris,
+    getSalesFavoris,
+    getAlbumInFavorisOrSales,
+    deleteAlbum,
+} from "../FonctionsProfile.js";
 import { getFollows, getFollowsByIdUser, followUser, unfollowUser } from "../FonctionsFollow.js";
-import { getUserById, updateUser} from "../FonctionsUser.js";
+import { getUserById } from "../FonctionsUser.js";
+import { getGenres } from "../FunctionsGlobals.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -51,10 +63,13 @@ router.post("/signup", signUp);
 router.post("/login", login);
 router.post("/verifyUser", checkToken);
 
+// Global Functions
+router.get("/getGenres", getGenres);
+
 // Album
 router.post("/createAlbum", upload.array("file"), createAlbum);
 router.get("/countAlbumUser", countAlbumUser);
-router.post("/deleteAlbum",authenticateToken, deleteAlbum);
+router.post("/deleteAlbum", authenticateToken, deleteAlbum);
 
 // Explorer
 router.get("/getAlbums", getAlbums);
@@ -67,6 +82,8 @@ router.post("/convertFileAudio", uploadConvertFile.single("file"), convertFileAu
 router.post("/buyAlbum", buyAlbum);
 
 // Profile
+router.get("/getProfileInfos", authenticateToken, getProfileInfos);
+router.post("/updateProfileInfos", authenticateToken, updateProfileInfos);
 router.get("/getCollection", authenticateToken, getCollection);
 router.get("/getFavoris", authenticateToken, getFavoris);
 router.get("/getMyAlbums", authenticateToken, getMyAlbums);
@@ -78,16 +95,12 @@ router.post("/addFavoris", addFavoris);
 router.post("/deleteFavoris", deleteFavoris);
 
 // Follow
-router.get("/getFollows",authenticateToken, getFollows);
-router.get("/getFollowsByIdUser",authenticateToken, getFollowsByIdUser);
-router.post("/followUser",authenticateToken, followUser);
-router.post("/unfollowUser",authenticateToken, unfollowUser);
+router.get("/getFollows", authenticateToken, getFollows);
+router.get("/getFollowsByIdUser", authenticateToken, getFollowsByIdUser);
+router.post("/followUser", authenticateToken, followUser);
+router.post("/unfollowUser", authenticateToken, unfollowUser);
 
-
-// User 
-router.get("/getUserById",authenticateToken, getUserById);
-router.post("/updateUser",authenticateToken, updateUser);
-
-
+// User
+router.get("/getUserById", getUserById);
 
 export default router;
