@@ -72,11 +72,19 @@ function MusicAdder() {
             const error = value && !acceptedFormatsImg.includes(value.type);
             setAlbum({
                 ...album,
-                [field]: { error: error, msg: error ? "This file format is not accepted" : "", value: error ? null : value, url: error ? "" : URL.createObjectURL(value) },
+                [field]: {
+                    error: error,
+                    msg: error ? "This file format is not accepted" : "",
+                    value: error ? null : value,
+                    url: error ? "" : URL.createObjectURL(value),
+                },
             });
             if (error) ImgInputRef.current.value = null;
         } else {
-            setAlbum({ ...album, [field]: { ...album[field], value: value, error: false, msg: "" } });
+            setAlbum({
+                ...album,
+                [field]: { ...album[field], value: value, error: false, msg: "" },
+            });
         }
     };
 
@@ -91,7 +99,11 @@ function MusicAdder() {
             const errSize = value && value.size > 260000000;
             newMusicList[index]["fileOrigin"] = {
                 error: error || errSize,
-                msg: error ? "This file format is not accepted" : errSize ? "the file size is greater than 260 MB" : "",
+                msg: error
+                    ? "This file format is not accepted"
+                    : errSize
+                    ? "the file size is greater than 260 MB"
+                    : "",
                 value: error || errSize ? null : value,
             };
 
@@ -104,7 +116,12 @@ function MusicAdder() {
                 convertFile(index, newMusicList, formDataConvert);
             }
         } else {
-            newMusicList[index][field] = { ...newMusicList[index][field], value: value, error: false, msg: "" };
+            newMusicList[index][field] = {
+                ...newMusicList[index][field],
+                value: value,
+                error: false,
+                msg: "",
+            };
         }
 
         setLstTrack(newMusicList);
@@ -125,7 +142,9 @@ function MusicAdder() {
             })
             .then((res) => {
                 console.log(res.data);
-                const blob = new Blob([new Uint8Array(Object.values(res.data))], { type: "audio/mpeg" });
+                const blob = new Blob([new Uint8Array(Object.values(res.data))], {
+                    type: "audio/mpeg",
+                });
                 console.log("blob", blob);
                 newMusicList[index]["fileMp3"] = { error: false, msg: "", value: blob };
             })
@@ -175,7 +194,11 @@ function MusicAdder() {
             if (key !== "descr" && key !== "date_release") {
                 if (!value.value || value.value.length === 0) {
                     errorForm = true;
-                    newErrorAlbum[key] = { ...newErrorAlbum[key], error: true, msg: "This field is required" };
+                    newErrorAlbum[key] = {
+                        ...newErrorAlbum[key],
+                        error: true,
+                        msg: "This field is required",
+                    };
                 }
             }
             setAlbum(newErrorAlbum);
@@ -188,7 +211,11 @@ function MusicAdder() {
                 if (key !== "lyrics" && key !== "id" && key !== "date_release") {
                     if (!value.value || value.value.length === 0) {
                         errorForm = true;
-                        newErrorTrack[i][key] = { ...newErrorTrack[i][key], error: true, msg: "This field is required" };
+                        newErrorTrack[i][key] = {
+                            ...newErrorTrack[i][key],
+                            error: true,
+                            msg: "This field is required",
+                        };
                     }
                 }
             }
@@ -253,14 +280,20 @@ function MusicAdder() {
         // for (let i = 0; i < lstTrack.length; i++) {
         if (!lstTrack[i].title.value) {
             if (lstTrack[i].fileOrigin.value) {
-                newTrack[i].title = { ...newTrack[i].title, value: lstTrack[i].fileOrigin.value.name.replace(/.mp3|.flac|.wav/g, "") };
+                newTrack[i].title = {
+                    ...newTrack[i].title,
+                    value: lstTrack[i].fileOrigin.value.name.replace(/.mp3|.flac|.wav/g, ""),
+                };
             }
         }
         if (!lstTrack[i].artist.value) {
             newTrack[i].artist = { ...newTrack[i].artist, value: album.artist.value };
         }
         if (!lstTrack[i].date_release.value) {
-            newTrack[i].date_release = { ...newTrack[i].date_release, value: album.date_release.value };
+            newTrack[i].date_release = {
+                ...newTrack[i].date_release,
+                value: album.date_release.value,
+            };
         }
         // }
         setLstTrack(newTrack);
@@ -282,7 +315,11 @@ function MusicAdder() {
                 price: { value: "", error: false, msg: "" },
                 date_release: { value: "", error: false, msg: "" },
                 lyrics: { value: "", error: false, msg: "" },
-                nb_listens: { value: lstTrack[lstTrack.length - 1].nb_listens.value, error: false, msg: "" },
+                nb_listens: {
+                    value: lstTrack[lstTrack.length - 1].nb_listens.value,
+                    error: false,
+                    msg: "",
+                },
             },
         ]);
     };
@@ -292,6 +329,7 @@ function MusicAdder() {
             <form noValidate onSubmit={handleSubmit}>
                 <AlbumAdder
                     album={album}
+                    setAlbum={setAlbum}
                     ImgInputRef={ImgInputRef}
                     handleImgDelete={(field) => handleImgDelete(field)}
                     onAlbumChange={(field, newAlbum) => handleAlbumChange(field, newAlbum)}
@@ -302,7 +340,9 @@ function MusicAdder() {
                     fileInputRef={fileInputRef}
                     handleAdd={handleAdd}
                     handleFileDelete={(index, field) => handleFileDelete(index, field)}
-                    onTrackChange={(index, field, newTrack) => handleTrackChange(index, field, newTrack)}
+                    onTrackChange={(index, field, newTrack) =>
+                        handleTrackChange(index, field, newTrack)
+                    }
                 />
                 <Button variant="contained" type="submit" color="success">
                     Create Album

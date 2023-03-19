@@ -4,10 +4,7 @@ import axios from "axios";
 // lib Material UI
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
-import Chip from "@mui/material/Chip";
 import MenuItem from "@mui/material/MenuItem";
 
 // lib Components en global variables en functions
@@ -16,6 +13,7 @@ import { backendUrl } from "../../Globals/GlobalVariables";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { countries } from "./Countries";
 import { Select } from "@mui/material";
+import SelectGenres from "../Forms/selectGenres";
 
 function ParamProfile() {
     const { isLoggedIn } = useContext(AuthContext);
@@ -52,17 +50,6 @@ function ParamProfile() {
         const token = getLocalStorage("token");
 
         //
-        // get all genres from getGenres with axios
-        axios
-            .get(backendUrl + "/getGenres")
-            .then((response) => {
-                setLstGenres(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-
-        //
         // get Profile Infos
         axios
             .get(backendUrl + "/getProfileInfos", {
@@ -75,6 +62,17 @@ function ParamProfile() {
             })
             .then((response) => {
                 setValues(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
+        //
+        // get all genres from getGenres with axios
+        axios
+            .get(backendUrl + "/getGenres")
+            .then((response) => {
+                setLstGenres(response.data);
             })
             .catch((error) => {
                 console.error(error);
@@ -99,19 +97,6 @@ function ParamProfile() {
             setErrors({ ...errors, [key]: true });
             setHelperText({ ...helperText, [key]: errText });
         }
-    };
-
-    //
-    // handle change for Styles
-    const handleStyleChange = (newValue) => {
-        console.log("newValue", newValue);
-
-        // modify the key of newValues gm_id => id and gm_name_genre => name
-        const newValues = newValue.map((value) => {
-            return { id: value.gm_id, name: value.gm_name_genre };
-        });
-
-        setValues({ ...values, styles: newValues });
     };
 
     //
@@ -151,8 +136,6 @@ function ParamProfile() {
             }
         }
     };
-
-    console.log("values", values);
 
     return (
         <div>
@@ -227,41 +210,14 @@ function ParamProfile() {
                         </MenuItem>
                     ))}
                 </Select>
-                {/* Styles Music */}
-                <Autocomplete
-                    required
-                    value={values.styles.map((style) => {
-                        return { gm_id: style.id, gm_name_genre: style.name };
-                    })}
-                    onChange={(e, newValue) => {
-                        handleStyleChange(newValue);
-                    }}
-                    multiple
-                    id="genres-music"
-                    options={lstGenres}
-                    getOptionLabel={(option) => option.gm_name_genre}
-                    freeSolo
-                    renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                            <Chip
-                                variant="outlined"
-                                label={option.gm_name_genre}
-                                {...getTagProps({ index })}
-                            />
-                        ))
-                    }
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            error={errors.styles}
-                            variant="outlined"
-                            label="styles"
-                            placeholder="Search"
-                            helperText={helperText.styles}
-                        />
-                    )}
+                {/* Genres Music */}
+                <SelectGenres
+                    setValues={setValues}
+                    values={values}
+                    lstGenres={lstGenres}
+                    errors={errors}
+                    helperText={helperText}
                 />
-                ;
                 <Button variant="contained" type="submit">
                     Save
                 </Button>

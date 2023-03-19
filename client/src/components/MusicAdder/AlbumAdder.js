@@ -1,29 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
+import axios from "axios";
+import { backendUrl } from "../../Globals/GlobalVariables";
+
 import TextField from "@mui/material/TextField";
 import FormHelperText from "@mui/material/FormHelperText";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Autocomplete from "@mui/material/Autocomplete";
+import SelectGenres from "../Forms/selectGenres";
 
-function AlbumAdder({ album, ImgInputRef, onAlbumChange, handleImgDelete }) {
-    const musicStyles = [
-        "Blues",
-        "Classical",
-        "Country",
-        "Dance",
-        "Electronic",
-        "Folk",
-        "Hip-Hop",
-        "Jazz",
-        "Latin",
-        "Metal",
-        "Pop",
-        "R&B",
-        "Reggae",
-        "Rock",
-        "Soul",
-    ];
+function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDelete }) {
+    const [lstGenres, setLstGenres] = useState([]);
+
+    useEffect(() => {
+        //
+        // get all genres from getGenres with axios
+        axios
+            .get(backendUrl + "/getGenres")
+            .then((response) => {
+                setLstGenres(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
 
     return (
         <div>
@@ -120,6 +122,9 @@ function AlbumAdder({ album, ImgInputRef, onAlbumChange, handleImgDelete }) {
                     rows={10}
                     onChange={(e) => onAlbumChange("descr", e.target.value)}
                 />
+
+                <SelectGenres 
+
                 {/* style Musics */}
                 <Autocomplete
                     required
@@ -132,12 +137,17 @@ function AlbumAdder({ album, ImgInputRef, onAlbumChange, handleImgDelete }) {
                     }
                     multiple
                     id="album-styles"
-                    options={musicStyles}
-                    getOptionLabel={(option) => option}
+                    // options={musicStyles}
+                    options={lstGenres}
+                    getOptionLabel={(option) => option.gm_name_genre}
                     freeSolo
                     renderTags={(value, getTagProps) =>
                         value.map((option, index) => (
-                            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                            <Chip
+                                variant="outlined"
+                                label={option.gm_name_genre}
+                                {...getTagProps({ index })}
+                            />
                         ))
                     }
                     renderInput={(params) => (
