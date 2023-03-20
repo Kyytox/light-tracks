@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { AuthContext } from "../../Services/AuthContext";
-import { getFollows, checkFollowed } from "../../Globals/FctsFollow";
+import { getFollows } from "../../Globals/FctsFollow";
 import LstMyFollows from "./LstMyFollows";
-
 
 function UserMyFollows() {
     const { isLoggedIn } = useContext(AuthContext);

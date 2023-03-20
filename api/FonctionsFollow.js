@@ -5,7 +5,6 @@ export const getFollows = (req, res) => {
     console.log("req.query", req.query);
 
     pool.query(
-        // "SELECT * FROM public.follows WHERE fo_id_user = $1",
         `SELECT fo_id_user, fo_id_user_follow, fo_date_follow, u_id, u_username, u_avatar, u_code_country, u_name_country
         FROM public.follows, public.users 
         WHERE fo_id_user = $1

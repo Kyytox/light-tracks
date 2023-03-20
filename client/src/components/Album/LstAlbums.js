@@ -4,7 +4,7 @@ import BtnFavorisAlbum from "../Favoris/BtnFavorisAlbum";
 import BtnFollow from "../Bouttons/BtnFollow";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { getFollows, checkFollowed } from "../../Globals/FctsFollow";
-import { Avatar } from "@mui/material";
+import LinkNavUser from "../User/LinkNavUser";
 
 function LstAlbums({ idUser, isLoggedIn, lstAlbums }) {
     const [lstFollows, setLstFollows] = useState([]);
@@ -36,13 +36,6 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums }) {
         const stateLocationAlbum = { album: album };
 
         //
-        // Location User
-        const locationUser = {
-            pathname: `/user/${album.a_id_user}`,
-        };
-        const stateLocationUser = { user: album.a_id_user };
-
-        //
         // Follow
         var isFollowed = false;
 
@@ -56,10 +49,7 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums }) {
                 <nav id={"album-" + album.a_id} key={album.a_id}>
                     {/* Artist */}
                     <nav id={"artist-" + album.a_id_user} key={album.a_id_user}>
-                        <Link to={locationUser} state={stateLocationUser}>
-                            <Avatar alt="Remy Sharp" src={album.u_avatar} />
-                            <p>{album.u_username}</p>
-                        </Link>
+                        <LinkNavUser data={album} />
                     </nav>
 
                     {/* Follow */}

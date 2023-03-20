@@ -75,7 +75,16 @@ export const getCollection = (req, res) => {
     // this my table sales s_id_sale s_id_user; s_id_album; s_id_track; s_id_track_album; s_price; s_date_sale;
     // get all sales from user id , sorted by date of sale
     pool.query(
-        "SELECT * FROM public.sales, public.albums where s_id_user = $1 and albums.a_id = sales.s_id_album order by s_date_sale desc",
+        // "SELECT * FROM public.sales, public.albums where s_id_user = $1 and albums.a_id = sales.s_id_album order by s_date_sale desc",
+        `SELECT s_id_sale, s_id_user, s_id_album, s_id_track, s_date_sale, s_id_track_album  
+            , a_id, a_id_user, a_id_album_user, a_title, a_artist, a_price
+            , a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path
+            , u_id, u_username, u_avatar
+            FROM public.sales, public.albums, public.users
+            where s_id_user = $1
+            and albums.a_id = sales.s_id_album 
+            and albums.a_id_user = users.u_id
+            order by s_date_sale desc;`,
         [req.query.idUser],
         (err, result) => {
             if (err) {
