@@ -93,8 +93,17 @@ export const getFavoris = (req, res) => {
 
     // get all favoris from user id
     pool.query(
-        "SELECT * FROM public.favoris, public.albums where f_id_user = $1 and albums.a_id = favoris.f_id_album order by f_date_fav desc",
-        [req.query.idUser],
+        // "SELECT * FROM public.favoris, public.albums where f_id_user = $1 and albums.a_id = favoris.f_id_album order by f_date_fav desc",
+        // [req.query.idUser],
+        `SELECT f_id_fav, f_id_user, f_id_album, f_id_track, f_date_fav 
+            , a_id, a_id_user, a_id_album_user, a_title, a_artist, a_price
+            , a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path
+            , u_id, u_username, u_avatar
+            FROM public.favoris, public.albums, public.users
+            where f_id_user = 2 
+            and albums.a_id = favoris.f_id_album 
+            and albums.a_id_user = users.u_id
+            order by f_date_fav desc`,
         (err, result) => {
             if (err) {
                 console.error("Error executing SELECT:", err);

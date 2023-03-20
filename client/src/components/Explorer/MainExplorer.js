@@ -6,7 +6,6 @@ import { AuthContext } from "../../Services/AuthContext";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { changeBtnFavoris } from "../../Globals/GlobalFunctions";
 
-
 function MainExplorer() {
     const [lstAlbums, setLstAlbums] = useState([]);
     const [lstSalesFavoris, setLstSalesFavoris] = useState([]);
@@ -29,7 +28,10 @@ function MainExplorer() {
         if (isLoggedIn) {
             const token = getLocalStorage("token");
             axios
-                .get(backendUrl + "/getSalesFavoris", { params: { idUser: idUser }, headers: { Authorization: `Bearer ${token}` } })
+                .get(backendUrl + "/getSalesFavoris", {
+                    params: { idUser: idUser },
+                    headers: { Authorization: `Bearer ${token}` },
+                })
                 .then((response) => {
                     setLstSalesFavoris(response.data);
                 })
@@ -45,6 +47,8 @@ function MainExplorer() {
             changeBtnFavoris(lstSalesFavoris);
         }
     }, [lstAlbums, lstSalesFavoris]);
+
+    console.log("lstAlbums", lstAlbums);
 
     return (
         <div>
