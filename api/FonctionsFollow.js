@@ -1,6 +1,4 @@
-
 import pool from "./database/database.js";
-
 
 export const getFollows = (req, res) => {
     console.log("API /getFollows");
@@ -8,7 +6,7 @@ export const getFollows = (req, res) => {
 
     pool.query(
         // "SELECT * FROM public.follows WHERE fo_id_user = $1",
-        `SELECT fo_id_user, fo_id_user_follow, fo_date_follow, u_id, u_username 
+        `SELECT fo_id_user, fo_id_user_follow, fo_date_follow, u_id, u_username, u_avatar, u_code_country, u_name_country
         FROM public.follows, public.users 
         WHERE fo_id_user = $1
         AND u_id = fo_id_user_follow`,
@@ -21,8 +19,7 @@ export const getFollows = (req, res) => {
             }
         }
     );
-}
-
+};
 
 // get follows by user id and id of user to follow
 export const getFollowsByIdUser = (req, res) => {
@@ -40,9 +37,7 @@ export const getFollowsByIdUser = (req, res) => {
             }
         }
     );
-}
-
-
+};
 
 export const followUser = (req, res) => {
     console.log("API /followUser");
@@ -59,7 +54,7 @@ export const followUser = (req, res) => {
             }
         }
     );
-}
+};
 
 export const unfollowUser = (req, res) => {
     console.log("API /unfollowUser");
@@ -76,4 +71,4 @@ export const unfollowUser = (req, res) => {
             }
         }
     );
-}
+};
