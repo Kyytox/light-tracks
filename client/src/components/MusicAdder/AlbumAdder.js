@@ -7,8 +7,6 @@ import TextField from "@mui/material/TextField";
 import FormHelperText from "@mui/material/FormHelperText";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
-import Chip from "@mui/material/Chip";
-import Autocomplete from "@mui/material/Autocomplete";
 import SelectGenres from "../Forms/selectGenres";
 
 function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDelete }) {
@@ -123,44 +121,8 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                     onChange={(e) => onAlbumChange("descr", e.target.value)}
                 />
 
+                {/* genres */}
                 <SelectGenres lstValues={album} setLstValues={setAlbum} lstGenres={lstGenres} />
-
-                {/* style Musics */}
-                {/* <Autocomplete
-                    required
-                    value={album.styles.value}
-                    onChange={(e, newValue) =>
-                        onAlbumChange(
-                            "styles",
-                            newValue.map((option) => option)
-                        )
-                    }
-                    multiple
-                    id="album-styles"
-                    // options={musicStyles}
-                    options={lstGenres}
-                    getOptionLabel={(option) => option.gm_name_genre}
-                    freeSolo
-                    renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                            <Chip
-                                variant="outlined"
-                                label={option.gm_name_genre}
-                                {...getTagProps({ index })}
-                            />
-                        ))
-                    }
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            error={album.styles.error}
-                            variant="outlined"
-                            label="styles"
-                            placeholder="Search"
-                            helperText={album.styles.helperText}
-                        />
-                    )}
-                /> */}
             </div>
         </div>
     );

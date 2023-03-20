@@ -5,15 +5,14 @@ import axios from "axios";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
-import MenuItem from "@mui/material/MenuItem";
 
 // lib Components en global variables en functions
 import { AuthContext } from "../../Services/AuthContext";
 import { backendUrl } from "../../Globals/GlobalVariables";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
-import { countries } from "./Countries";
-import { Select } from "@mui/material";
 import SelectGenres from "../Forms/selectGenres";
+import SelectCountry from "../Forms/SelectCountry";
+import FormParamTextField from "../Forms/FormParamTextField";
 
 function ParamProfile() {
     const { isLoggedIn } = useContext(AuthContext);
@@ -136,94 +135,57 @@ function ParamProfile() {
     return (
         <div>
             <form onSubmit={handleSubmit}>
+                {/* Avatar */}
                 <Avatar alt="Avatar" src={lstParams.avatar.value} />
-                <TextField
-                    id="outlined-basic"
+                <FormParamTextField
+                    lstParams={lstParams}
+                    handleChanges={handleChanges}
                     label="Avatar"
-                    variant="outlined"
-                    type="url"
                     name="avatar"
                     placeholder="Url Image"
-                    value={lstParams.avatar.value}
-                    onChange={(e) => {
-                        handleChanges("avatar", e.target.value);
-                    }}
-                    error={lstParams.avatar.error}
-                    helperText={lstParams.avatar.helperText}
+                    type="url"
+                    keyVal="avatar"
                 />
-                <TextField
-                    id="outlined-basic"
+
+                {/* Bio */}
+                <FormParamTextField
+                    lstParams={lstParams}
+                    handleChanges={handleChanges}
                     label="Bio"
-                    multiline
-                    rows={5}
-                    variant="outlined"
-                    type="text"
                     name="bio"
                     placeholder="Bio"
-                    value={lstParams.bio.value}
-                    onChange={(e) => {
-                        handleChanges("bio", e.target.value);
-                    }}
+                    type="text"
+                    keyVal="bio"
                 />
-                <TextField
-                    id="outlined-basic"
+
+                {/* Email */}
+                <FormParamTextField
+                    lstParams={lstParams}
+                    handleChanges={handleChanges}
                     label="Email"
-                    variant="outlined"
-                    type="email"
                     name="email"
                     placeholder="Email"
-                    value={lstParams.email.value}
-                    onChange={(e) => {
-                        handleChanges("email", e.target.value);
-                    }}
-                    error={lstParams.email.error}
-                    helperText={lstParams.email.helperText}
+                    type="email"
+                    keyVal="email"
                 />
-                <Select
-                    labelId="select-country"
-                    id="select-country"
-                    value={lstParams.code_country.value}
-                    label="Country"
-                    onChange={(e) => {
-                        setLstParams({
-                            ...lstParams,
-                            code_country: {
-                                value: e.target.value,
-                                error: false,
-                                helperText: "",
-                            },
-                            country: {
-                                value: countries.find((country) => country.code === e.target.value)
-                                    .label,
-                                error: false,
-                                helperText: "",
-                            },
-                        });
-                    }}
-                >
-                    {countries.map((country) => (
-                        <MenuItem value={country.code}>
-                            <img
-                                loading="lazy"
-                                width="20"
-                                src={`https://flagcdn.com/w20/${country.code.toLowerCase()}.png`}
-                                srcSet={`https://flagcdn.com/w40/${country.code.toLowerCase()}.png 2x`}
-                                alt="country flag"
-                            />
-                            &ensp;{country.label}
-                        </MenuItem>
-                    ))}
-                </Select>
+
+                {/* Country */}
+                <SelectCountry lstParams={lstParams} setLstParams={setLstParams} />
+
                 {/* Genres Music */}
                 <SelectGenres
                     lstValues={lstParams}
                     setLstValues={setLstParams}
                     lstGenres={lstGenres}
                 />
+
+                {/* Submit */}
                 <Button variant="contained" type="submit">
                     Save
                 </Button>
             </form>
+
+            {/* Delete Account */}
             <Button variant="contained" color="error">
                 Delete Account
             </Button>
