@@ -24,10 +24,10 @@ function PageUser() {
     return (
         <div>
             <div>PageUser</div>
-            <Avatar alt="Avatar" src={userInfos.u_avatar} />
-            <p>{userInfos.u_username}</p>
-            <p>{userInfos.u_name_country}</p>
-            <p>bio: {userInfos.u_bio}</p>
+            <Avatar alt="Avatar" src={userInfos.p_avatar} />
+            <p>{userInfos.p_username}</p>
+            <p>{userInfos.p_name_country}</p>
+            <p>bio: {userInfos.p_bio}</p>
         </div>
     );
 }
