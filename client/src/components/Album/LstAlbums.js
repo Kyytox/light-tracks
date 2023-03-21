@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import BtnFavorisAlbum from "../Favoris/BtnFavorisAlbum";
 import BtnFollow from "../Bouttons/BtnFollow";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
-import { getFollows, checkFollowed } from "../../Globals/FctsFollow";
+import { checkFollowed } from "../../Globals/FctsFollow";
 import LinkNavUser from "../User/LinkNavUser";
+import { getAxiosReqAuth } from "../../Services/AxiosGet";
 
 function LstAlbums({ idUser, isLoggedIn, lstAlbums }) {
     const [lstFollows, setLstFollows] = useState([]);
@@ -14,8 +15,9 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums }) {
             const token = getLocalStorage("token");
 
             // get follows
-            const rep = getFollows(idUser, token);
-            rep.then((data) => {
+            const data = { idUser: idUser };
+            const response = getAxiosReqAuth("/getFollows", data, token);
+            response.then((data) => {
                 setLstFollows(data);
             });
         }

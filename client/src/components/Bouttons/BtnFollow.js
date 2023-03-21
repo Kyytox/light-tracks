@@ -33,7 +33,7 @@ function BtnFollow({ idUser, isLoggedIn, idUserFollow, isFollowedProp }) {
 
     return (
         <div className="btn-follow">
-            {idUser !== idUserFollow && (
+            {parseInt(idUser) !== idUserFollow && isLoggedIn && (
                 <Button
                     id={`follow-user-${idUserFollow}`}
                     variant="contained"

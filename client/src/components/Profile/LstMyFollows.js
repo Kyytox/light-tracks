@@ -5,7 +5,7 @@ import LinkNavUser from "../User/LinkNavUser";
 function LstMyFollows({ idUser, isLoggedIn, lstFollows }) {
     console.log("LstMyFollows - lstFollows", lstFollows);
 
-    // create a map to display lstFollows (username), this is index of listFollows:  fo_date_follow; fo_id_user; fo_id_user_follow; u_id; u_username;
+    // display lstFollows
     // add BtnFllows
     const LstDisplayFollows = lstFollows.map((follow, key) => {
         return (

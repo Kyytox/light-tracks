@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
 
 // lib Material UI
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 
 // lib Components en global variables en functions
 import { AuthContext } from "../../Services/AuthContext";
-import { backendUrl } from "../../Globals/GlobalVariables";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import SelectGenres from "../Forms/selectGenres";
 import SelectCountry from "../Forms/SelectCountry";
 import FormParamTextField from "../Forms/FormParamTextField";
+import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
+import { postAxiosReqAuth } from "../../Services/AxiosPost";
 
 function ParamProfile() {
     const { isLoggedIn } = useContext(AuthContext);
@@ -34,45 +33,29 @@ function ParamProfile() {
 
         //
         // get Profile Infos
-        axios
-            .get(backendUrl + "/getProfileInfos", {
-                params: {
-                    idUser: idUser,
+        const data = { idUser: idUser };
+        const response = getAxiosReqAuth("/getProfileInfos", data, token);
+        response.then((data) => {
+            setLstParams({
+                avatar: { value: data.avatar, error: false, helperText: "" },
+                bio: { value: data.bio, error: false, helperText: "" },
+                email: { value: data.email, error: false, helperText: "" },
+                code_country: {
+                    value: data.code_country,
+                    error: false,
+                    helperText: "",
                 },
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-            .then((response) => {
-                // setValues(response.data);
-                console.log(response.data);
-                setLstParams({
-                    avatar: { value: response.data.avatar, error: false, helperText: "" },
-                    bio: { value: response.data.bio, error: false, helperText: "" },
-                    email: { value: response.data.email, error: false, helperText: "" },
-                    code_country: {
-                        value: response.data.code_country,
-                        error: false,
-                        helperText: "",
-                    },
-                    country: { value: response.data.country, error: false, helperText: "" },
-                    styles: { value: response.data.styles, error: false, helperText: "" },
-                });
-            })
-            .catch((error) => {
-                console.error(error);
+                country: { value: data.country, error: false, helperText: "" },
+                styles: { value: data.styles, error: false, helperText: "" },
             });
+        });
 
         //
         // get all genres from getGenres with axios
-        axios
-            .get(backendUrl + "/getGenres")
-            .then((response) => {
-                setLstGenres(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        const response2 = getAxiosReq("/getGenres", {});
+        response2.then((data) => {
+            setLstGenres(data);
+        });
     }, []);
 
     //
@@ -116,18 +99,11 @@ function ParamProfile() {
                     name_country: lstParams.country.value,
                     styles_music: styles,
                 };
-                axios
-                    .post(backendUrl + "/updateProfileInfos", data, {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    })
-                    .then((response) => {
-                        console.log(response);
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
+
+                const response = postAxiosReqAuth("/updateProfileInfos", data, token);
+                response.then((data) => {
+                    console.log(data);
+                });
             }
         }
     };

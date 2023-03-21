@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext, useLayoutEffect } from "react";
-import axios from "axios";
-import { backendUrl } from "../../Globals/GlobalVariables";
 import LstAlbums from "../Album/LstAlbums";
 import { AuthContext } from "../../Services/AuthContext";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { changeBtnFavoris } from "../../Globals/GlobalFunctions";
+import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 
 function MainExplorer() {
     const [lstAlbums, setLstAlbums] = useState([]);
@@ -12,32 +11,25 @@ function MainExplorer() {
     const date = new Date();
     const { idUser, isLoggedIn, checkToken } = useContext(AuthContext);
 
-    // use useeffect to get all albums
-    // call /getAlbums with axios post
+    // get albums and sales favoris
     useEffect(() => {
         checkToken();
-        axios
-            .get(backendUrl + "/getAlbums", { params: { date: date } })
-            .then((response) => {
-                setLstAlbums(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
 
+        // get albums
+        const data = { date: date };
+        const response = getAxiosReq("/getAlbums", data);
+        response.then((data) => {
+            setLstAlbums(data);
+        });
+
+        // get sales favoris
         if (isLoggedIn) {
             const token = getLocalStorage("token");
-            axios
-                .get(backendUrl + "/getSalesFavoris", {
-                    params: { idUser: idUser },
-                    headers: { Authorization: `Bearer ${token}` },
-                })
-                .then((response) => {
-                    setLstSalesFavoris(response.data);
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+            const data = { idUser: idUser };
+            const response = getAxiosReqAuth("/getSalesFavoris", data, token);
+            response.then((data) => {
+                setLstSalesFavoris(data);
+            });
         }
     }, [checkToken]);
 

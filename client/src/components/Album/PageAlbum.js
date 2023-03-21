@@ -8,6 +8,7 @@ import { AuthContext } from "../../Services/AuthContext";
 import BtnFavoris from "../Favoris/BtnFavorisAlbum";
 import BtnFollow from "../Bouttons/BtnFollow";
 import { getFollowsByIdUser, checkFollowed } from "../../Globals/FctsFollow";
+import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 
 function PageAlbum() {
     const { isLoggedIn, checkToken } = useContext(AuthContext);
@@ -18,37 +19,33 @@ function PageAlbum() {
     const idUser = getLocalStorage("id");
     const [isFollowed, setIsFollowed] = useState(false);
 
-    // create use effect to get all tracks from album use axios post call /getTracks with id album in body
+    // get tracks
     useEffect(() => {
         checkToken();
 
-        axios
-            .get(backendUrl + "/getTracks", { params: { id: id } })
-            .then((response) => {
-                setLstTracks(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        const data = { id: id };
+        const response = getAxiosReq("/getTracks", data);
+        response.then((data) => {
+            setLstTracks(data);
+        });
     }, [checkToken]);
 
+    // chack if user follow artist
     useEffect(() => {
         if (isLoggedIn && lstTracks.length > 0) {
-
             const token = getLocalStorage("token");
-            
+
             const data = {
                 idUser: idUser,
-                idArtist: lstTracks[0].t_id_user,
+                idUserFollow: lstTracks[0].t_id_user,
             };
-            
-            const rep = getFollowsByIdUser(data, token);
-            rep.then((data) => {
+
+            const response = getAxiosReqAuth("/getFollowsByIdUser", data, token);
+            response.then((data) => {
                 setIsFollowed(checkFollowed(data, lstTracks[0].t_id_user));
-            }
-            );
+            });
         }
-    }, [lstTracks,isLoggedIn]);
+    }, [lstTracks, isLoggedIn]);
 
     const ClickBuyAlbum = async (idAlbum, idTrack, idTrackAlbum, price) => {
         // create const data with infosAlbum
@@ -84,11 +81,29 @@ function PageAlbum() {
                         <p className="card-text">{track.t_nb_listen}</p>
                         <p className="card-text">{track.t_lyrics}</p>
                         <audio controls>
-                            <source src={"https://d3s5ffas0ydxtp.cloudfront.net/" + track.t_file_path + "/" + track.t_file_name_mp3} type="audio/mpeg" />
+                            <source
+                                src={
+                                    "https://d3s5ffas0ydxtp.cloudfront.net/" +
+                                    track.t_file_path +
+                                    "/" +
+                                    track.t_file_name_mp3
+                                }
+                                type="audio/mpeg"
+                            />
                         </audio>
                         {isLoggedIn && (
                             <>
-                                <Button variant="contained" onClick={() => ClickBuyAlbum(infosAlbum.a_id, track.t_id, track.t_id_album_track, track.t_price)}>
+                                <Button
+                                    variant="contained"
+                                    onClick={() =>
+                                        ClickBuyAlbum(
+                                            infosAlbum.a_id,
+                                            track.t_id,
+                                            track.t_id_album_track,
+                                            track.t_price
+                                        )
+                                    }
+                                >
                                     Buy
                                 </Button>
                             </>
@@ -105,9 +120,19 @@ function PageAlbum() {
         <div>
             <h1>Album : {infosAlbum.a_title}</h1>
             <h2>Artist : {infosAlbum.a_artist}</h2>
-            <BtnFollow idUser={idUser} isLoggedIn={isLoggedIn} idUserFollow={infosAlbum.a_id_user} isFollowedProp={isFollowed} />
+            <BtnFollow
+                idUser={idUser}
+                isLoggedIn={isLoggedIn}
+                idUserFollow={infosAlbum.a_id_user}
+                isFollowedProp={isFollowed}
+            />
             <img
-                src={"https://d3s5ffas0ydxtp.cloudfront.net/" + infosAlbum.a_cover_path + "/" + infosAlbum.a_cover}
+                src={
+                    "https://d3s5ffas0ydxtp.cloudfront.net/" +
+                    infosAlbum.a_cover_path +
+                    "/" +
+                    infosAlbum.a_cover
+                }
                 className="card-img-top"
                 alt="Cover Album"
                 style={{ width: "100px", height: "100px" }}
@@ -115,7 +140,12 @@ function PageAlbum() {
             <h3>Price : {infosAlbum.a_price}</h3>
             {isLoggedIn && (
                 <>
-                    <Button variant="contained" onClick={() => ClickBuyAlbum(infosAlbum.a_id, null, null, infosAlbum.a_price)}>
+                    <Button
+                        variant="contained"
+                        onClick={() =>
+                            ClickBuyAlbum(infosAlbum.a_id, null, null, infosAlbum.a_price)
+                        }
+                    >
                         Buy
                     </Button>
                     <BtnFavoris idUser={idUser} isLoggedIn={isLoggedIn} idAlbum={infosAlbum.a_id} />

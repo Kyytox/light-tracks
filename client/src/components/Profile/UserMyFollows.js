@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { AuthContext } from "../../Services/AuthContext";
-import { getFollows } from "../../Globals/FctsFollow";
 import LstMyFollows from "./LstMyFollows";
+import { getAxiosReqAuth } from "../../Services/AxiosGet";
 
 function UserMyFollows() {
     const { isLoggedIn } = useContext(AuthContext);
@@ -10,11 +10,11 @@ function UserMyFollows() {
     const idUser = getLocalStorage("id");
 
     useEffect(() => {
-        const token = getLocalStorage("token");
-
         // get follows
-        const rep = getFollows(idUser, token);
-        rep.then((data) => {
+        const token = getLocalStorage("token");
+        const data = { idUser: idUser };
+        const response = getAxiosReqAuth("/getFollows", data, token);
+        response.then((data) => {
             setLstFollows(data);
         });
     }, []);
