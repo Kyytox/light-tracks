@@ -2,11 +2,7 @@ import pool from "./database/database.js";
 
 // create function to get the first 50 albums with date of creation ulterior to the date retrive in the request, sorted by date of creation
 export const getAlbums = (req, res) => {
-    const date = new Date(req.query.date);
-
     pool.query(
-        // "SELECT * FROM public.albums WHERE a_date_create < $1 ORDER BY a_date_create DESC LIMIT 50",
-        // [date],
         `SELECT *
             FROM public.albums a
             JOIN public.profiles p

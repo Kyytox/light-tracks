@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
-import { backendUrl } from "../../Globals/GlobalVariables";
-import axios from "axios";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { AuthContext } from "../../Services/AuthContext";
 import LstMyAlbums from "./LstMyAlbums";
+import { getAxiosReqAuth } from "../../Services/AxiosGet";
 
 // created by display all Albums created by user (album buyed)
 function UserMyAlbums() {
@@ -14,18 +13,12 @@ function UserMyAlbums() {
     useEffect(() => {
         const token = getLocalStorage("token");
 
-        // call /getMyAlbums with axios post
-        axios
-            .get(backendUrl + "/getMyAlbums", {
-                params: { idUser: idUser },
-                headers: { Authorization: `Bearer ${token}` },
-            })
-            .then((response) => {
-                setLstMyAlbums(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        // get my albums
+        const data = { idUser: idUser };
+        const response = getAxiosReqAuth("/getMyAlbums", data, token);
+        response.then((data) => {
+            setLstMyAlbums(data);
+        });
     }, [idUser]);
 
     return (

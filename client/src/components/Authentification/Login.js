@@ -7,25 +7,16 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
 // lib Components en global variables en functions
-import { backendUrl } from "../../Globals/GlobalVariables";
 import { setLocalStorage } from "../../Globals/GlobalFunctions";
+import { postAxiosReq } from "../../Services/AxiosPost";
 import Success from "./Success";
-
-import axios from "axios";
 
 function Login() {
     const { handleLogin } = useContext(AuthContext);
+
     const [values, setValues] = useState({
-        username: "",
-        password: "",
-    });
-    const [errors, setErrors] = useState({
-        username: false,
-        password: false,
-    });
-    const [helperText, setHelperText] = useState({
-        username: "",
-        password: "",
+        username: { value: "", error: false, helperText: "" },
+        password: { value: "", error: false, helperText: "" },
     });
 
     const [succesConnect, setSuccesConnect] = useState({
@@ -35,9 +26,9 @@ function Login() {
 
     const handleChange = (field, value) => {
         if (field === "username") {
-            setValues({ ...values, [field]: value });
+            setValues({ ...values, [field]: { value: value, error: false, helperText: "" } });
         } else if (field === "password") {
-            setValues({ ...values, [field]: value });
+            setValues({ ...values, [field]: { value: value, error: false, helperText: "" } });
         }
     };
 
@@ -45,36 +36,52 @@ function Login() {
         event.preventDefault();
 
         const data = {
-            username: values.username,
-            password: values.password,
+            username: values.username.value,
+            password: values.password.value,
         };
 
         // call /login for check username
-        axios
-            .post(backendUrl + "/login", data)
-            .then((response) => {
-                if (response.data.errUsr) {
-                    // err user not exist
-                    setErrors({ ...errors, ["username"]: true });
-                    setHelperText({ ...helperText, ["username"]: response.data.errUsr });
-                } else if (response.data.errMdp) {
-                    // err user not exist
-                    setErrors({ ...errors, ["password"]: true, ["username"]: false });
-                    setHelperText({ ...helperText, ["password"]: response.data.errMdp, ["username"]: "" });
-                } else {
-                    // connection Succes
-                    setSuccesConnect({ ...succesConnect, ["success"]: true, ["text"]: response.data.succes, ["token"]: response.data.token });
-                    setLocalStorage("token", response.data.token);
-                    setLocalStorage("id", response.data.id);
-                    setLocalStorage("username", response.data.username);
-                    setErrors({ ...errors, ["username"]: false, ["password"]: false });
-                    setHelperText({ ...helperText, ["username"]: "", ["password"]: "" });
-                    handleLogin();
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        const response = postAxiosReq("/login", data);
+        response.then((data) => {
+            if (data.errUsr) {
+                // err user not exist
+                setValues({
+                    ...values,
+                    username: {
+                        value: values.username.value,
+                        error: true,
+                        helperText: data.errUsr,
+                    },
+                });
+            } else if (data.errMdp) {
+                // err user not exist
+                setValues({
+                    ...values,
+                    password: {
+                        value: values.password.value,
+                        error: true,
+                        helperText: data.errMdp,
+                    },
+                });
+            } else {
+                // connection Succes
+                setSuccesConnect({
+                    ...succesConnect,
+                    success: true,
+                    text: data.succes,
+                    token: data.token,
+                });
+                setLocalStorage("token", data.token);
+                setLocalStorage("id", data.id);
+                setLocalStorage("username", data.username);
+                setValues({
+                    ...values,
+                    username: { value: values.username.value, error: false, helperText: "" },
+                    password: { value: values.password.value, error: false, helperText: "" },
+                });
+                handleLogin();
+            }
+        });
     };
 
     return (
@@ -85,19 +92,19 @@ function Login() {
                 <form onSubmit={handleSubmit}>
                     <TextField
                         required
-                        error={errors.username}
+                        error={values.username.error}
                         id="outlined-error-helper-text"
                         label="Name User"
-                        helperText={helperText.username}
+                        helperText={values.username.helperText}
                         onChange={(event) => handleChange("username", event.target.value)}
                     />
                     <TextField
                         required
-                        error={errors.password}
+                        error={values.password.error}
                         id="outlined-required"
                         label="Password"
                         type="password"
-                        helperText={helperText.password}
+                        helperText={values.password.helperText}
                         onChange={(event) => handleChange("password", event.target.value)}
                     />
                     <Button type="submit" variant="contained">

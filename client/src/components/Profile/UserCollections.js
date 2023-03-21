@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
-import { backendUrl } from "../../Globals/GlobalVariables";
-import axios from "axios";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { AuthContext } from "../../Services/AuthContext";
 import LstCollection from "./LstCollection";
+import { getAxiosReqAuth } from "../../Services/AxiosGet";
 
 // display all collections of user (album buyed)
 function UserCollections() {
@@ -15,24 +14,22 @@ function UserCollections() {
         const token = getLocalStorage("token");
 
         // call /getCollections with axios post
-        axios
-            .get(backendUrl + "/getCollection", {
-                params: { idUser: idUser },
-                headers: { Authorization: `Bearer ${token}` },
-            })
-            .then((response) => {
-                setLstCollections(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        const data = { idUser: idUser };
+        const response = getAxiosReqAuth("/getCollection", data, token);
+        response.then((data) => {
+            setLstCollections(data);
+        });
     }, []);
 
     return (
         <div>
             {isLoggedIn ? (
                 <div>
-                    <LstCollection idUser={idUser} isLoggedIn={isLoggedIn} lstAlbums={lstCollections} />
+                    <LstCollection
+                        idUser={idUser}
+                        isLoggedIn={isLoggedIn}
+                        lstAlbums={lstCollections}
+                    />
                 </div>
             ) : (
                 <div>u need to be logged in to see your collections</div>

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-
-import { backendUrl } from "../../Globals/GlobalVariables";
 import { useLocation } from "react-router-dom";
 
 import { Avatar } from "@mui/material";
+import { getAxiosReq } from "../../Services/AxiosGet";
 
 function PageUser() {
     const location = useLocation();
@@ -14,16 +12,11 @@ function PageUser() {
 
     useEffect(() => {
         // get user info with get axios on getUserById
-        axios
-            .get(backendUrl + "/getUserById", {
-                params: { idUser: idUserUrl },
-            })
-            .then((response) => {
-                setUserInfos(response.data[0]);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        const data = { idUser: idUserUrl };
+        const response = getAxiosReq("/getUserById", data);
+        response.then((data) => {
+            setUserInfos(data[0]);
+        });
     }, []);
 
     console.log("userInfos", userInfos);

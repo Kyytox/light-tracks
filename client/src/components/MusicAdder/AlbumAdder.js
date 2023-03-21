@@ -1,28 +1,21 @@
 import React, { useState, useEffect } from "react";
 
-import axios from "axios";
-import { backendUrl } from "../../Globals/GlobalVariables";
-
 import TextField from "@mui/material/TextField";
 import FormHelperText from "@mui/material/FormHelperText";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import SelectGenres from "../Forms/selectGenres";
+import { getAxiosReq } from "../../Services/AxiosGet";
 
 function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDelete }) {
     const [lstGenres, setLstGenres] = useState([]);
 
     useEffect(() => {
-        //
-        // get all genres from getGenres with axios
-        axios
-            .get(backendUrl + "/getGenres")
-            .then((response) => {
-                setLstGenres(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        // get all genres
+        const response = getAxiosReq("/getGenres", {});
+        response.then((data) => {
+            setLstGenres(data);
+        });
     }, []);
 
     return (
