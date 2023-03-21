@@ -5,10 +5,10 @@ export const getFollows = (req, res) => {
     console.log("req.query", req.query);
 
     pool.query(
-        `SELECT fo_id_user, fo_id_user_follow, fo_date_follow, u_id, u_username, u_avatar, u_code_country, u_name_country
-        FROM public.follows, public.users 
+        `SELECT *
+        FROM public.follows, public.profiles 
         WHERE fo_id_user = $1
-        AND u_id = fo_id_user_follow`,
+        AND p_id_user = fo_id_user_follow`,
         [req.query.idUser],
         (err, result) => {
             if (err) {

@@ -35,45 +35,45 @@ function SignUp() {
 
     // valid password
     const isPasswordValid = (username, password) => {
-        setErrors({ ...errors, ["password"]: false });
+        setErrors({ ...errors, password: false });
 
         // Length must be greater than 7 characters
         if (password.length <= 7) {
-            setErrors({ ...errors, ["password"]: true });
-            setHelperText({ ...helperText, ["password"]: "the length must be > 7" });
+            setErrors({ ...errors, password: true });
+            setHelperText({ ...helperText, password: "the length must be > 7" });
             return false;
         }
 
         // Must contain at least one uppercase letter
         if (!/[A-Z]/.test(password)) {
-            setErrors({ ...errors, ["password"]: true });
-            setHelperText({ ...helperText, ["password"]: "At least a uppercase" });
+            setErrors({ ...errors, password: true });
+            setHelperText({ ...helperText, password: "At least a uppercase" });
             return false;
         }
 
         // Must contain at least one lowercase letter
         if (!/[a-z]/.test(password)) {
-            setErrors({ ...errors, ["password"]: true });
-            setHelperText({ ...helperText, ["password"]: "At least a lowercase" });
+            setErrors({ ...errors, password: true });
+            setHelperText({ ...helperText, password: "At least a lowercase" });
             return false;
         }
 
         // Must contain at least one symbol
         if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-            setErrors({ ...errors, ["password"]: true });
-            setHelperText({ ...helperText, ["password"]: "At least one symbol" });
+            setErrors({ ...errors, password: true });
+            setHelperText({ ...helperText, password: "At least one symbol" });
             return false;
         }
 
         // Password must not be equal to username
         if (password === username) {
-            setErrors({ ...errors, ["password"]: true });
-            setHelperText({ ...helperText, ["password"]: "Must be different from username" });
+            setErrors({ ...errors, password: true });
+            setHelperText({ ...helperText, password: "Must be different from username" });
             return false;
         }
 
         // All tests passed
-        setHelperText({ ...helperText, ["password"]: "" });
+        setHelperText({ ...helperText, password: "" });
         return true;
     };
 
@@ -93,25 +93,29 @@ function SignUp() {
         event.preventDefault();
 
         if (values.password === values.confirmPassword && errors.password === false) {
-            setErrors({ ...errors, ["confirmPassword"]: false });
-            setHelperText({ ...helperText, ["confirmPassword"]: "" });
+            setErrors({ ...errors, confirmPassword: false });
+            setHelperText({ ...helperText, confirmPassword: "" });
 
             const data = {
                 username: values.username,
                 password: values.password,
             };
 
-            // call /signup for INSERT username
+            // call /signup for INSERT user
             axios
                 .post(backendUrl + "/signup", data)
                 .then((response) => {
                     console.log(response.data.err);
                     if (response.data.err) {
                         // err insert into
-                        setErrors({ ...errors, ["username"]: true });
-                        setHelperText({ ...helperText, ["username"]: response.data.err });
+                        setErrors({ ...errors, username: true });
+                        setHelperText({ ...helperText, username: response.data.err });
                     } else {
-                        setSuccesConnect({ ...succesConnect, ["success"]: true, ["text"]: response.data.succes });
+                        setSuccesConnect({
+                            ...succesConnect,
+                            success: true,
+                            text: response.data.succes,
+                        });
                         setLocalStorage("token", response.data.token);
                         setLocalStorage("id", response.data.id);
                         setLocalStorage("username", response.data.username);
@@ -122,8 +126,8 @@ function SignUp() {
                     console.error(error);
                 });
         } else {
-            setErrors({ ...errors, ["confirmPassword"]: true });
-            setHelperText({ ...helperText, ["confirmPassword"]: "Passwords are not the same" });
+            setErrors({ ...errors, confirmPassword: true });
+            setHelperText({ ...helperText, confirmPassword: "Passwords are not the same" });
         }
     };
 

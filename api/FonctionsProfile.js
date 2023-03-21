@@ -6,22 +6,26 @@ export const getProfileInfos = (req, res) => {
     console.log("API /getProfileInfos");
 
     pool.query(
-        `SELECT u_id, u_username, u_avatar, u_email, u_bio, u_code_country, u_name_country, gm_id, gm_name_genre
-        FROM public.users 
-        LEFT JOIN public.genres_music sm ON gm_id = ANY(u_styles_music)
-        WHERE u_id = $1
-        GROUP BY u_id, u_username, u_avatar, u_email, u_bio, u_code_country, u_name_country, gm_id, gm_name_genre`,
+        // `SELECT u_id, u_username, u_avatar, u_email, u_bio, u_code_country, u_name_country, gm_id, gm_name_genre
+        // FROM public.users
+        // LEFT JOIN public.genres_music sm ON gm_id = ANY(u_styles_music)
+        // WHERE u_id = $1
+        // GROUP BY u_id, u_username, u_avatar, u_email, u_bio, u_code_country, u_name_country, gm_id, gm_name_genre`,
+        `SELECT *
+        FROM public.profiles 
+        LEFT JOIN public.genres_music sm ON gm_id = ANY(p_styles_music)
+        WHERE p_id_user = $1`,
         [req.query.idUser],
         (err, result) => {
             if (err) {
                 console.error("Error executing SELECT:", err);
             } else {
                 const data = {
-                    avatar: result.rows[0].u_avatar,
-                    email: result.rows[0].u_email,
-                    bio: result.rows[0].u_bio,
-                    code_country: result.rows[0].u_code_country,
-                    country: result.rows[0].u_name_country,
+                    avatar: result.rows[0].p_avatar,
+                    email: result.rows[0].p_email,
+                    bio: result.rows[0].p_bio,
+                    code_country: result.rows[0].p_code_country,
+                    country: result.rows[0].p_name_country,
                     styles: result.rows.map((row) => {
                         return {
                             id: row.gm_id,
@@ -41,21 +45,21 @@ export const updateProfileInfos = (req, res) => {
     console.log("req.body", req.body);
 
     // create text for update
-    var textUpdate = "UPDATE public.users SET ";
+    var textUpdate = "UPDATE public.profiles SET ";
     for (const [key, value] of Object.entries(req.body)) {
         if (key !== "id") {
             if (value !== "") {
                 if (key === "styles_music") {
-                    textUpdate += `u_${key} = ARRAY[${value}], `;
+                    textUpdate += `p_${key} = ARRAY[${value}], `;
                 } else {
-                    textUpdate += `u_${key} = '${value}', `;
+                    textUpdate += `p_${key} = '${value}', `;
                 }
             }
         }
     }
 
     textUpdate = textUpdate.slice(0, -2); // remove the last comma and space
-    textUpdate += ` WHERE u_id = ${req.body.id}`;
+    textUpdate += ` WHERE p_id_user = ${req.body.id}`;
 
     console.log("textUpdate", textUpdate);
 
@@ -76,14 +80,20 @@ export const getCollection = (req, res) => {
     // get all sales from user id , sorted by date of sale
     pool.query(
         // "SELECT * FROM public.sales, public.albums where s_id_user = $1 and albums.a_id = sales.s_id_album order by s_date_sale desc",
-        `SELECT s_id_sale, s_id_user, s_id_album, s_id_track, s_date_sale, s_id_track_album  
-            , a_id, a_id_user, a_id_album_user, a_title, a_artist, a_price
-            , a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path
-            , u_id, u_username, u_avatar
-            FROM public.sales, public.albums, public.users
+        // `SELECT s_id_sale, s_id_user, s_id_album, s_id_track, s_date_sale, s_id_track_album
+        //     , a_id, a_id_user, a_id_album_user, a_title, a_artist, a_price
+        //     , a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path
+        //     , u_id, u_username, u_avatar
+        //     FROM public.sales, public.albums, public.users
+        //     where s_id_user = $1
+        //     and albums.a_id = sales.s_id_album
+        //     and albums.a_id_user = users.u_id
+        //     order by s_date_sale desc;`,
+        `SELECT *
+            FROM public.sales, public.albums, public.profiles
             where s_id_user = $1
             and albums.a_id = sales.s_id_album 
-            and albums.a_id_user = users.u_id
+            and albums.a_id_user = profiles.p_id_user
             order by s_date_sale desc;`,
         [req.query.idUser],
         (err, result) => {
@@ -104,14 +114,20 @@ export const getFavoris = (req, res) => {
     pool.query(
         // "SELECT * FROM public.favoris, public.albums where f_id_user = $1 and albums.a_id = favoris.f_id_album order by f_date_fav desc",
         // [req.query.idUser],
-        `SELECT f_id_fav, f_id_user, f_id_album, f_id_track, f_date_fav 
-            , a_id, a_id_user, a_id_album_user, a_title, a_artist, a_price
-            , a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path
-            , u_id, u_username, u_avatar
-            FROM public.favoris, public.albums, public.users
+        // `SELECT f_id_fav, f_id_user, f_id_album, f_id_track, f_date_fav
+        //     , a_id, a_id_user, a_id_album_user, a_title, a_artist, a_price
+        //     , a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path
+        //     , u_id, u_username, u_avatar
+        //     FROM public.favoris, public.albums, public.users
+        //     where f_id_user = 2
+        //     and albums.a_id = favoris.f_id_album
+        //     and albums.a_id_user = users.u_id
+        //     order by f_date_fav desc`,
+        `SELECT *
+            FROM public.favoris, public.albums, public.profiles
             where f_id_user = 2 
             and albums.a_id = favoris.f_id_album 
-            and albums.a_id_user = users.u_id
+            and albums.a_id_user = profiles.p_id_user
             order by f_date_fav desc`,
         (err, result) => {
             if (err) {

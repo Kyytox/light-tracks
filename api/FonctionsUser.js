@@ -6,9 +6,9 @@ export const getUserById = (req, res) => {
     console.log("req.query", req.query);
 
     pool.query(
-        `SELECT u_id, u_username, u_avatar, u_bio, u_code_country, u_name_country
-        FROM public.users 
-        WHERE u_id = $1`,
+        `SELECT *
+        FROM public.profiles 
+        WHERE p_id_user = $1`,
         [req.query.idUser],
         (err, result) => {
             if (err) {

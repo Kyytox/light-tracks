@@ -37,23 +37,36 @@ export const signUp = (req, res) => {
                 bcrypt.hash(password, saltRounds, function (err, hash) {
                     // Store hash in your password DB.
                     console.log(`hash: ${hash}`);
-                    pool.query("INSERT INTO public.users (u_username, u_password) VALUES ($1,$2)", [username, hash], (err, result) => {
-                        if (err) {
-                            console.error("Error executing INSERT INTO:", err);
-                        } else {
-                            pool.query("SELECT * FROM public.users WHERE u_username = ($1)", [username], (err, result) => {
-                                if (err) {
-                                    console.error("Error executing INSERT INTO:", err);
-                                } else {
-                                    // create token
-                                    console.log("result.rows[0]", result.rows[0]);
-                                    const token = createToken(result.rows[0]);
-                                    // createFolderUser(result.rows[0].u_id);
-                                    res.send({ succes: "SignupSuccess", id: result.rows[0].u_id, token: token, username: result.rows[0].u_username });
-                                }
-                            });
+                    pool.query(
+                        "INSERT INTO public.users (u_username, u_password) VALUES ($1,$2) RETURNING u_id, u_username",
+                        [username, hash],
+                        (err, result) => {
+                            if (err) {
+                                console.error("Error executing INSERT INTO:", err);
+                            } else {
+                                pool.query(
+                                    "INSERT INTO public.profiles (p_id_user, p_username) VALUES ($1,$2) RETURNING p_id_user, p_username",
+                                    [result.rows[0].u_id, result.rows[0].u_username],
+                                    (err, result) => {
+                                        if (err) {
+                                            console.error("Error executing INSERT INTO:", err);
+                                        } else {
+                                            // create token
+                                            // console.log("result.rows[0]", result.rows[0]);
+                                            const token = createToken(result.rows[0]);
+                                            // createFolderUser(result.rows[0].u_id);
+                                            res.send({
+                                                succes: "SignupSuccess",
+                                                id: result.rows[0].p_id_user,
+                                                token: token,
+                                                username: result.rows[0].p_username,
+                                            });
+                                        }
+                                    }
+                                );
+                            }
                         }
-                    });
+                    );
                 });
             } else {
                 res.send({ err: "Username already exist " });
@@ -80,14 +93,21 @@ export const login = (req, res) => {
             if (result.rowCount === 1) {
                 // user exist in BD
                 // Load hash from your password DB.
-                bcrypt.compare(password, result.rows[0].password, function (err, resultCrypt) {
+                bcrypt.compare(password, result.rows[0].u_password, function (err, resultCrypt) {
+                    console.log("err", err);
+                    console.log("resultCrypt", resultCrypt);
                     if (resultCrypt === false) {
                         res.send({ errMdp: "incorrect password" });
                     } else {
                         // create token
                         console.log("result.rows[0]", result.rows[0]);
                         const token = createToken(result.rows[0]);
-                        res.send({ succes: "LoginSuccess", id: result.rows[0].u_id, token: token, username: result.rows[0].u_username });
+                        res.send({
+                            succes: "LoginSuccess",
+                            id: result.rows[0].u_id,
+                            token: token,
+                            username: result.rows[0].u_username,
+                        });
                     }
                 });
             } else {

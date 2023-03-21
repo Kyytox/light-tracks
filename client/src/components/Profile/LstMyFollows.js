@@ -8,27 +8,14 @@ function LstMyFollows({ idUser, isLoggedIn, lstFollows }) {
     // create a map to display lstFollows (username), this is index of listFollows:  fo_date_follow; fo_id_user; fo_id_user_follow; u_id; u_username;
     // add BtnFllows
     const LstDisplayFollows = lstFollows.map((follow, key) => {
-        // const location = {
-        //     pathname: `/user/${follow.u_id}`,
-        // };
-        // const stateLocation = { user: follow };
-
         return (
             <>
-                <nav id={"follow-" + follow.u_id} key={follow.u_id}>
+                <nav id={"follow-" + follow.p_id_user} key={follow.p_id_user}>
                     <LinkNavUser data={follow} />
-                    {/* <Avatar alt="Remy Sharp" src={follow.u_avatar} />
-                    <Link to={location} state={stateLocation}>
-                        <div className="card">
-                            <div className="card-body" style={{ display: "flex" }}>
-                                <h5 className="card-title">{follow.u_username}</h5>
-                            </div>
-                        </div>
-                    </Link> */}
                     <BtnFollow
                         idUser={idUser}
                         isLoggedIn={isLoggedIn}
-                        idUserFollow={follow.u_id}
+                        idUserFollow={follow.p_id_user}
                         isFollowedProp={true}
                     />
                 </nav>

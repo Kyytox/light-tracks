@@ -9,15 +9,15 @@ function LinkNavUser(props) {
 
     // Location User
     const locationUser = {
-        pathname: `/user/${data.u_id}`,
+        pathname: `/user/${data.p_id_user}`,
     };
-    const stateLocationUser = { user: data.u_id };
+    const stateLocationUser = { user: data.p_id_user };
 
     return (
         <div>
             <Link to={locationUser} state={stateLocationUser}>
-                <Avatar alt="Remy Sharp" src={data.u_avatar} />
-                <p>{data.u_username}</p>
+                <Avatar alt="Remy Sharp" src={data.p_avatar} />
+                <p>{data.p_username}</p>
             </Link>
         </div>
     );

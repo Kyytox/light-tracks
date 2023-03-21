@@ -7,12 +7,10 @@ export const getAlbums = (req, res) => {
     pool.query(
         // "SELECT * FROM public.albums WHERE a_date_create < $1 ORDER BY a_date_create DESC LIMIT 50",
         // [date],
-        `SELECT a_id, a_id_user, a_id_album_user, a_title, a_artist, a_price
-            , a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path
-            , u_id, u_username, u_avatar
+        `SELECT *
             FROM public.albums a
-            JOIN public.users u
-            ON a_id_user = u_id
+            JOIN public.profiles p
+            ON a_id_user = p_id_user
             ORDER BY a_date_create DESC
             LIMIT 50;`,
         (err, result) => {
