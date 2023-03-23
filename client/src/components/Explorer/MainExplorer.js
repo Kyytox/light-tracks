@@ -4,12 +4,16 @@ import { AuthContext } from "../../Services/AuthContext";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { changeBtnFavoris } from "../../Globals/GlobalFunctions";
 import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
+import PlayerAudio from "../PlayerAudio/PlayerAudio";
 
 function MainExplorer() {
     const [lstAlbums, setLstAlbums] = useState([]);
     const [lstSalesFavoris, setLstSalesFavoris] = useState([]);
     const date = new Date();
     const { idUser, isLoggedIn, checkToken } = useContext(AuthContext);
+
+    const [idAlbumPlay, setIdAlbumPlay] = useState(0);
+    const [lstTracksPlay, setLstTracksPlay] = useState([]);
 
     // get albums and sales favoris
     useEffect(() => {
@@ -33,6 +37,15 @@ function MainExplorer() {
         }
     }, [checkToken]);
 
+    // change idAlbumPlay and charge tracks
+    const changeIdAlbumPlay = (idAlbum) => {
+        setIdAlbumPlay(idAlbum);
+
+        // get tracks in lstAlbums with idAlbum
+        const lstTracks = lstAlbums.filter((album) => album.a_id === idAlbum)[0].tracks;
+        setLstTracksPlay(lstTracks);
+    };
+
     // change btnFavoris
     useLayoutEffect(() => {
         if (lstAlbums.length > 0 && lstSalesFavoris.length > 0) {
@@ -40,12 +53,23 @@ function MainExplorer() {
         }
     }, [lstAlbums, lstSalesFavoris]);
 
-    console.log("lstAlbums", lstAlbums);
+    console.log("MainExplorer -- lstTracks", lstTracksPlay);
 
     return (
         <div>
             <h1>Explorer</h1>
-            <LstAlbums idUser={idUser} isLoggedIn={isLoggedIn} lstAlbums={lstAlbums} />
+
+            {/* PlayerAudio */}
+            {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} />}
+            {/* <PlayerAudio playList={lstTracksPlay} /> */}
+
+            {/* LstAlbums */}
+            <LstAlbums
+                idUser={idUser}
+                isLoggedIn={isLoggedIn}
+                lstAlbums={lstAlbums}
+                changeIdAlbumPlay={changeIdAlbumPlay}
+            />
         </div>
     );
 }

@@ -9,34 +9,21 @@ function PlayerAudio(props) {
     const [showPlaylist, setShowPlaylist] = useState(false);
     const audioElement = useRef(null);
 
+    console.log("PlayerAudio.js: playlist = ", playlist);
     const wavesurferRef = useRef();
 
     const handleWSMount = useCallback((waveSurfer) => {
         wavesurferRef.current = waveSurfer;
 
         const urlMp3 =
-            "https://api.twilio.com//2010-04-01/Accounts/AC25aa00521bfac6d667f13fec086072df/Recordings/RE6d44bc34911342ce03d6ad290b66580c.mp3";
-        // "https://d3s5ffas0ydxtp.cloudfront.net/" +
-        // playlist[currentSongIndex].t_file_path +
-        // "/" +
-        // playlist[currentSongIndex].t_file_name_mp3;
+            // "https://api.twilio.com//2010-04-01/Accounts/AC25aa00521bfac6d667f13fec086072df/Recordings/RE6d44bc34911342ce03d6ad290b66580c.mp3";
+            "https://d3s5ffas0ydxtp.cloudfront.net/" +
+            playlist[currentSongIndex].t_file_path +
+            "/" +
+            playlist[currentSongIndex].t_file_name_mp3;
 
         if (wavesurferRef.current) {
             wavesurferRef.current.load(urlMp3);
-            // wavesurferRef.current.load(urlMp3, null, {
-            //     xhr: {
-            //         cache: "default",
-            //         mode: "no-cors",
-            //         method: "GET",
-            //         credentials: "include",
-            //         headers: [
-            //             { key: "Access-Control-Allow-Origin", value: "*" },
-            //             { key: "cache-control", value: "no-cache" },
-            //             { key: "pragma", value: "no-cache" },
-            //             { key: "expires", value: "0" },
-            //         ],
-            //     },
-            // });
 
             wavesurferRef.current.on("ready", () => {
                 console.log("WaveSurfer is ready");
@@ -68,9 +55,9 @@ function PlayerAudio(props) {
             <h4>{playlist[currentSongIndex].t_artist}</h4>
 
             {/* <div id="waveform"></div> */}
-            <WaveSurfer onMount={handleWSMount}>
+            {/* <WaveSurfer onMount={handleWSMount}>
                 <WaveForm id="waveform" cursorColor="transparent"></WaveForm>
-            </WaveSurfer>
+            </WaveSurfer> */}
 
             <ControlsPlayer
                 setCurrentSongIndex={setCurrentSongIndex}

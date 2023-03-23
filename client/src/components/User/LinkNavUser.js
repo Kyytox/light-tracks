@@ -5,7 +5,6 @@ import { Avatar } from "@mui/material";
 function LinkNavUser(props) {
     // props
     const { data } = props;
-    console.log("LinkNavUser - data", data);
 
     // Location User
     const locationUser = {

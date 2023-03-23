@@ -7,8 +7,10 @@ import { checkFollowed } from "../../Globals/FctsFollow";
 import LinkNavUser from "../User/LinkNavUser";
 import { getAxiosReqAuth } from "../../Services/AxiosGet";
 
-function LstAlbums({ idUser, isLoggedIn, lstAlbums }) {
+function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
     const [lstFollows, setLstFollows] = useState([]);
+
+    console.log("LstAlbums -- lstAlbums : ", lstAlbums);
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -64,6 +66,10 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums }) {
 
                     {/* Favoris */}
                     <BtnFavorisAlbum idUser={idUser} isLoggedIn={isLoggedIn} idAlbum={album.a_id} />
+
+                    <button type="button" onClick={() => changeIdAlbumPlay(album.a_id)}>
+                        Play
+                    </button>
 
                     {/* Album */}
                     <Link to={locationAlbum} state={stateLocationAlbum}>
