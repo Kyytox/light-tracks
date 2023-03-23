@@ -7,8 +7,9 @@ import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { AuthContext } from "../../Services/AuthContext";
 import BtnFavoris from "../Favoris/BtnFavorisAlbum";
 import BtnFollow from "../Bouttons/BtnFollow";
-import { getFollowsByIdUser, checkFollowed } from "../../Globals/FctsFollow";
+import { checkFollowed } from "../../Globals/FctsFollow";
 import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
+import PlayerAudio from "../PlayerAudio/PlayerAudio";
 
 function PageAlbum() {
     const { isLoggedIn, checkToken } = useContext(AuthContext);
@@ -154,7 +155,16 @@ function PageAlbum() {
             <h4>Id : {infosAlbum.a_id}</h4>
             <p>descr : {infosAlbum.a_description}</p>
             <p>Styles : {infosAlbum.a_styles}</p>
+            {/* <PlayerAudio playList={playList} /> */}
+
+            {lstTracks.length > 0 && <PlayerAudio playlist={lstTracks} />}
+
+            <br></br>
+            <br></br>
+
             {LstDisplayTracks}
+            <br></br>
+            <br></br>
         </div>
     );
 }
