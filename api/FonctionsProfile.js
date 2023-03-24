@@ -115,23 +115,26 @@ export const getFavoris = (req, res) => {
 
     // get all favoris from user id
     pool.query(
-        // "SELECT * FROM public.favoris, public.albums where f_id_user = $1 and albums.a_id = favoris.f_id_album order by f_date_fav desc",
-        // [req.query.idUser],
-        // `SELECT f_id_fav, f_id_user, f_id_album, f_id_track, f_date_fav
-        //     , a_id, a_id_user, a_id_album_user, a_title, a_artist, a_price
-        //     , a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path
-        //     , u_id, u_username, u_avatar
-        //     FROM public.favoris, public.albums, public.users
+        // `SELECT *
+        //     FROM public.favoris, public.albums, public.profiles
         //     where f_id_user = 2
         //     and albums.a_id = favoris.f_id_album
-        //     and albums.a_id_user = users.u_id
+        //     and albums.a_id_user = profiles.p_id_user
         //     order by f_date_fav desc`,
-        `SELECT *
-            FROM public.favoris, public.albums, public.profiles
-            where f_id_user = 2 
-            and albums.a_id = favoris.f_id_album 
-            and albums.a_id_user = profiles.p_id_user
-            order by f_date_fav desc`,
+
+        `SELECT *,
+            (SELECT json_agg(json_build_object(
+                't_id_album_track', t.t_id_album_track,
+                't_title', t.t_title,
+                't_file_path', t.t_file_path,
+                't_file_name_mp3', t.t_file_name_mp3)) 
+            FROM public.tracks t WHERE t.t_id_album = a.a_id) as tracks
+        FROM public.favoris f 
+        JOIN public.albums a ON f.f_id_album  = a.a_id AND f.f_id_user = $1
+        JOIN public.profiles p ON a.a_id_user = p.p_id_user
+        ORDER BY f.f_date_fav DESC
+        LIMIT 50;`,
+        [req.query.idUser],
         (err, result) => {
             if (err) {
                 console.error("Error executing SELECT:", err);

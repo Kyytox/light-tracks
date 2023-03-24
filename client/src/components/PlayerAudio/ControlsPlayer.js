@@ -23,6 +23,7 @@ function ControlsPlayer(props) {
 
     // play/pause
     useEffect(() => {
+        console.log("ControlsPlayer.js: props.currentSongIndex = ", props.currentSongIndex);
         if (isPlaying) {
             props.audioElement.current.play();
         } else {

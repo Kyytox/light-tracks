@@ -60,7 +60,7 @@ function MainExplorer() {
             <h1>Explorer</h1>
 
             {/* PlayerAudio */}
-            {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} />}
+            {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} songIndex={0} />}
 
             {/* LstAlbums */}
             <LstAlbums

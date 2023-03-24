@@ -65,7 +65,7 @@ function MainUserProfile() {
                     <Tab label="Settings" />
                 </Tabs>
                 {tabIndex === 0 && <UserCollections setLstTracksPlay={setLstTracksPlay} />}
-                {tabIndex === 1 && <UserWantlist />}
+                {tabIndex === 1 && <UserWantlist setLstTracksPlay={setLstTracksPlay} />}
                 {tabIndex === 2 && <UserMyAlbums />}
                 {tabIndex === 3 && <UserMyFollows />}
                 {tabIndex === 4 && <MainSettings />}
@@ -73,7 +73,7 @@ function MainUserProfile() {
 
             <div>
                 {/* PlayerAudio */}
-                {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} />}
+                {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} songIndex={0} />}
             </div>
         </div>
     );
