@@ -23,7 +23,7 @@ function ProgressBar(props) {
                 <input
                     type="range"
                     className="progress-bar"
-                    value={props.progress}
+                    value={props.progress || 0}
                     min="0"
                     max="1"
                     step="0.01"

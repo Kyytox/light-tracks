@@ -4,21 +4,24 @@ import WaveSurferPlayer from "./WaveSurfer";
 
 function PlayerAudio(props) {
     const playlist = props.playlist;
-    // const [currentSongIndex, setCurrentSongIndex] = useState(
-    // props.songIndex >= playlist.length ? props.songIndex : 0
-    // );
     const [currentSongIndex, setCurrentSongIndex] = useState(0);
-
     const [showPlaylist, setShowPlaylist] = useState(false);
     const audioElement = useRef(null);
 
     console.log("PlayerAudio.js: currentSongIndex = ", currentSongIndex);
 
+    // reinit currentSongIndex when we change playlist
+    useEffect(() => {
+        console.log("PlayerAudio.js: useEffect currentSongIndex = ", currentSongIndex);
+        setCurrentSongIndex(0);
+    }, [playlist]);
+
     // const wavesurferRef = useRef();
 
     return (
         <div>
-            {/* when we change Playlist the ncurrentSongIndex is not init to 0 so the conditions is here  */}
+            {/* when we change Playlist the currentSongIndex is not init to 0 so the conditions is here 
+            , the useEffect il launch after init audio element */}
             {currentSongIndex >= playlist.length ? (
                 <div>
                     <audio
