@@ -79,22 +79,25 @@ export const getCollection = (req, res) => {
     // this my table sales s_id_sale s_id_user; s_id_album; s_id_track; s_id_track_album; s_price; s_date_sale;
     // get all sales from user id , sorted by date of sale
     pool.query(
-        // "SELECT * FROM public.sales, public.albums where s_id_user = $1 and albums.a_id = sales.s_id_album order by s_date_sale desc",
-        // `SELECT s_id_sale, s_id_user, s_id_album, s_id_track, s_date_sale, s_id_track_album
-        //     , a_id, a_id_user, a_id_album_user, a_title, a_artist, a_price
-        //     , a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path
-        //     , u_id, u_username, u_avatar
-        //     FROM public.sales, public.albums, public.users
+        // `SELECT *
+        //     FROM public.sales, public.albums, public.profiles
         //     where s_id_user = $1
         //     and albums.a_id = sales.s_id_album
-        //     and albums.a_id_user = users.u_id
+        //     and albums.a_id_user = profiles.p_id_user
         //     order by s_date_sale desc;`,
-        `SELECT *
-            FROM public.sales, public.albums, public.profiles
-            where s_id_user = $1
-            and albums.a_id = sales.s_id_album 
-            and albums.a_id_user = profiles.p_id_user
-            order by s_date_sale desc;`,
+
+        `SELECT *,
+            (SELECT json_agg(json_build_object(
+                't_id_album_track', t.t_id_album_track,
+                't_title', t.t_title,
+                't_file_path', t.t_file_path,
+                't_file_name_mp3', t.t_file_name_mp3)) 
+            FROM public.tracks t WHERE t.t_id_album = a.a_id) as tracks
+        FROM public.sales s 
+        JOIN public.albums a ON s.s_id_album = a.a_id AND s.s_id_user = $1
+        JOIN public.profiles p ON a.a_id_user = p.p_id_user
+        ORDER BY s.s_date_sale DESC
+        LIMIT 50;`,
         [req.query.idUser],
         (err, result) => {
             if (err) {

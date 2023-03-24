@@ -12,7 +12,7 @@ function MainExplorer() {
     const date = new Date();
     const { idUser, isLoggedIn, checkToken } = useContext(AuthContext);
 
-    const [idAlbumPlay, setIdAlbumPlay] = useState(0);
+    // const [idAlbumPlay, setIdAlbumPlay] = useState(0);
     const [lstTracksPlay, setLstTracksPlay] = useState([]);
 
     // get albums and sales favoris
@@ -39,7 +39,7 @@ function MainExplorer() {
 
     // change idAlbumPlay and charge tracks
     const changeIdAlbumPlay = (idAlbum) => {
-        setIdAlbumPlay(idAlbum);
+        // setIdAlbumPlay(idAlbum);
 
         // get tracks in lstAlbums with idAlbum
         const lstTracks = lstAlbums.filter((album) => album.a_id === idAlbum)[0].tracks;
@@ -61,7 +61,6 @@ function MainExplorer() {
 
             {/* PlayerAudio */}
             {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} />}
-            {/* <PlayerAudio playList={lstTracksPlay} /> */}
 
             {/* LstAlbums */}
             <LstAlbums

@@ -37,12 +37,22 @@ function ControlsPlayer(props) {
 
     // update current time and progress bar
     useEffect(() => {
-        props.audioElement.current.addEventListener("timeupdate", handleTimeUpdate);
-        props.audioElement.current.addEventListener("durationchange", handleDurationChange);
-        return () => {
-            props.audioElement.current.removeEventListener("timeupdate", handleTimeUpdate);
-            props.audioElement.current.removeEventListener("durationchange", handleDurationChange);
-        };
+        if (props.audioElement.current) {
+            // set current time and progress bar
+            const handleTimeUpdate = (e) => {
+                setCurrentTime(e.target.currentTime);
+                setProgress(e.target.currentTime / e.target.duration);
+            };
+
+            // set duration of song
+            const handleDurationChange = (e) => {
+                setDuration(e.target.duration);
+            };
+
+            // add event listener
+            props.audioElement.current.addEventListener("timeupdate", handleTimeUpdate);
+            props.audioElement.current.addEventListener("durationchange", handleDurationChange);
+        }
     }, [currentTime, duration, props.audioElement]);
 
     // play/pause
@@ -82,17 +92,6 @@ function ControlsPlayer(props) {
         setIsPlaying(true);
     };
 
-    // set current time and progress bar
-    const handleTimeUpdate = (e) => {
-        setCurrentTime(e.target.currentTime);
-        setProgress(e.target.currentTime / e.target.duration);
-    };
-
-    // set duration of song
-    const handleDurationChange = (e) => {
-        setDuration(e.target.duration);
-    };
-
     // change current time and progress bar when click on progress bar
     const handleSeek = (e) => {
         const newTime = e.target.value * props.audioElement.current.duration;
@@ -108,11 +107,8 @@ function ControlsPlayer(props) {
             ) : (
                 <PlayCircleIcon onClick={handlePlayPause} />
             )}
-            {/* <button onClick={handlePlayPause}>{isPlaying ? "Pause" : "Play"}</button> */}
             <SkipPreviousIcon onClick={handlePrev} />
-            {/* <button onClick={handlePrev}>Previous</button> */}
             <SkipNextIcon onClick={handleNext} />
-            {/* <button onClick={handleNext}>Next</button> */}
             <input
                 type="range"
                 min="0"
@@ -132,9 +128,7 @@ function ControlsPlayer(props) {
 
             {/* Display playlist */}
             <QueueMusicIcon onClick={handleTogglePlaylist} />
-            {/* <button onClick={handleTogglePlaylist}>
-                {props.showPlaylist ? "Hide Playlist" : "Show Playlist"}
-            </button> */}
+
             <DisplayPlaylist
                 showPlaylist={props.showPlaylist}
                 playlist={props.playlist}

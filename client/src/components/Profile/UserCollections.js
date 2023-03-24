@@ -5,7 +5,7 @@ import LstCollection from "./LstCollection";
 import { getAxiosReqAuth } from "../../Services/AxiosGet";
 
 // display all collections of user (album buyed)
-function UserCollections() {
+function UserCollections({ setLstTracksPlay }) {
     const { isLoggedIn } = useContext(AuthContext);
     const idUser = getLocalStorage("id");
     const [lstCollections, setLstCollections] = useState([]);
@@ -21,14 +21,21 @@ function UserCollections() {
         });
     }, []);
 
+    // change idAlbumPlay and charge tracks
+    const changeIdAlbumPlay = (idAlbum) => {
+        // get tracks in lstAlbums with idAlbum
+        const lstTracks = lstCollections.filter((album) => album.a_id === idAlbum)[0].tracks;
+        console.log("UserCollections -- lstTracks", lstTracks);
+        setLstTracksPlay(lstTracks);
+    };
+
     return (
         <div>
             {isLoggedIn ? (
                 <div>
                     <LstCollection
-                        idUser={idUser}
-                        isLoggedIn={isLoggedIn}
                         lstAlbums={lstCollections}
+                        changeIdAlbumPlay={changeIdAlbumPlay}
                     />
                 </div>
             ) : (

@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import LinkNavUser from "../User/LinkNavUser";
 
-function LstCollection({ idUser, isLoggedIn, lstAlbums }) {
+function LstCollection({ lstAlbums, changeIdAlbumPlay }) {
     // create a map to display
     // lst albums is an array of objects
     const LstDisplayAlbums = lstAlbums.map((album, key) => {
@@ -21,6 +21,10 @@ function LstCollection({ idUser, isLoggedIn, lstAlbums }) {
                     <nav id={"artist-" + album.a_id_user} key={album.a_id_user}>
                         <LinkNavUser data={album} />
                     </nav>
+
+                    <button type="button" onClick={() => changeIdAlbumPlay(album.a_id)}>
+                        Play
+                    </button>
 
                     {/* Album */}
                     <Link to={location} state={stateLocation}>
