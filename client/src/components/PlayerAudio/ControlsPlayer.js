@@ -14,7 +14,7 @@ function ControlsPlayer(props) {
     const [isPlaying, setIsPlaying] = useState(true);
 
     // volume
-    const [volume, setVolume] = useState(0.1);
+    const [volume, setVolume] = useState(0.01);
 
     // progress bar and time
     const [currentTime, setCurrentTime] = useState(0);
