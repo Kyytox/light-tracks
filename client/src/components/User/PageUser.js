@@ -26,7 +26,16 @@ function PageUser() {
             <div>PageUser</div>
             <Avatar alt="Avatar" src={userInfos.p_avatar} />
             <p>{userInfos.p_username}</p>
-            <p>{userInfos.p_name_country}</p>
+            <p>
+                <img
+                    loading="lazy"
+                    width="20"
+                    src={`https://flagcdn.com/w20/${userInfos.p_code_country.toLowerCase()}.png`}
+                    srcSet={`https://flagcdn.com/w40/${userInfos.p_code_country.toLowerCase()}.png 2x`}
+                    alt="country flag"
+                />
+                &ensp;{userInfos.p_name_country}
+            </p>
             <p>bio: {userInfos.p_bio}</p>
         </div>
     );
