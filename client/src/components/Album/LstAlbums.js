@@ -25,6 +25,21 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
         }
     }, [isLoggedIn, idUser]);
 
+    // format date to display number of days, hours, minutes ago the album was published
+    const formatDate = (dateString) => {
+        const diff = (new Date() - new Date(dateString)) / 1000 / 60;
+
+        if (diff < 1) {
+            return "il y a quelques secondes";
+        } else if (diff < 60) {
+            return `il y a ${Math.floor(diff)} minutes`;
+        } else if (diff < 1440) {
+            return `il y a ${Math.floor(diff / 60)} heures`;
+        } else {
+            return `il y a ${Math.floor(diff / 1440)} jours`;
+        }
+    };
+
     // create a map to display
     // lst albums is an array of objects
     const LstDisplayAlbums = lstAlbums.map((album, key) => {
@@ -81,12 +96,13 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
                                 style={{ width: "100px", height: "100px" }}
                             />
                             <div className="card-body" style={{ display: "flex" }}>
-                                <h5 className="card-title">{album.a_title}</h5>
-                                <p className="card-text">{album.a_artist}</p>
-                                <p className="card-text">{album.a_price}</p>
-                                {/* <p className="card-text">{album.a_date_release}</p> */}
-                                <p className="card-text">{album.a_styles}</p>
-                                <p className="card-text">{album.a_description}</p>
+                                <h5 className="card-title">{album.a_title}-- </h5>
+                                <p className="card-text">{album.a_artist}-- </p>
+                                <p className="card-text">{album.a_price}-- </p>
+                                {/* <p className="card-text">{album.a_date_release} -- </p> */}
+                                <p className="card-text">{formatDate(album.a_date_create)} -- </p>
+                                <p className="card-text">{album.a_styles}-- </p>
+                                <p className="card-text">{album.a_description}-- </p>
                             </div>
                         </div>
                     </Link>

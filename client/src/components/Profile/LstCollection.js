@@ -18,7 +18,7 @@ function LstCollection({ lstAlbums, changeIdAlbumPlay }) {
             <>
                 <nav id={"album-" + album.a_id} key={album.a_id}>
                     {/* Artist */}
-                    <nav id={"artist-" + album.a_id_user} key={album.a_id_user}>
+                    <nav id={"artist-" + album.a_id_user}>
                         <LinkNavUser data={album} />
                     </nav>
 

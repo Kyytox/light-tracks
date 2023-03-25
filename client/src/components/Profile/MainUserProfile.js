@@ -39,21 +39,6 @@ function MainUserProfile() {
         navigate(`/profile/${username}/${newPath}`);
     };
 
-    // const lstTracksPlay = [
-    //     {
-    //         t_id_album_track: 1,
-    //         t_title: "track 01",
-    //         t_file_path: "uploads/4/1/tracks",
-    //         t_file_name_mp3: "7a0f3779-lfg0nrfbk7.mp3",
-    //     },
-    //     {
-    //         t_id_album_track: 2,
-    //         t_title: "track 02",
-    //         t_file_path: "uploads/4/1/tracks",
-    //         t_file_name_mp3: "48ae0eb6-lfg0nslv3rp.mp3",
-    //     },
-    // ];
-
     return (
         <div>
             <div>
