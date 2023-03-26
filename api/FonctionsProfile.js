@@ -79,19 +79,13 @@ export const getCollection = (req, res) => {
     // this my table sales s_id_sale s_id_user; s_id_album; s_id_track; s_id_track_album; s_price; s_date_sale;
     // get all sales from user id , sorted by date of sale
     pool.query(
-        // `SELECT *
-        //     FROM public.sales, public.albums, public.profiles
-        //     where s_id_user = $1
-        //     and albums.a_id = sales.s_id_album
-        //     and albums.a_id_user = profiles.p_id_user
-        //     order by s_date_sale desc;`,
-
         `SELECT *,
             (SELECT json_agg(json_build_object(
                 't_id_album_track', t.t_id_album_track,
                 't_title', t.t_title,
                 't_file_path', t.t_file_path,
-                't_file_name_mp3', t.t_file_name_mp3)) 
+                't_file_name_mp3', t.t_file_name_mp3,
+                't_nb_listen', t.t_nb_listen)) 
             FROM public.tracks t WHERE t.t_id_album = a.a_id) as tracks
         FROM public.sales s 
         JOIN public.albums a ON s.s_id_album = a.a_id AND s.s_id_user = $1
@@ -115,19 +109,13 @@ export const getFavoris = (req, res) => {
 
     // get all favoris from user id
     pool.query(
-        // `SELECT *
-        //     FROM public.favoris, public.albums, public.profiles
-        //     where f_id_user = 2
-        //     and albums.a_id = favoris.f_id_album
-        //     and albums.a_id_user = profiles.p_id_user
-        //     order by f_date_fav desc`,
-
         `SELECT *,
             (SELECT json_agg(json_build_object(
                 't_id_album_track', t.t_id_album_track,
                 't_title', t.t_title,
                 't_file_path', t.t_file_path,
-                't_file_name_mp3', t.t_file_name_mp3)) 
+                't_file_name_mp3', t.t_file_name_mp3,
+                't_nb_listen', t.t_nb_listen)) 
             FROM public.tracks t WHERE t.t_id_album = a.a_id) as tracks
         FROM public.favoris f 
         JOIN public.albums a ON f.f_id_album  = a.a_id AND f.f_id_user = $1

@@ -8,7 +8,8 @@ export const getAlbums = (req, res) => {
                 't_id_album_track', t.t_id_album_track,
                 't_title', t.t_title,
                 't_file_path', t.t_file_path,
-                't_file_name_mp3', t.t_file_name_mp3
+                't_file_name_mp3', t.t_file_name_mp3,
+                't_nb_listen', t.t_nb_listen
             ))
             FROM public.tracks t WHERE t.t_id_album = a.a_id) as tracks
         FROM public.albums a
