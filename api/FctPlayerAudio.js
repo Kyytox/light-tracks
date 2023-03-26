@@ -12,7 +12,7 @@ export const cptSongPlayed = (req, res) => {
     };
 
     const csvWriter = createObjectCsvWriter({
-        path: "data/dataSongPlayed.csv",
+        path: "data/dataUserSongPlayed.csv",
         header: [
             { id: "idUser", title: "idUser" },
             { id: "idAlbum", title: "idAlbum" },

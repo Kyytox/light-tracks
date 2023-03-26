@@ -1522,6 +1522,11 @@
   dependencies:
     "minimist" "^1.2.0"
 
+"csv-to-js-parser@^2.3.5":
+  "integrity" "sha512-g9gDA+2h+DfqrOc2ob1J1OEwmoHkNMY+/LkTC+4E6b/Wjrjd4DHWiPzR+5cehLClJoO6JeNrL/F8HxkkWB2nMg=="
+  "resolved" "https://registry.npmjs.org/csv-to-js-parser/-/csv-to-js-parser-2.3.5.tgz"
+  "version" "2.3.5"
+
 "csv-writer@^1.6.0":
   "integrity" "sha512-NOx7YDFWEsM/fTRAJjRpPp8t+MKRVvniAg9wQlUKx20MFrPs73WLJhFf5iteqrxNYnsy924K3Iroh3yNHeYd2g=="
   "resolved" "https://registry.npmjs.org/csv-writer/-/csv-writer-1.6.0.tgz"
