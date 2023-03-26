@@ -8,6 +8,7 @@ import SkipNextIcon from "@mui/icons-material/SkipNext";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import PauseCircleIcon from "@mui/icons-material/PauseCircle";
 import ProgressBar from "./ProgressBar";
+import { postAxiosReq } from "../../Services/AxiosPost";
 
 function ControlsPlayer(props) {
     // play/pause
@@ -23,7 +24,6 @@ function ControlsPlayer(props) {
 
     // play/pause
     useEffect(() => {
-        console.log("ControlsPlayer.js: props.currentSongIndex = ", props.currentSongIndex);
         if (isPlaying) {
             props.audioElement.current.play();
         } else {
@@ -38,6 +38,23 @@ function ControlsPlayer(props) {
 
     // update current time and progress bar
     useEffect(() => {
+        console.log("ControlsPlayer useEffect currentTime = ", currentTime);
+
+        // send song played to server after 5 seconds
+        if (currentTime > 2 && !props.songPlayed) {
+            props.setSongPlayed(true);
+            console.log(
+                "ControlsPlayer useEffect props.playlist[currentSongIndex] = ",
+                props.playlist[props.currentSongIndex]
+            );
+
+            const data = props.playlist[props.currentSongIndex];
+            const response = postAxiosReq("/cptSongPlayed", data);
+            response.then((data) => {
+                console.log("ControlsPlayer useEffect data = ", data);
+            });
+        }
+
         if (props.audioElement.current) {
             // set current time and progress bar
             const handleTimeUpdate = (e) => {
@@ -67,6 +84,7 @@ function ControlsPlayer(props) {
             props.currentSongIndex === props.playlist.length - 1 ? 0 : props.currentSongIndex + 1
         );
         setIsPlaying(true);
+        props.setSongPlayed(false);
     };
 
     // previous song
@@ -75,6 +93,7 @@ function ControlsPlayer(props) {
             props.currentSongIndex === 0 ? props.playlist.length - 1 : props.currentSongIndex - 1
         );
         setIsPlaying(true);
+        props.setSongPlayed(false);
     };
 
     // change volume
@@ -91,6 +110,7 @@ function ControlsPlayer(props) {
     const handleSelectSong = (index) => {
         props.setCurrentSongIndex(index);
         setIsPlaying(true);
+        props.setSongPlayed(false);
     };
 
     // change current time and progress bar when click on progress bar

@@ -10,8 +10,6 @@ import { getAxiosReqAuth } from "../../Services/AxiosGet";
 function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
     const [lstFollows, setLstFollows] = useState([]);
 
-    console.log("LstAlbums -- lstAlbums : ", lstAlbums);
-
     useEffect(() => {
         if (isLoggedIn) {
             const token = getLocalStorage("token");

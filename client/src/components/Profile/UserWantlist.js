@@ -25,7 +25,10 @@ function UserWantlist({ setLstTracksPlay }) {
     const changeIdAlbumPlay = (idAlbum) => {
         // get tracks in lstAlbums with idAlbum
         const lstTracks = lstFavoris.filter((album) => album.a_id === idAlbum)[0].tracks;
-        console.log("UserWantlist -- lstFavoris", lstFavoris);
+        lstTracks.forEach((track) => {
+            track.t_id_album = idAlbum;
+            track.id_user = parseInt(idUser);
+        });
         setLstTracksPlay(lstTracks);
     };
 

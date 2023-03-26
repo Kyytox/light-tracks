@@ -58,7 +58,7 @@ function MainUserProfile() {
 
             <div>
                 {/* PlayerAudio */}
-                {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} songIndex={0} />}
+                {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} />}
             </div>
         </div>
     );

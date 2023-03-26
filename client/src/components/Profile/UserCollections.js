@@ -25,6 +25,10 @@ function UserCollections({ setLstTracksPlay }) {
     const changeIdAlbumPlay = (idAlbum) => {
         // get tracks in lstAlbums with idAlbum
         const lstTracks = lstCollections.filter((album) => album.a_id === idAlbum)[0].tracks;
+        lstTracks.forEach((track) => {
+            track.t_id_album = idAlbum;
+            track.id_user = parseInt(idUser);
+        });
         setLstTracksPlay(lstTracks);
     };
 

@@ -43,6 +43,10 @@ function MainExplorer() {
 
         // get tracks in lstAlbums with idAlbum
         const lstTracks = lstAlbums.filter((album) => album.a_id === idAlbum)[0].tracks;
+        lstTracks.forEach((track) => {
+            track.t_id_album = idAlbum;
+            track.id_user = parseInt(idUser);
+        });
         setLstTracksPlay(lstTracks);
     };
 
@@ -53,14 +57,12 @@ function MainExplorer() {
         }
     }, [lstAlbums, lstSalesFavoris]);
 
-    console.log("MainExplorer -- lstTracks", lstTracksPlay);
-
     return (
         <div>
             <h1>Explorer</h1>
 
             {/* PlayerAudio */}
-            {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} songIndex={0} />}
+            {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} />}
 
             {/* LstAlbums */}
             <LstAlbums

@@ -19,8 +19,6 @@ function PageUser() {
         });
     }, []);
 
-    console.log("userInfos", userInfos);
-
     return (
         <div>
             <div>PageUser</div>
