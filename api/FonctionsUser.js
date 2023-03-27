@@ -7,7 +7,7 @@ export const getUserById = (req, res) => {
 
     pool.query(
         `SELECT *
-        FROM public.profiles 
+        FROM public.             
         WHERE p_id_user = $1`,
         [req.query.idUser],
         (err, result) => {

@@ -3,14 +3,15 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { countries } from "../Settings/Countries";
 
-function SelectCountry(props) {
-    const { lstParams, setLstParams } = props;
+function SelectCountry({ lstParams, setLstParams, lstCountries }) {
+    console.log("SelectCountry --- lstParams", lstParams);
+    console.log("SelectCountry --- lstCountries", lstCountries);
 
     return (
         <Select
             labelId="select-country"
             id="select-country"
-            value={lstParams.code_country.value}
+            value={lstParams.country.value.map((country) => country.p_code_country)}
             label="Country"
             onChange={(e) => {
                 setLstParams({
@@ -28,16 +29,16 @@ function SelectCountry(props) {
                 });
             }}
         >
-            {countries.map((country) => (
-                <MenuItem value={country.code}>
+            {lstCountries.map((country) => (
+                <MenuItem value={country.p_code_country}>
                     <img
                         loading="lazy"
                         width="20"
-                        src={`https://flagcdn.com/w20/${country.code.toLowerCase()}.png`}
-                        srcSet={`https://flagcdn.com/w40/${country.code.toLowerCase()}.png 2x`}
+                        src={`https://flagcdn.com/w20/${country.p_code_country.toLowerCase()}.png`}
+                        srcSet={`https://flagcdn.com/w40/${country.p_code_country.toLowerCase()}.png 2x`}
                         alt="country flag"
                     />
-                    &ensp;{country.label}
+                    &ensp;{country.p_name_country}
                 </MenuItem>
             ))}
         </Select>

@@ -7,6 +7,7 @@ import Chip from "@mui/material/Chip";
 
 function SelectGenres({ lstValues, setLstValues, lstGenres }) {
     console.log("Select genres --- values", lstValues);
+    console.log("Select genres --- genres", lstGenres);
 
     //
     // handle change for Styles
