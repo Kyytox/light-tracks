@@ -6,6 +6,7 @@ import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { checkFollowed } from "../../Globals/FctsFollow";
 import LinkNavUser from "../User/LinkNavUser";
 import { getAxiosReqAuth } from "../../Services/AxiosGet";
+import { formatDate } from "../../Globals/GlobalFunctions";
 
 function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
     const [lstFollows, setLstFollows] = useState([]);
@@ -22,21 +23,6 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
             });
         }
     }, [isLoggedIn, idUser]);
-
-    // format date to display number of days, hours, minutes ago the album was published
-    const formatDate = (dateString) => {
-        const diff = (new Date() - new Date(dateString)) / 1000 / 60;
-
-        if (diff < 1) {
-            return "il y a quelques secondes";
-        } else if (diff < 60) {
-            return `il y a ${Math.floor(diff)} minutes`;
-        } else if (diff < 1440) {
-            return `il y a ${Math.floor(diff / 60)} heures`;
-        } else {
-            return `il y a ${Math.floor(diff / 1440)} jours`;
-        }
-    };
 
     // create a map to display
     // lst albums is an array of objects

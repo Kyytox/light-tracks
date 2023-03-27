@@ -40,18 +40,21 @@ export function changeBtnFavoris(data) {
     console.log("changeBtnFavoris");
     console.log("data", data);
 
-
     // browse data, for each album check if source == sale or favoris
     // if sale, remove icone favoris and add text "Album purchased"
     // if favoris, change color of icone favoris
-    
+
     data.map((album) => {
         if (album.source === "sale") {
             // remove icone favoris
             document.getElementById(`fav-album-${album.album_id}`).style.display = "none";
 
             // check if text "Album purchased" already exist
-            if (document.getElementById(`fav-album-${album.album_id}`).parentNode.querySelector(".album-purchased")) {
+            if (
+                document
+                    .getElementById(`fav-album-${album.album_id}`)
+                    .parentNode.querySelector(".album-purchased")
+            ) {
                 return;
             }
 
@@ -67,3 +70,17 @@ export function changeBtnFavoris(data) {
     });
 }
 
+// format date to display number of days, hours, minutes ago the album was published
+export function formatDate(dateString) {
+    const diff = (new Date() - new Date(dateString)) / 1000 / 60;
+
+    if (diff < 1) {
+        return "il y a quelques secondes";
+    } else if (diff < 60) {
+        return `il y a ${Math.floor(diff)} minutes`;
+    } else if (diff < 1440) {
+        return `il y a ${Math.floor(diff / 60)} heures`;
+    } else {
+        return `il y a ${Math.floor(diff / 1440)} jours`;
+    }
+}

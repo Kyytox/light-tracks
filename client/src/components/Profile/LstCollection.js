@@ -1,11 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import LinkNavUser from "../User/LinkNavUser";
+import { formatDate } from "../../Globals/GlobalFunctions";
 
 function LstCollection({ lstAlbums, changeIdAlbumPlay }) {
     // create a map to display
     // lst albums is an array of objects
     const LstDisplayAlbums = lstAlbums.map((album, key) => {
+        console.log("album", album);
+
         // const coverPath = backendUrl + "/" + "images/logo.png";
         const coverPath =
             "https://d3s5ffas0ydxtp.cloudfront.net/" + album.a_cover_path + "/" + album.a_cover;
@@ -13,6 +16,16 @@ function LstCollection({ lstAlbums, changeIdAlbumPlay }) {
             pathname: `/album/${album.a_id}`,
         };
         const stateLocation = { album: album };
+
+        //
+        // retrieve list of gm_name_genre in album.styles
+        const lstStyles = album.styles.map((style, key) => {
+            return (
+                <span key={key} className="badge badge-pill badge-primary">
+                    {style.gm_name_genre}
+                </span>
+            );
+        });
 
         return (
             <>
@@ -38,9 +51,10 @@ function LstCollection({ lstAlbums, changeIdAlbumPlay }) {
                             <div className="card-body" style={{ display: "flex" }}>
                                 <h5 className="card-title">{album.a_title}</h5>
                                 <p className="card-text">{album.a_artist}</p>
-                                <p className="card-text">{album.a_price}</p>
-                                <p className="card-text">{album.a_date_release}</p>
-                                <p className="card-text">{album.a_styles}</p>
+                                <p className="card-text">{album.a_price} -- </p>
+                                <p className="card-text">{formatDate(album.s_date_sale)}</p>
+                                {/* <p className="card-text">{album.a_styles}</p> */}
+                                <p className="card-text">{lstStyles}</p>
                                 <p className="card-text">{album.a_description}</p>
                             </div>
                         </div>
