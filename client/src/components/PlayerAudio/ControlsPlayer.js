@@ -41,7 +41,11 @@ function ControlsPlayer(props) {
         console.log("ControlsPlayer useEffect currentTime = ", currentTime);
 
         // send song played to server after 5 seconds
-        if (currentTime > 2 && !props.songPlayed) {
+        if (
+            currentTime > 2 &&
+            !props.songPlayed &&
+            props.playlist[props.currentSongIndex].id_user
+        ) {
             props.setSongPlayed(true);
             console.log(
                 "ControlsPlayer useEffect props.playlist[currentSongIndex] = ",

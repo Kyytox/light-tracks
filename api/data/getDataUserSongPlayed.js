@@ -11,6 +11,9 @@ export function getDataUserSongPlayed(req, res) {
         .readFileSync("/media/kytox/Jeux/DEV/LightTracks/api/data/dataUserSongPlayed.csv")
         .toString();
 
+    // vider le fichier sauf le header
+    // fs.writeFileSync("/media/kytox/Jeux/DEV/LightTracks/api/data/dataUserSongPlayed.csv", "idUser,idAlbum,idTrack\n");
+
     console.log("data", data);
 
     const description = {
@@ -33,4 +36,10 @@ export function getDataUserSongPlayed(req, res) {
 
     const outputValues = Object.values(tempDict);
     console.log(outputValues);
+
+    //     INSERT INTO ma_table (colonne1, colonne2, colonne3)
+    // VALUES
+    //   (valeur1a, valeur2a, valeur3a),
+    //   (valeur1b, valeur2b, valeur3b),
+    //   (valeur1c, valeur2c, valeur3c);
 }

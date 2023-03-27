@@ -17,7 +17,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-getDataUserSongPlayed();
+// getDataUserSongPlayed();
 
 app.use(router);
 
