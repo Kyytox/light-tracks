@@ -19,6 +19,7 @@ function PageAlbum() {
     const [lstTracks, setLstTracks] = useState([]);
     const idUser = getLocalStorage("id");
     const [isFollowed, setIsFollowed] = useState(false);
+    const [lstStyles, setLstStyles] = useState([]);
 
     // get tracks
     useEffect(() => {
@@ -28,6 +29,15 @@ function PageAlbum() {
         const response = getAxiosReq("/getTracks", data);
         response.then((data) => {
             setLstTracks(data);
+
+            const lstStyles = data[0].styles.map((style, key) => {
+                return (
+                    <span key={key} className="">
+                        {style.gm_name_genre} --
+                    </span>
+                );
+            });
+            setLstStyles(lstStyles);
         });
     }, [checkToken]);
 
@@ -154,7 +164,8 @@ function PageAlbum() {
             )}
             <h4>Id : {infosAlbum.a_id}</h4>
             <p>descr : {infosAlbum.a_description}</p>
-            <p>Styles : {infosAlbum.a_styles}</p>
+            {/* <p>Styles : {infosAlbum.a_styles}</p> */}
+            <p>Styles : {lstStyles}</p>
             {/* <PlayerAudio playList={playList} /> */}
 
             {lstTracks.length > 0 && <PlayerAudio playlist={lstTracks} />}

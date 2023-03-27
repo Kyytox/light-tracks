@@ -33,11 +33,23 @@ export const getAlbums = (req, res) => {
 export const getTracks = (req, res) => {
     const id = req.query.id;
 
-    pool.query("SELECT * FROM public.tracks WHERE t_id_album = $1", [id], (err, result) => {
-        if (err) {
-            console.error("Error executing SELECT:", err);
-        } else {
-            res.send(result.rows);
+    pool.query(
+        `SELECT *,
+            (SELECT json_agg(json_build_object(
+                'gm_id', gm.gm_id,
+                'gm_name_genre', gm.gm_name_genre))
+                FROM public.genres_music gm
+                WHERE gm.gm_id = ANY(a.a_styles)) as styles
+        FROM public.albums a 
+        JOIN public.tracks t ON a.a_id = t.t_id_album
+        WHERE t.t_id_album = $1;`,
+        [id],
+        (err, result) => {
+            if (err) {
+                console.error("Error executing SELECT:", err);
+            } else {
+                res.send(result.rows);
+            }
         }
-    });
+    );
 };
