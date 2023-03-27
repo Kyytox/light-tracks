@@ -81,6 +81,10 @@ export const getCollection = (req, res) => {
     pool.query(
         `SELECT *,
             (SELECT json_agg(json_build_object(
+                'gm_id', gm.gm_id,
+                'gm_name_genre', gm.gm_name_genre))
+            FROM public.genres_music gm WHERE gm.gm_id = ANY(a.a_styles)) as styles,
+            (SELECT json_agg(json_build_object(
                 't_id_album_track', t.t_id_album_track,
                 't_title', t.t_title,
                 't_file_path', t.t_file_path,
@@ -110,6 +114,10 @@ export const getFavoris = (req, res) => {
     // get all favoris from user id
     pool.query(
         `SELECT *,
+            (SELECT json_agg(json_build_object(
+                'gm_id', gm.gm_id,
+                'gm_name_genre', gm.gm_name_genre))
+            FROM public.genres_music gm WHERE gm.gm_id = ANY(a.a_styles)) as styles,
             (SELECT json_agg(json_build_object(
                 'usp_id_album', usp.usp_id_album,
                 'usp_id_album_track', usp.usp_id_album_track,

@@ -5,12 +5,15 @@ export const getAlbums = (req, res) => {
     pool.query(
         `SELECT *,
             (SELECT json_agg(json_build_object(
+                'gm_id', gm.gm_id,
+                'gm_name_genre', gm.gm_name_genre))
+            FROM public.genres_music gm WHERE gm.gm_id = ANY(a.a_styles)) as styles,
+            (SELECT json_agg(json_build_object(
                 't_id_album_track', t.t_id_album_track,
                 't_title', t.t_title,
                 't_file_path', t.t_file_path,
                 't_file_name_mp3', t.t_file_name_mp3,
-                't_nb_listen', t.t_nb_listen
-            ))
+                't_nb_listen', t.t_nb_listen))
             FROM public.tracks t WHERE t.t_id_album = a.a_id) as tracks
         FROM public.albums a
         JOIN public.profiles p ON a.a_id_user = p.p_id_user

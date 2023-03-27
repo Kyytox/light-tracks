@@ -67,6 +67,8 @@ function MainExplorer() {
         }
     }, [lstAlbums, lstSalesFavoris]);
 
+    console.log("MainExplorer -- lstAlbums = ", lstAlbums);
+
     return (
         <div>
             <h1>Explorer</h1>

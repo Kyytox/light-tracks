@@ -61,6 +61,16 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
             isFollowed = checkFollowed(lstFollows, album.a_id_user);
         }
 
+        //
+        // retrieve list of gm_name_genre in album.styles
+        const lstStyles = album.styles.map((style, key) => {
+            return (
+                <span key={key} className="badge badge-pill badge-primary">
+                    {style.gm_name_genre}
+                </span>
+            );
+        });
+
         return (
             <>
                 <nav id={"album-" + album.a_id} key={album.a_id}>
@@ -99,7 +109,8 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
                                 <p className="card-text">{album.a_price}-- </p>
                                 {/* <p className="card-text">{album.a_date_release} -- </p> */}
                                 <p className="card-text">{formatDate(album.a_date_create)} -- </p>
-                                <p className="card-text">{album.a_styles}-- </p>
+                                {/* <p className="card-text">{album.a_styles}-- </p> */}
+                                <p className="card-text">{lstStyles}-- </p>
                                 <p className="card-text">{album.a_description}-- </p>
                             </div>
                         </div>
