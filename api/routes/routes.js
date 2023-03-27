@@ -3,7 +3,7 @@ import express from "express";
 import { checkToken, authenticateToken } from "../services/token.js";
 import { signUp, login } from "../services/auth.js";
 import { createAlbum, countAlbumUser } from "../FunctionsAlbum.js";
-import { getAlbums, getTracks } from "../FunctionsExplorer.js";
+import { getAlbums, getTracks, getGenresAndCountry } from "../FunctionsExplorer.js";
 import { getAudioFileStream } from "../AwsS3.js";
 import { generateUniqueName, convertFileAudio } from "../FunctionsAlbum.js";
 import { buyAlbum } from "../FonctionsBuy.js";
@@ -75,6 +75,7 @@ router.post("/deleteAlbum", authenticateToken, deleteAlbum);
 // Explorer
 router.get("/getAlbums", getAlbums);
 router.get("/getTracks", getTracks);
+router.get("getGenresAndCountry", getGenresAndCountry);
 
 router.post("/getAudioFileStream", getAudioFileStream);
 router.post("/convertFileAudio", uploadConvertFile.single("file"), convertFileAudio);
