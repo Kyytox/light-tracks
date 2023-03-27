@@ -109,19 +109,6 @@ export const getFavoris = (req, res) => {
 
     // get all favoris from user id
     pool.query(
-        // `SELECT *,
-        //     (SELECT json_agg(json_build_object(
-        //         't_id_album_track', t.t_id_album_track,
-        //         't_title', t.t_title,
-        //         't_file_path', t.t_file_path,
-        //         't_file_name_mp3', t.t_file_name_mp3,
-        //         't_nb_listen', t.t_nb_listen))
-        //     FROM public.tracks t WHERE t.t_id_album = a.a_id) as tracks
-        // FROM public.favoris f
-        // JOIN public.albums a ON f.f_id_album  = a.a_id AND f.f_id_user = $1
-        // JOIN public.profiles p ON a.a_id_user = p.p_id_user
-        // ORDER BY f.f_date_fav DESC
-        // LIMIT 50;`,
         `SELECT *,
             (SELECT json_agg(json_build_object(
                 'usp_id_album', usp.usp_id_album,

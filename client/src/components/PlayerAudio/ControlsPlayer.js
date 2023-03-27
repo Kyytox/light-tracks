@@ -25,7 +25,16 @@ function ControlsPlayer(props) {
     // play/pause
     useEffect(() => {
         if (isPlaying) {
-            props.audioElement.current.play();
+            // verif if song is available for listening (t_nb_listen)
+            if (
+                props.playlist[props.currentSongIndex].t_cpt_play >=
+                props.playlist[props.currentSongIndex].t_nb_listen
+            ) {
+                props.audioElement.current.pause();
+                alert("This song is not available anymore");
+            } else {
+                props.audioElement.current.play();
+            }
         } else {
             props.audioElement.current.pause();
         }
@@ -36,28 +45,28 @@ function ControlsPlayer(props) {
         props.audioElement.current.volume = volume;
     }, [props.audioElement, volume]);
 
-    // update current time and progress bar
+    // update current time and progress bar and increment song played to server
     useEffect(() => {
-        console.log("ControlsPlayer useEffect currentTime = ", currentTime);
+        // console.log("ControlsPlayer useEffect currentTime = ", currentTime);
 
-        // send song played to server after 5 seconds
-        if (
-            currentTime > 2 &&
-            !props.songPlayed &&
-            props.playlist[props.currentSongIndex].id_user
-        ) {
-            props.setSongPlayed(true);
-            console.log(
-                "ControlsPlayer useEffect props.playlist[currentSongIndex] = ",
-                props.playlist[props.currentSongIndex]
-            );
+        // // send song played to server after 5 seconds
+        // if (
+        //     currentTime > 2 &&
+        //     !props.songPlayed &&
+        //     props.playlist[props.currentSongIndex].id_user
+        // ) {
+        //     props.setSongPlayed(true);
+        //     console.log(
+        //         "ControlsPlayer useEffect props.playlist[currentSongIndex] = ",
+        //         props.playlist[props.currentSongIndex]
+        //     );
 
-            const data = props.playlist[props.currentSongIndex];
-            const response = postAxiosReq("/cptSongPlayed", data);
-            response.then((data) => {
-                console.log("ControlsPlayer useEffect data = ", data);
-            });
-        }
+        //     const data = props.playlist[props.currentSongIndex];
+        //     const response = postAxiosReq("/cptSongPlayed", data);
+        //     response.then((data) => {
+        //         console.log("ControlsPlayer useEffect data = ", data);
+        //     });
+        // }
 
         if (props.audioElement.current) {
             // set current time and progress bar

@@ -9,7 +9,7 @@ function UserWantlist({ setLstTracksPlay }) {
     const [lstFavoris, setLstFavoris] = useState([]);
     const idUser = getLocalStorage("id");
 
-    console.log("UserWantlist -- idUser", idUser);
+    console.log("UserWantlist -- lstFavoris = ", lstFavoris);
 
     // get favoris
     useEffect(() => {
@@ -21,14 +21,26 @@ function UserWantlist({ setLstTracksPlay }) {
         });
     }, []);
 
-    // change idAlbumPlay and charge tracks
+    // // change idAlbumPlay and charge tracks
     const changeIdAlbumPlay = (idAlbum) => {
-        // get tracks in lstAlbums with idAlbum
-        const lstTracks = lstFavoris.filter((album) => album.a_id === idAlbum)[0].tracks;
-        lstTracks.forEach((track) => {
+        const album = lstFavoris.find((album) => album.a_id === idAlbum);
+        if (!album) return;
+
+        const lstTracks = album.tracks.map((track) => {
             track.t_id_album = idAlbum;
             track.id_user = parseInt(idUser);
+
+            // find cptPlay in album.user_song_played
+            const cptPlay = album.user_song_played.find(
+                (trackCptPlay) => trackCptPlay.usp_id_album_track === track.t_id_album_track
+            );
+
+            // insert cptPlay in track else cptPlay = 0
+            track.t_cpt_play = cptPlay ? cptPlay.usp_cpt_play : 0;
+
+            return track;
         });
+
         setLstTracksPlay(lstTracks);
     };
 
