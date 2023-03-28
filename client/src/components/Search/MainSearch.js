@@ -14,7 +14,7 @@ function MainSearch() {
     });
 
     useEffect(() => {
-        const response = getAxiosReq("/getStylesAndCountry", {});
+        const response = getAxiosReq("/getStylesCountryInAlbums", {});
         response.then((data) => {
             // create array with styles distinct
             const arrStyles = [];
@@ -28,12 +28,12 @@ function MainSearch() {
             const arrCountries = [];
             data.forEach((item) => {
                 const existingCountry = arrCountries.find(
-                    (c) => c.p_code_country === item.p_code_country
+                    (c) => c.c_code_country === item.p_code_country
                 );
                 if (!existingCountry) {
                     arrCountries.push({
-                        p_code_country: item.p_code_country,
-                        p_name_country: item.p_name_country,
+                        c_code_country: item.p_code_country,
+                        c_name_country: item.p_name_country,
                     });
                 }
             });
@@ -42,10 +42,6 @@ function MainSearch() {
             setLstCountry(arrCountries);
         });
     }, []);
-
-    console.log("MainSearch -- lstGenres = ", lstGenres);
-    console.log("MainSearch -- lstCountry = ", lstCountry);
-    console.log("MainSearch -- lstParams = ", lstParams);
 
     return (
         <div>

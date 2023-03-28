@@ -18,12 +18,12 @@ function ParamProfile() {
     const idUser = getLocalStorage("id");
 
     const [lstGenres, setLstGenres] = useState([]);
+    const [lstCountries, setLstCountries] = useState([]);
 
     const [lstParams, setLstParams] = useState({
         avatar: { value: "", error: false, helperText: "" },
         bio: { value: "", error: false, helperText: "" },
         email: { value: "", error: false, helperText: "" },
-        code_country: { value: "", error: false, helperText: "" },
         country: { value: "", error: false, helperText: "" },
         styles: { value: [], error: false, helperText: "" },
     });
@@ -40,23 +40,36 @@ function ParamProfile() {
                 avatar: { value: data.avatar, error: false, helperText: "" },
                 bio: { value: data.bio, error: false, helperText: "" },
                 email: { value: data.email, error: false, helperText: "" },
-                code_country: {
-                    value: data.code_country,
+                country: {
+                    value: [{ c_code_country: data.code_country, c_name_country: data.country }],
                     error: false,
                     helperText: "",
                 },
-                country: { value: data.country, error: false, helperText: "" },
                 styles: { value: data.styles, error: false, helperText: "" },
             });
         });
 
         //
         // get all genres from getGenres with axios
-        const response2 = getAxiosReq("/getGenres", {});
+        const response2 = getAxiosReq("/getStylesCountries", {});
         response2.then((data) => {
-            setLstGenres(data);
+            setLstGenres(data.styles);
+            setLstCountries(data.countries);
         });
     }, []);
+
+    //
+    // remove all element of lstParams.country.value but not the last one
+    // because in this page we can only select one country
+    useEffect(() => {
+        if (lstParams.country.value.length > 1) {
+            const lastCountry = lstParams.country.value[lstParams.country.value.length - 1];
+            setLstParams({
+                ...lstParams,
+                country: { value: [lastCountry], error: false, helperText: "" },
+            });
+        }
+    }, [lstParams.country.value]);
 
     //
     // handle change for inputs
@@ -95,8 +108,8 @@ function ParamProfile() {
                     avatar: lstParams.avatar.value,
                     bio: lstParams.bio.value,
                     email: lstParams.email.value,
-                    code_country: lstParams.code_country.value,
-                    name_country: lstParams.country.value,
+                    code_country: lstParams.country.value[0].c_code_country,
+                    name_country: lstParams.country.value[0].c_name_country,
                     styles_music: styles,
                 };
 
@@ -146,7 +159,11 @@ function ParamProfile() {
                 />
 
                 {/* Country */}
-                <SelectCountry lstParams={lstParams} setLstParams={setLstParams} />
+                <SelectCountry
+                    lstParams={lstParams}
+                    setLstParams={setLstParams}
+                    lstCountries={lstCountries}
+                />
 
                 {/* Genres Music */}
                 <SelectGenres

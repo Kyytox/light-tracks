@@ -1,44 +1,51 @@
 import React from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { countries } from "../Settings/Countries";
 
 function SelectCountry({ lstParams, setLstParams, lstCountries }) {
-    console.log("SelectCountry --- lstParams", lstParams);
-    console.log("SelectCountry --- lstCountries", lstCountries);
+    const handleCountryChange = (e) => {
+        const country = lstCountries.find(
+            (c) => c.c_code_country === e.target.value[e.target.value.length - 1]
+        );
+
+        // add new country to lstParams don't delete old country
+        setLstParams({
+            ...lstParams,
+            country: {
+                value: [
+                    ...lstParams.country.value,
+                    {
+                        c_code_country: country.c_code_country,
+                        c_name_country: country.c_name_country,
+                    },
+                ],
+                error: false,
+                helperText: "",
+            },
+        });
+    };
 
     return (
         <Select
             labelId="select-country"
+            multiple
             id="select-country"
-            value={lstParams.country.value.map((country) => country.p_code_country)}
+            value={
+                lstParams.country.value ? lstParams.country.value.map((c) => c.c_code_country) : []
+            }
             label="Country"
-            onChange={(e) => {
-                setLstParams({
-                    ...lstParams,
-                    code_country: {
-                        value: e.target.value,
-                        error: false,
-                        helperText: "",
-                    },
-                    country: {
-                        value: countries.find((country) => country.code === e.target.value).label,
-                        error: false,
-                        helperText: "",
-                    },
-                });
-            }}
+            onChange={(e) => handleCountryChange(e)}
         >
             {lstCountries.map((country) => (
-                <MenuItem value={country.p_code_country}>
+                <MenuItem value={country.c_code_country}>
                     <img
                         loading="lazy"
                         width="20"
-                        src={`https://flagcdn.com/w20/${country.p_code_country.toLowerCase()}.png`}
-                        srcSet={`https://flagcdn.com/w40/${country.p_code_country.toLowerCase()}.png 2x`}
+                        src={`https://flagcdn.com/w20/${country.c_code_country.toLowerCase()}.png`}
+                        srcSet={`https://flagcdn.com/w40/${country.c_code_country.toLowerCase()}.png 2x`}
                         alt="country flag"
                     />
-                    &ensp;{country.p_name_country}
+                    &ensp;{country.c_name_country}
                 </MenuItem>
             ))}
         </Select>

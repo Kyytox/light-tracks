@@ -3,7 +3,7 @@ import express from "express";
 import { checkToken, authenticateToken } from "../services/token.js";
 import { signUp, login } from "../services/auth.js";
 import { createAlbum, countAlbumUser } from "../FunctionsAlbum.js";
-import { getAlbums, getTracks, getStylesAndCountry } from "../FunctionsExplorer.js";
+import { getAlbums, getTracks, getStylesCountryInAlbums } from "../FunctionsExplorer.js";
 import { getAudioFileStream } from "../AwsS3.js";
 import { generateUniqueName, convertFileAudio } from "../FunctionsAlbum.js";
 import { buyAlbum } from "../FonctionsBuy.js";
@@ -21,7 +21,7 @@ import {
 } from "../FonctionsProfile.js";
 import { getFollows, getFollowsByIdUser, followUser, unfollowUser } from "../FonctionsFollow.js";
 import { getUserById } from "../FonctionsUser.js";
-import { getGenres } from "../FunctionsGlobals.js";
+import { getStylesCountries } from "../FunctionsGlobals.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -65,7 +65,7 @@ router.post("/login", login);
 router.post("/verifyUser", checkToken);
 
 // Global Functions
-router.get("/getGenres", getGenres);
+router.get("/getStylesCountries", getStylesCountries);
 
 // Album
 router.post("/createAlbum", upload.array("file"), createAlbum);
@@ -75,7 +75,7 @@ router.post("/deleteAlbum", authenticateToken, deleteAlbum);
 // Explorer
 router.get("/getAlbums", getAlbums);
 router.get("/getTracks", getTracks);
-router.get("/getStylesAndCountry", getStylesAndCountry);
+router.get("/getStylesCountryInAlbums", getStylesCountryInAlbums);
 
 router.post("/getAudioFileStream", getAudioFileStream);
 router.post("/convertFileAudio", uploadConvertFile.single("file"), convertFileAudio);

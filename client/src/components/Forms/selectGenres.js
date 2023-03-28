@@ -6,14 +6,9 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Chip from "@mui/material/Chip";
 
 function SelectGenres({ lstValues, setLstValues, lstGenres }) {
-    console.log("Select genres --- values", lstValues);
-    console.log("Select genres --- genres", lstGenres);
-
     //
     // handle change for Styles
     const handleStyleChange = (newValue) => {
-        console.log("newValue", newValue);
-
         // modify the key of newValues gm_id => id and gm_name_genre => name
         const newValues = newValue.map((value) => {
             return { id: value.gm_id, name: value.gm_name_genre };
