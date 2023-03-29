@@ -1,11 +1,10 @@
 import React from "react";
 
 // lib Material UI
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
 import Chip from "@mui/material/Chip";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
 
 function SelectCountry({ lstParams, setLstParams, lstCountries }) {
     const handleCountryChange = (e) => {
@@ -52,12 +51,6 @@ function SelectCountry({ lstParams, setLstParams, lstCountries }) {
                         ? lstParams.country.value.map((c) => c.c_code_country)
                         : []
                 }
-                freeSolo
-                renderTags={(value, getTagProps) =>
-                    value.map((option, index) => (
-                        <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-                    ))
-                }
                 onChange={(e) => handleCountryChange(e)}
             >
                 {lstCountries.map((country) => (
@@ -72,11 +65,12 @@ function SelectCountry({ lstParams, setLstParams, lstCountries }) {
                         &ensp;{country.c_name_country}
                     </MenuItem>
                 ))}
-                {/* buttton for clear */}
             </Select>
-            <button onClick={(e) => handleCountryClear(e)} type="button">
+
+            {/* buttton for clear */}
+            <Button variant="contained" color="secondary" onClick={(e) => handleCountryClear(e)}>
                 Clear
-            </button>
+            </Button>
         </>
     );
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SelectCountry from "../Forms/SelectCountry";
 import SelectGenres from "../Forms/selectGenres";
 import { getAxiosReq } from "../../Services/AxiosGet";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import FormParamTextField from "../Forms/FormParamTextField";
 
 // create component for search album by style or country
@@ -60,7 +60,6 @@ function MainSearch() {
             country: lstParams.country.value,
         };
 
-        console.log("data", data);
         const response = getAxiosReq("/getSearch", data);
         response.then((data) => {
             console.log("data", data);
@@ -97,9 +96,15 @@ function MainSearch() {
                     lstCountries={lstCountry}
                 />
 
-                <button type="submit" onClick={onSubmit}>
+                <Button
+                    variant="contained"
+                    type="submit"
+                    onClick={(e) => {
+                        onSubmit(e);
+                    }}
+                >
                     Search
-                </button>
+                </Button>
             </form>
         </div>
     );
