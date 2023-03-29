@@ -1,5 +1,7 @@
 import pool from "./database/database.js";
 
+//
+// get search results from database with search, styles and country
 export const getSearch = (req, res) => {
     console.log("API /getSearch");
     const search = req.query.search.toLowerCase();
