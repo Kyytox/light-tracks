@@ -22,6 +22,8 @@ import {
 import { getFollows, getFollowsByIdUser, followUser, unfollowUser } from "../FonctionsFollow.js";
 import { getUserById } from "../FonctionsUser.js";
 import { getStylesCountries } from "../FunctionsGlobals.js";
+import { cptSongPlayed } from "../FctPlayerAudio.js";
+import { getSearch } from "../FctSearch.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -31,7 +33,6 @@ dotenv.config();
 import multer from "multer";
 import multerS3 from "multer-s3";
 import { s3Client } from "../AwsS3.js";
-import { cptSongPlayed } from "../FctPlayerAudio.js";
 
 const storage2 = multerS3({
     s3: s3Client,
@@ -79,6 +80,9 @@ router.get("/getStylesCountryInAlbums", getStylesCountryInAlbums);
 
 router.post("/getAudioFileStream", getAudioFileStream);
 router.post("/convertFileAudio", uploadConvertFile.single("file"), convertFileAudio);
+
+// Search
+router.get("/getSearch", getSearch);
 
 // Buy
 router.post("/buyAlbum", buyAlbum);

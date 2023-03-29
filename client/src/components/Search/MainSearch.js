@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import SelectCountry from "../Forms/SelectCountry";
 import SelectGenres from "../Forms/selectGenres";
 import { getAxiosReq } from "../../Services/AxiosGet";
+import { TextField } from "@mui/material";
+import FormParamTextField from "../Forms/FormParamTextField";
 
 // create component for search album by style or country
 function MainSearch() {
@@ -9,6 +11,7 @@ function MainSearch() {
     const [lstCountry, setLstCountry] = useState([]);
 
     const [lstParams, setLstParams] = useState({
+        search: { value: "", error: false, helperText: "" },
         styles: { value: [], error: false, helperText: "" },
         country: { value: [], error: false, helperText: "" },
     });
@@ -43,9 +46,43 @@ function MainSearch() {
         });
     }, []);
 
+    // change value of lstParams search
+    const handleChange = (key, value) => {
+        setLstParams({ ...lstParams, [key]: { value: value, error: false, helperText: "" } });
+    };
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+
+        const data = {
+            search: lstParams.search.value,
+            styles: lstParams.styles.value,
+            country: lstParams.country.value,
+        };
+
+        console.log("data", data);
+        const response = getAxiosReq("/getSearch", data);
+        response.then((data) => {
+            console.log("data", data);
+        });
+    };
+
+    console.log("lstParams", lstParams);
+
     return (
         <div>
             <form>
+                {/* Textfield */}
+                <FormParamTextField
+                    lstParams={lstParams}
+                    handleChanges={handleChange}
+                    name="search"
+                    label="Search"
+                    placeholder="Search"
+                    type="text"
+                    keyVal="search"
+                />
+
                 {/* Styles */}
                 <SelectGenres
                     lstValues={lstParams}
@@ -59,6 +96,10 @@ function MainSearch() {
                     setLstParams={setLstParams}
                     lstCountries={lstCountry}
                 />
+
+                <button type="submit" onClick={onSubmit}>
+                    Search
+                </button>
             </form>
         </div>
     );
