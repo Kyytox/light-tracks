@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 
 import TextField from "@mui/material/TextField";
-import { Autocomplete } from "@mui/material";
+import { Checkbox } from "@mui/material";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
 import FormHelperText from "@mui/material/FormHelperText";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
@@ -18,6 +20,46 @@ function AlbumAdder({
     topFileConvert,
 }) {
     const [lstGenres, setLstGenres] = useState([]);
+
+    // change checkbox value
+    const handleChangeCheckbox = (e) => {
+        const { name, checked } = e.target;
+
+        console.log("e.target", e.target);
+        console.log("name", name);
+        console.log("checked", checked);
+
+        // browse all key start with "top_"; if key = name, set value = true else set value = false
+        const newAlbum = Object.keys(album).reduce((acc, key) => {
+            if (key.startsWith("top_")) {
+                if (key === name) {
+                    if (key === "top_free" || key === "top_custom_price") {
+                        acc["price"] = {
+                            ...album["price"],
+                            value: "",
+                            error: false,
+                            helperText: "",
+                        };
+                    }
+                    acc[key] = { ...album[key], value: checked, error: false, helperText: "" };
+                } else {
+                    acc[key] = { ...album[key], value: false, error: false, helperText: "" };
+                }
+            }
+            return acc;
+        }, {});
+
+        // if all top_ = false, set top_price = true
+        if (
+            !newAlbum.top_free.value &&
+            !newAlbum.top_custom_price.value &&
+            !newAlbum.top_price.value
+        ) {
+            newAlbum.top_price = { ...album.top_price, value: true, error: false, helperText: "" };
+        }
+
+        setAlbum({ ...album, ...newAlbum });
+    };
 
     useEffect(() => {
         // get all genres
@@ -86,21 +128,65 @@ function AlbumAdder({
                     helperText={album.artist.helperText}
                 />
                 {/* price */}
-                <TextField
-                    required
-                    disabled={topFileConvert}
-                    id="album-price"
-                    variant="outlined"
-                    label="price"
-                    value={album.price.value}
-                    type="number"
-                    onChange={(e) => onAlbumChange("price", e.target.value)}
-                    error={album.price.error}
-                    helperText={album.price.helperText}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                    }}
-                />
+                <FormGroup>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                id="album-top-price"
+                                label="top_price"
+                                name="top_price"
+                                value={album.top_price.value}
+                                checked={album.top_price.value}
+                                onChange={handleChangeCheckbox}
+                            />
+                        }
+                        label="I choose the price"
+                    />
+
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                id="album-top-custom-price"
+                                label="top_custom_price"
+                                name="top_custom_price"
+                                value={album.top_custom_price.value}
+                                checked={album.top_custom_price.value}
+                                onChange={handleChangeCheckbox}
+                            />
+                        }
+                        label="Fans choose the price"
+                    />
+
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                id="album-top-free"
+                                label="top_free"
+                                name="top_free"
+                                value={album.top_free.value}
+                                checked={album.top_free.value}
+                                onChange={handleChangeCheckbox}
+                            />
+                        }
+                        label="Album is free"
+                    />
+                    <TextField
+                        required
+                        disabled={topFileConvert || !album.top_price.value}
+                        id="album-price"
+                        variant="outlined"
+                        label="price"
+                        value={album.price.value}
+                        type="number"
+                        onChange={(e) => onAlbumChange("price", e.target.value)}
+                        error={album.price.error}
+                        helperText={album.price.helperText}
+                        InputProps={{
+                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                        }}
+                    />
+                </FormGroup>
+
                 {/* date */}
                 <TextField
                     required
@@ -128,10 +214,8 @@ function AlbumAdder({
                     rows={10}
                     onChange={(e) => onAlbumChange("descr", e.target.value)}
                 />
-
                 {/* genres */}
                 <SelectGenres lstValues={album} setLstValues={setAlbum} lstGenres={lstGenres} />
-
                 {/* Tags */}
                 <FormAddTags album={album} setAlbum={setAlbum} />
             </div>

@@ -21,6 +21,9 @@ function MusicAdder() {
         date_release: { value: "", error: false, helperText: "" },
         styles: { value: [], error: false, helperText: "" },
         tags: { value: [], error: false, helperText: "" },
+        top_price: { value: true, error: false, helperText: "" },
+        top_free: { value: false, error: false, helperText: "" },
+        top_custom_price: { value: false, error: false, helperText: "" },
     });
 
     const [lstTrack, setLstTrack] = useState([
@@ -100,28 +103,26 @@ function MusicAdder() {
     ///////////////////////////
     const handleAddTrack = (index, field, value) => {
         const newMusicList = [...lstTrack];
+        const error = value && !acceptedFormatsTrack.includes(value.type);
+        const errSize = value && value.size > 260000000;
 
-        if (field === "file") {
-            const error = value && !acceptedFormatsTrack.includes(value.type);
-            const errSize = value && value.size > 260000000;
-            newMusicList[index]["fileOrigin"] = {
-                error: error || errSize,
-                helperText: error
-                    ? "This file format is not accepted"
-                    : errSize
-                    ? "the file size is greater than 260 MB"
-                    : "",
-                value: error || errSize ? null : value,
-            };
+        newMusicList[index]["fileOrigin"] = {
+            error: error || errSize,
+            helperText: error
+                ? "This file format is not accepted"
+                : errSize
+                ? "the file size is greater than 260 MB"
+                : "",
+            value: error || errSize ? null : value,
+        };
 
-            // if no error and no error size, create fromdata and convert file
-            if (!error && !errSize) {
-                const formDataConvert = new FormData();
-                formDataConvert.append("file", value);
+        // if no error and no error size, create fromdata and convert file
+        if (!error && !errSize) {
+            const formDataConvert = new FormData();
+            formDataConvert.append("file", value);
 
-                // call convertFile function to convert the file to mp3
-                convertFile(index, newMusicList, formDataConvert);
-            }
+            // call convertFile function to convert the file to mp3
+            convertFile(index, newMusicList, formDataConvert);
         }
     };
 
@@ -176,19 +177,21 @@ function MusicAdder() {
     // Delete File track and Image Album
     //
     ///////////////////////////
-    // function to delete a file of track
     const handleFileDelete = (index) => {
-        console.log("index", index);
         const delMusicFile = [...lstTrack];
-        delMusicFile[index]["file"] = { error: false, helperText: "", value: null };
         delMusicFile[index]["fileOrigin"] = { error: false, helperText: "", value: null };
         delMusicFile[index]["fileMp3"] = { error: false, helperText: "", value: null };
+
         setLstTrack(delMusicFile);
         // quand on va faire le CSS il faudra récup le div du file input pour pouvoir reset le bon file input car actuelement on reset uniquement le dernier file input
         fileInputRef.current.value = null;
     };
 
-    // function to delete a image of album
+    ///////////////////////////
+    //
+    // Delete Image Album
+    //
+    ///////////////////////////
     const handleImgDelete = (field) => {
         setAlbum({ ...album, [field]: { error: false, helperText: "", value: null } });
         ImgInputRef.current.value = null;
@@ -210,23 +213,36 @@ function MusicAdder() {
         // auto complete the fields of the new track
         autoComplTrack();
 
-        // browse the index of dictionary album and check if all fields are filled
+        //
+        // check error in album
         const newErrorAlbum = { ...album };
         for (const [key, value] of Object.entries(album)) {
             if (key !== "descr" && key !== "date_release") {
-                if (!value.value || value.value.length === 0) {
-                    errorForm = true;
-                    newErrorAlbum[key] = {
-                        ...newErrorAlbum[key],
-                        error: true,
-                        helperText: "This field is required",
-                    };
+                if (key === "price") {
+                    if (album["top_price"].value && !value.value) {
+                        errorForm = true;
+                        newErrorAlbum[key] = {
+                            ...newErrorAlbum[key],
+                            error: true,
+                            helperText: "This field is required",
+                        };
+                    }
+                } else {
+                    if (!value.value || value.value.length === 0) {
+                        errorForm = true;
+                        newErrorAlbum[key] = {
+                            ...newErrorAlbum[key],
+                            error: true,
+                            helperText: "This field is required",
+                        };
+                    }
                 }
             }
             setAlbum(newErrorAlbum);
         }
 
-        // browse the list of Tracks and for each track, browse the index of dictionary and check if all fields are filled
+        //
+        // check error in lstTrack
         const newErrorTrack = [...lstTrack];
         for (let i = 0; i < lstTrack.length; i++) {
             for (const [key, value] of Object.entries(lstTrack[i])) {
