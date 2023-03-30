@@ -25,15 +25,18 @@ function AlbumAdder({
     const handleChangeCheckbox = (e) => {
         const { name, checked } = e.target;
 
-        console.log("e.target", e.target);
-        console.log("name", name);
-        console.log("checked", checked);
-
         // browse all key start with "top_"; if key = name, set value = true else set value = false
         const newAlbum = Object.keys(album).reduce((acc, key) => {
             if (key.startsWith("top_")) {
                 if (key === name) {
                     if (key === "top_free" || key === "top_custom_price") {
+                        acc["price"] = {
+                            ...album["price"],
+                            value: 0,
+                            error: false,
+                            helperText: "",
+                        };
+                    } else {
                         acc["price"] = {
                             ...album["price"],
                             value: "",

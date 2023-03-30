@@ -4,6 +4,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import FormHelperText from "@mui/material/FormHelperText";
 import CircularProgress from "@mui/material/CircularProgress";
+import { Checkbox, FormControlLabel } from "@mui/material";
 
 function TracksAdder({
     lstTrack,
@@ -13,11 +14,23 @@ function TracksAdder({
     handleAddTrack,
     handleFileDelete,
     topFileConvert,
+    topCalculatePriceAuto,
+    setTopCalculatePriceAuto,
 }) {
     return (
         <div>
             <h1>Add Tracks</h1>
             <div>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={topCalculatePriceAuto}
+                            onChange={(e) => setTopCalculatePriceAuto(e.target.checked)}
+                        />
+                    }
+                    label="Calculate price automatically"
+                />
+
                 {lstTrack.map((music, index) => (
                     <div key={index}>
                         {/* title */}
@@ -99,7 +112,7 @@ function TracksAdder({
                             id="track-price"
                             variant="outlined"
                             label="price"
-                            value={lstTrack.price}
+                            value={music.price.value}
                             type="number"
                             onChange={(e) => onTrackChange(index, "price", e.target.value)}
                             error={music.price.error}

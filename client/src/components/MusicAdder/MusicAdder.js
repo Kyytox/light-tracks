@@ -43,6 +43,9 @@ function MusicAdder() {
     // state to know if the file is converting to mp3
     const [topFileConvert, setTopFileConvert] = useState(false);
 
+    // top for Calculate Price Auto
+    const [topCalculatePriceAuto, setTopCalculatePriceAuto] = useState(false);
+
     // formats accepted for the file track
     const acceptedFormatsTrack = ["audio/mpeg", "audio/flac", "audio/wav"];
     const acceptedFormatsImg = ["image/png", "image/jpeg", "image/jpg"];
@@ -66,6 +69,25 @@ function MusicAdder() {
                 console.log(err);
             });
     }, [idUser]);
+
+    ///////////////////////////
+    //
+    // Calculate Price Auto
+    //
+    ///////////////////////////
+    useEffect(() => {
+        console.log("useEffect Calculate Price Auto");
+
+        if (topCalculatePriceAuto) {
+            // calculate the price of each track
+            const newTrack = [...lstTrack];
+            for (let i = 0; i < lstTrack.length; i++) {
+                const priceTrack = (album.price.value / lstTrack.length).toFixed(1);
+                newTrack[i].price = { ...newTrack[i].price, value: priceTrack };
+            }
+            setLstTrack(newTrack);
+        }
+    }, [album.price.value, lstTrack.length, topCalculatePriceAuto]);
 
     ///////////////////////////
     //
@@ -319,6 +341,11 @@ function MusicAdder() {
         }
     };
 
+    ///////////////////////////
+    //
+    // Auto Complete Track Fields
+    //
+    ///////////////////////////
     const autoComplTrack = () => {
         // browse list of Tracks and check for index title, artist, date_release, are empty
         // if they are empty, we set listTrack with value artist, date_release of album and title with track.filename
@@ -348,7 +375,11 @@ function MusicAdder() {
         setLstTrack(newTrack);
     };
 
-    // function to add a new track to the list
+    ///////////////////////////
+    //
+    // Add New Form Track
+    //
+    ///////////////////////////
     const handleAddFormTrack = () => {
         // auto complete the fields of the new track
         autoComplTrack();
@@ -399,6 +430,8 @@ function MusicAdder() {
                         handleTrackChange(index, field, newTrack)
                     }
                     topFileConvert={topFileConvert}
+                    topCalculatePriceAuto={topCalculatePriceAuto}
+                    setTopCalculatePriceAuto={setTopCalculatePriceAuto}
                 />
                 <Button disabled={topFileConvert} variant="contained" type="submit" color="success">
                     Create Album
