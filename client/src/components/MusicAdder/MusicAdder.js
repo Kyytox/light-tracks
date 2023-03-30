@@ -10,15 +10,17 @@ import TracksAdder from "./TracksAdder";
 
 function MusicAdder() {
     const idUser = getLocalStorage("id");
+    const nameUser = getLocalStorage("username");
     const [idAlbum, setIdAlbum] = useState(0);
     const [album, setAlbum] = useState({
         title: { value: "", error: false, helperText: "" },
-        artist: { value: "", error: false, helperText: "" },
+        artist: { value: nameUser, error: false, helperText: "" },
         image: { value: null, url: "", error: false, helperText: "" },
         price: { value: "", error: false, helperText: "" },
         descr: { value: "", error: false, helperText: "" },
         date_release: { value: "", error: false, helperText: "" },
         styles: { value: [], error: false, helperText: "" },
+        tags: { value: [], error: false, helperText: "" },
     });
 
     const [lstTrack, setLstTrack] = useState([
@@ -31,9 +33,11 @@ function MusicAdder() {
             price: { value: "", error: false, helperText: "" },
             date_release: { value: "", error: false, helperText: "" },
             lyrics: { value: "", error: false, helperText: "" },
-            nb_listens: { value: 0, error: false, helperText: "" },
+            nb_listens: { value: 20, error: false, helperText: "" },
         },
     ]);
+
+    const [topFileConvert, setTopFileConvert] = useState(true);
 
     // formats accepted for the file track
     const acceptedFormatsTrack = ["audio/mpeg", "audio/flac", "audio/wav"];
@@ -134,6 +138,7 @@ function MusicAdder() {
     //
     ///////////////////////////
     const convertFile = async (index, newMusicList, file) => {
+        setTopFileConvert(false);
         await axios
             .post(backendUrl + "/convertFileAudio", file, {
                 headers: {
@@ -151,6 +156,7 @@ function MusicAdder() {
             .catch((err) => {
                 console.log(err);
             });
+        setTopFileConvert(true);
     };
 
     ///////////////////////////
@@ -181,6 +187,7 @@ function MusicAdder() {
     // create a function that will send the form data to the server
     const handleSubmit = (e) => {
         e.preventDefault();
+        const token = localStorage.getItem("token");
         var errorForm = false;
         console.log("album", album);
         console.log("lstTrack", lstTrack);
@@ -246,12 +253,13 @@ function MusicAdder() {
             formData.append("date_release", album.date_release.value);
             formData.append("descr", album.descr.value);
             formData.append("styles", [styles]);
+            formData.append("tags", album.tags.value);
 
             // add the tracks data to the form data
             lstTrack.forEach((track, index) => {
                 formData.append(`trackId${index + 1}`, track.id.value);
                 formData.append(`trackTitle${index + 1}`, track.title.value);
-                formData.append(`trackArtist${index + 1}`, track.artist.value);
+                formData.append(`trackArtist${index + 1}`, album.artist.value);
                 formData.append(`file`, track.fileOrigin.value, track.fileOrigin.value.name); // file origin
                 formData.append(`file`, track.fileMp3.value, track.fileMp3.value.name + ".mp3"); // file convert in mp3
                 formData.append(`trackPrice${index + 1}`, track.price.value);
@@ -265,6 +273,7 @@ function MusicAdder() {
                 .post(backendUrl + "/createAlbum", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
+                        Authorization: "Bearer " + token,
                     },
                 })
                 .then((res) => {
@@ -290,9 +299,11 @@ function MusicAdder() {
                 };
             }
         }
-        if (!lstTrack[i].artist.value) {
-            newTrack[i].artist = { ...newTrack[i].artist, value: album.artist.value };
-        }
+        // if (!lstTrack[i].artist.value) {
+        //     newTrack[i].artist = { ...newTrack[i].artist, value: album.artist.value };
+        // }
+
+        // check if date_release is empty
         if (!lstTrack[i].date_release.value) {
             newTrack[i].date_release = {
                 ...newTrack[i].date_release,
@@ -337,6 +348,7 @@ function MusicAdder() {
                     ImgInputRef={ImgInputRef}
                     handleImgDelete={(field) => handleImgDelete(field)}
                     onAlbumChange={(field, newAlbum) => handleAlbumChange(field, newAlbum)}
+                    topFileConvert={topFileConvert}
                 />
                 <br></br>
                 <TracksAdder
@@ -347,8 +359,9 @@ function MusicAdder() {
                     onTrackChange={(index, field, newTrack) =>
                         handleTrackChange(index, field, newTrack)
                     }
+                    topFileConvert={topFileConvert}
                 />
-                <Button variant="contained" type="submit" color="success">
+                <Button disabled={topFileConvert} variant="contained" type="submit" color="success">
                     Create Album
                 </Button>
             </form>

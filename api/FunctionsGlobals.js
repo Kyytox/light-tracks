@@ -1,5 +1,22 @@
 import pool from "./database/database.js";
 
+export const getStyles = (req, res) => {
+    console.log("API /getStyles");
+
+    pool.query(
+        `SELECT *
+        FROM public.genres_music
+        ORDER BY gm_name_genre`,
+        (err, result) => {
+            if (err) {
+                console.error("Error executing SELECT:", err);
+            } else {
+                res.send(result.rows);
+            }
+        }
+    );
+};
+
 // get all genres from database in table genres_music
 export const getStylesCountries = (req, res) => {
     console.log("API /getStylesCountries");

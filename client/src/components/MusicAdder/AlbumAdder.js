@@ -1,18 +1,27 @@
 import React, { useState, useEffect } from "react";
 
 import TextField from "@mui/material/TextField";
+import { Autocomplete } from "@mui/material";
 import FormHelperText from "@mui/material/FormHelperText";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import SelectGenres from "../Forms/selectGenres";
 import { getAxiosReq } from "../../Services/AxiosGet";
+import FormAddTags from "../Forms/FormAddTags";
 
-function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDelete }) {
+function AlbumAdder({
+    album,
+    setAlbum,
+    ImgInputRef,
+    onAlbumChange,
+    handleImgDelete,
+    topFileConvert,
+}) {
     const [lstGenres, setLstGenres] = useState([]);
 
     useEffect(() => {
         // get all genres
-        const response = getAxiosReq("/getGenres", {});
+        const response = getAxiosReq("/getStyles", {});
         response.then((data) => {
             setLstGenres(data);
         });
@@ -25,6 +34,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                 {/* Image */}
                 <Button
                     required
+                    disabled={topFileConvert}
                     id="album-image"
                     label="image"
                     variant="contained"
@@ -54,6 +64,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                 {/* title */}
                 <TextField
                     required
+                    disabled={topFileConvert}
                     id="album-title"
                     label="title"
                     variant="outlined"
@@ -65,6 +76,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                 {/* artist */}
                 <TextField
                     required
+                    disabled={topFileConvert}
                     id="album-artist"
                     label="artist"
                     variant="outlined"
@@ -76,6 +88,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                 {/* price */}
                 <TextField
                     required
+                    disabled={topFileConvert}
                     id="album-price"
                     variant="outlined"
                     label="price"
@@ -91,6 +104,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                 {/* date */}
                 <TextField
                     required
+                    disabled={topFileConvert}
                     id="album-date-release"
                     label="date release"
                     type="date"
@@ -105,6 +119,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
                 />
                 {/* description */}
                 <TextField
+                    disabled={topFileConvert}
                     id="album-descr"
                     label="descr"
                     variant="outlined"
@@ -116,6 +131,9 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, onAlbumChange, handleImgDele
 
                 {/* genres */}
                 <SelectGenres lstValues={album} setLstValues={setAlbum} lstGenres={lstGenres} />
+
+                {/* Tags */}
+                <FormAddTags album={album} setAlbum={setAlbum} />
             </div>
         </div>
     );

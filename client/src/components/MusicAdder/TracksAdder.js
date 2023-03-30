@@ -4,7 +4,14 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import FormHelperText from "@mui/material/FormHelperText";
 
-function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleFileDelete }) {
+function TracksAdder({
+    lstTrack,
+    fileInputRef,
+    onTrackChange,
+    handleAdd,
+    handleFileDelete,
+    topFileConvert,
+}) {
     return (
         <div>
             <h1>Add Tracks</h1>
@@ -14,6 +21,7 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                         {/* title */}
                         <TextField
                             required
+                            disabled={topFileConvert}
                             id="track-title"
                             label="title"
                             variant="outlined"
@@ -26,7 +34,7 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                                 "leave blank to put the same name of upload track"
                             }
                         />
-                        {/* Artist */}
+                        {/* Artist
                         <TextField
                             id="track-artist"
                             label="artist"
@@ -39,9 +47,10 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                                 music.artist.helperText ||
                                 "leave blank to put the same Album artist"
                             }
-                        />
+                        /> */}
                         {/* file */}
                         <Button
+                            disabled={topFileConvert}
                             id="track-file"
                             label="file"
                             variant="contained"
@@ -78,6 +87,7 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                         {/* Price */}
                         <TextField
                             required
+                            disabled={topFileConvert}
                             id="track-price"
                             variant="outlined"
                             label="price"
@@ -92,6 +102,7 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                         />
                         {/* Date */}
                         <TextField
+                            disabled={topFileConvert}
                             id="track-date-release"
                             label="date release"
                             type="date"
@@ -106,6 +117,7 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                         />
                         {/* Lyrics */}
                         <TextField
+                            disabled={topFileConvert}
                             id="track-lyrics"
                             label="lyrics"
                             variant="outlined"
@@ -114,6 +126,7 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                         />
                         {/* nb listens */}
                         <TextField
+                            disabled={topFileConvert}
                             id="track-nb_listens"
                             label="Max number of listens"
                             variant="outlined"
@@ -127,8 +140,13 @@ function TracksAdder({ lstTrack, fileInputRef, onTrackChange, handleAdd, handleF
                         />
                     </div>
                 ))}
-                <Button variant="contained" color="primary" onClick={handleAdd}>
-                    Ajouter une musique
+                <Button
+                    disabled={topFileConvert}
+                    variant="contained"
+                    color="primary"
+                    onClick={handleAdd}
+                >
+                    Add track
                 </Button>
             </div>
         </div>

@@ -53,6 +53,7 @@ export const createAlbum = (req, res) => {
         style: req.body.styles.split(",").map((item) => parseInt(item)),
         cover: req.files[0].key.split("/").slice(-1)[0],
         coverPath: req.files[0].key.split("/").slice(0, -1).join("/"),
+        tags: req.body.tags,
     };
 
     const tracks = [];
@@ -93,7 +94,7 @@ export const createAlbum = (req, res) => {
 
     // insert into bd
     pool.query(
-        "INSERT INTO public.albums (a_id_user, a_id_album_user, a_title, a_artist, a_price, a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING a_id",
+        "INSERT INTO public.albums (a_id_user, a_id_album_user, a_title, a_artist, a_price, a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path, a_tags) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING a_id",
         [
             idUser,
             album.idAlbum,
@@ -106,6 +107,7 @@ export const createAlbum = (req, res) => {
             album.descr,
             album.cover,
             album.coverPath,
+            album.tags,
         ],
         (err, result) => {
             if (err) {
@@ -114,7 +116,7 @@ export const createAlbum = (req, res) => {
                 // insert into tracks table
                 tracks.forEach((track) => {
                     pool.query(
-                        "INSERT INTO public.tracks (t_id_album, t_id_user, t_id_album_track, t_title, t_artist, t_price, t_date_release, t_date_create, t_nb_listen, t_lyrics, t_file_name, t_file_path, t_file_name_mp3) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
+                        "INSERT INTO public.tracks (t_id_album, t_id_user, t_id_album_track, t_title,t_artist, t_price, t_date_release, t_date_create, t_nb_listen, t_lyrics, t_file_name, t_file_path, t_file_name_mp3) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
                         [
                             result.rows[0].a_id,
                             idUser,

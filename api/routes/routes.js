@@ -21,7 +21,7 @@ import {
 } from "../FonctionsProfile.js";
 import { getFollows, getFollowsByIdUser, followUser, unfollowUser } from "../FonctionsFollow.js";
 import { getUserById } from "../FonctionsUser.js";
-import { getStylesCountries } from "../FunctionsGlobals.js";
+import { getStylesCountries, getStyles } from "../FunctionsGlobals.js";
 import { cptSongPlayed } from "../FctPlayerAudio.js";
 import { getSearch } from "../FctSearch.js";
 
@@ -67,9 +67,10 @@ router.post("/verifyUser", checkToken);
 
 // Global Functions
 router.get("/getStylesCountries", getStylesCountries);
+router.get("/getStyles", getStyles);
 
 // Album
-router.post("/createAlbum", upload.array("file"), createAlbum);
+router.post("/createAlbum", authenticateToken, upload.array("file"), createAlbum);
 router.get("/countAlbumUser", countAlbumUser);
 router.post("/deleteAlbum", authenticateToken, deleteAlbum);
 
