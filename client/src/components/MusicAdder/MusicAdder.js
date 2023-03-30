@@ -285,6 +285,9 @@ function MusicAdder() {
             formData.append("descr", album.descr.value);
             formData.append("styles", [styles]);
             formData.append("tags", album.tags.value);
+            formData.append("top_price", album.top_price.value);
+            formData.append("top_free", album.top_free.value);
+            formData.append("top_custom_price", album.top_custom_price.value);
 
             // add the tracks data to the form data
             lstTrack.forEach((track, index) => {

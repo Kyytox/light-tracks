@@ -54,6 +54,9 @@ export const createAlbum = (req, res) => {
         cover: req.files[0].key.split("/").slice(-1)[0],
         coverPath: req.files[0].key.split("/").slice(0, -1).join("/"),
         tags: req.body.tags,
+        top_price: req.body.top_price,
+        top_free: req.body.top_free,
+        top_custom_price: req.body.top_custom_price,
     };
 
     const tracks = [];
@@ -94,7 +97,7 @@ export const createAlbum = (req, res) => {
 
     // insert into bd
     pool.query(
-        "INSERT INTO public.albums (a_id_user, a_id_album_user, a_title, a_artist, a_price, a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path, a_tags) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING a_id",
+        "INSERT INTO public.albums (a_id_user, a_id_album_user, a_title, a_artist, a_price, a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path, a_tags, a_top_price, a_top_free, a_top_custom_price) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING a_id",
         [
             idUser,
             album.idAlbum,
@@ -108,6 +111,9 @@ export const createAlbum = (req, res) => {
             album.cover,
             album.coverPath,
             album.tags,
+            album.top_price,
+            album.top_free,
+            album.top_custom_price,
         ],
         (err, result) => {
             if (err) {
