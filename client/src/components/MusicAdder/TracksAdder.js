@@ -108,7 +108,7 @@ function TracksAdder({
                         {/* Price */}
                         <TextField
                             required
-                            disabled={topFileConvert}
+                            disabled={topFileConvert || !music.top_price.value}
                             id="track-price"
                             variant="outlined"
                             label="price"

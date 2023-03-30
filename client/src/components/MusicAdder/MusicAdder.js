@@ -37,6 +37,7 @@ function MusicAdder() {
             date_release: { value: "", error: false, helperText: "" },
             lyrics: { value: "", error: false, helperText: "" },
             nb_listens: { value: 20, error: false, helperText: "" },
+            top_price: { value: true, error: false, helperText: "" },
         },
     ]);
 
@@ -88,6 +89,35 @@ function MusicAdder() {
             setLstTrack(newTrack);
         }
     }, [album.price.value, lstTrack.length, topCalculatePriceAuto]);
+
+    ///////////////////////////
+    //
+    // init Price Track
+    //
+    ///////////////////////////
+    useEffect(() => {
+        console.log("useEffect init Price Track");
+
+        // if top_free or top_custom_price = true, we set the price of each track to 0
+        if (album.top_free.value || album.top_custom_price.value) {
+            const newTrack = [...lstTrack];
+            for (let i = 0; i < lstTrack.length; i++) {
+                newTrack[i].price = {
+                    ...newTrack[i].price,
+                    value: 0,
+                    error: false,
+                    helperText: "",
+                };
+                newTrack[i].top_price = {
+                    ...newTrack[i].top_price,
+                    value: false,
+                    error: false,
+                    helperText: "",
+                };
+            }
+            setLstTrack(newTrack);
+        }
+    }, [album.top_free.value, album.top_custom_price.value]);
 
     ///////////////////////////
     //
@@ -322,6 +352,7 @@ function MusicAdder() {
                 formData.append(`trackDate_release${index + 1}`, track.date_release.value);
                 formData.append(`trackLyrics${index + 1}`, track.lyrics.value);
                 formData.append(`trackNb_listens${index + 1}`, track.nb_listens.value);
+                formData.append(`trackTop_price${index + 1}`, track.top_price.value);
             });
 
             // call api create album with album data and lstTrack data with axios
@@ -397,6 +428,11 @@ function MusicAdder() {
                 lyrics: { value: "", error: false, helperText: "" },
                 nb_listens: {
                     value: lstTrack[lstTrack.length - 1].nb_listens.value,
+                    error: false,
+                    helperText: "",
+                },
+                top_price: {
+                    value: lstTrack[lstTrack.length - 1].top_price.value,
                     error: false,
                     helperText: "",
                 },
