@@ -3,12 +3,14 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import FormHelperText from "@mui/material/FormHelperText";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function TracksAdder({
     lstTrack,
     fileInputRef,
     onTrackChange,
-    handleAdd,
+    handleAddFormTrack,
+    handleAddTrack,
     handleFileDelete,
     topFileConvert,
 }) {
@@ -55,7 +57,7 @@ function TracksAdder({
                             label="file"
                             variant="contained"
                             component="label"
-                            onChange={(e) => onTrackChange(index, "file", e.target.files[0])}
+                            onChange={(e) => handleAddTrack(index, "file", e.target.files[0])}
                             color={(music.fileOrigin.error && "error") || "primary"}
                         >
                             Upload file track .mp3, .wav, .flac
@@ -69,6 +71,11 @@ function TracksAdder({
                         <FormHelperText error={music.fileOrigin.error} color="error">
                             {music.fileOrigin.helperText}
                         </FormHelperText>
+
+                        {/* display progress circle when convert file */}
+                        {topFileConvert && <CircularProgress size={24} />}
+
+                        {/* display file name and size */}
                         {music.fileOrigin.value && (
                             <>
                                 <p>
@@ -78,12 +85,13 @@ function TracksAdder({
                                 <Button
                                     variant="contained"
                                     color="secondary"
-                                    onClick={(e) => handleFileDelete(index, "file")}
+                                    onClick={(e) => handleFileDelete(index)}
                                 >
                                     X
                                 </Button>
                             </>
                         )}
+
                         {/* Price */}
                         <TextField
                             required
@@ -144,7 +152,7 @@ function TracksAdder({
                     disabled={topFileConvert}
                     variant="contained"
                     color="primary"
-                    onClick={handleAdd}
+                    onClick={handleAddFormTrack}
                 >
                     Add track
                 </Button>

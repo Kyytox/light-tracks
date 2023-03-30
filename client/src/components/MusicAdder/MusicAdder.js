@@ -37,7 +37,8 @@ function MusicAdder() {
         },
     ]);
 
-    const [topFileConvert, setTopFileConvert] = useState(true);
+    // state to know if the file is converting to mp3
+    const [topFileConvert, setTopFileConvert] = useState(false);
 
     // formats accepted for the file track
     const acceptedFormatsTrack = ["audio/mpeg", "audio/flac", "audio/wav"];
@@ -92,10 +93,12 @@ function MusicAdder() {
         }
     };
 
-    // function to change the value of a track
-    // if the field is file, we check if the type file is accepted and if the size is less than 260Mo
-    // if not, we set the error to true and the value to null ELSE we set the error to false and the value to the file
-    const handleTrackChange = (index, field, value) => {
+    ///////////////////////////
+    //
+    // Add File Track
+    //
+    ///////////////////////////
+    const handleAddTrack = (index, field, value) => {
         const newMusicList = [...lstTrack];
 
         if (field === "file") {
@@ -111,7 +114,7 @@ function MusicAdder() {
                 value: error || errSize ? null : value,
             };
 
-            // if no error and no error size, create fromdata
+            // if no error and no error size, create fromdata and convert file
             if (!error && !errSize) {
                 const formDataConvert = new FormData();
                 formDataConvert.append("file", value);
@@ -119,17 +122,26 @@ function MusicAdder() {
                 // call convertFile function to convert the file to mp3
                 convertFile(index, newMusicList, formDataConvert);
             }
-        } else {
-            newMusicList[index][field] = {
-                ...newMusicList[index][field],
-                value: value,
-                error: false,
-                helperText: "",
-            };
         }
+    };
+
+    ///////////////////////////
+    //
+    // add a infos track
+    //
+    ///////////////////////////
+    const handleTrackChange = (index, field, value) => {
+        const newMusicList = [...lstTrack];
+
+        newMusicList[index][field] = {
+            ...newMusicList[index][field],
+            value: value,
+            error: false,
+            helperText: "",
+        };
 
         setLstTrack(newMusicList);
-        if (field === "file" && newMusicList[index][field].error) fileInputRef.current.value = null;
+        // if (field === "file" && newMusicList[index][field].error) fileInputRef.current.value = null;
     };
 
     ///////////////////////////
@@ -138,7 +150,7 @@ function MusicAdder() {
     //
     ///////////////////////////
     const convertFile = async (index, newMusicList, file) => {
-        setTopFileConvert(false);
+        setTopFileConvert(true);
         await axios
             .post(backendUrl + "/convertFileAudio", file, {
                 headers: {
@@ -156,7 +168,7 @@ function MusicAdder() {
             .catch((err) => {
                 console.log(err);
             });
-        setTopFileConvert(true);
+        setTopFileConvert(false);
     };
 
     ///////////////////////////
@@ -165,9 +177,12 @@ function MusicAdder() {
     //
     ///////////////////////////
     // function to delete a file of track
-    const handleFileDelete = (index, field) => {
+    const handleFileDelete = (index) => {
+        console.log("index", index);
         const delMusicFile = [...lstTrack];
-        delMusicFile[index][field] = { error: false, helperText: "", value: null };
+        delMusicFile[index]["file"] = { error: false, helperText: "", value: null };
+        delMusicFile[index]["fileOrigin"] = { error: false, helperText: "", value: null };
+        delMusicFile[index]["fileMp3"] = { error: false, helperText: "", value: null };
         setLstTrack(delMusicFile);
         // quand on va faire le CSS il faudra récup le div du file input pour pouvoir reset le bon file input car actuelement on reset uniquement le dernier file input
         fileInputRef.current.value = null;
@@ -315,7 +330,7 @@ function MusicAdder() {
     };
 
     // function to add a new track to the list
-    const handleAdd = () => {
+    const handleAddFormTrack = () => {
         // auto complete the fields of the new track
         autoComplTrack();
 
@@ -339,6 +354,8 @@ function MusicAdder() {
         ]);
     };
 
+    console.log("lstTrack", lstTrack);
+
     return (
         <div>
             <form noValidate onSubmit={handleSubmit}>
@@ -354,8 +371,11 @@ function MusicAdder() {
                 <TracksAdder
                     lstTrack={lstTrack}
                     fileInputRef={fileInputRef}
-                    handleAdd={handleAdd}
+                    handleAddFormTrack={handleAddFormTrack}
                     handleFileDelete={(index, field) => handleFileDelete(index, field)}
+                    handleAddTrack={(index, field, newFile) =>
+                        handleAddTrack(index, field, newFile)
+                    }
                     onTrackChange={(index, field, newTrack) =>
                         handleTrackChange(index, field, newTrack)
                     }
