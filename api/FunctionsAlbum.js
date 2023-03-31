@@ -78,7 +78,13 @@ export const createAlbum = (req, res) => {
             const trackObj = {};
             track.forEach((key) => {
                 // enleve le mot track et le chiffre i et met le reste en minuscule
-                trackObj[key.replace(/track|\d+/g, "").toLowerCase()] = req.body[key];
+                if (key === "trackPrice" + i) {
+                    trackObj[key.replace(/track|\d+/g, "").toLowerCase()] = parseFloat(
+                        req.body[key]
+                    );
+                } else {
+                    trackObj[key.replace(/track|\d+/g, "").toLowerCase()] = req.body[key];
+                }
             });
 
             // start of attribute key for track

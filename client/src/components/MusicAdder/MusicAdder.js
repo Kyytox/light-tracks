@@ -166,10 +166,7 @@ function MusicAdder() {
 
         // browse infosAlbumRequired to check if the field is empty, if it is, we add an error
         for (let i = 0; i < infosAlbumRequired.length; i++) {
-            if (
-                !album[infosAlbumRequired[i]].value ||
-                album[infosAlbumRequired[i]].value.length === 0
-            ) {
+            if (!album[infosAlbumRequired[i]].value || album[infosAlbumRequired[i]].value.length === 0) {
                 errorForm = true;
                 newErrorAlbum[infosAlbumRequired[i]] = {
                     ...newErrorAlbum[infosAlbumRequired[i]],
@@ -233,12 +230,8 @@ function MusicAdder() {
             styles.push(style.id);
         });
 
-        console.log("Post errorForm", errorForm);
-
         // if no error, we send the form data to the server
         if (errorForm === false) {
-            console.log("Formdata");
-
             // create a new form data
             const formData = new FormData();
             formData.append("idUser", idUser);
@@ -267,7 +260,7 @@ function MusicAdder() {
                 } else {
                     formData.append(`file`, track.fileMp3.value, track.fileMp3.value.name + ".mp3");
                 }
-                formData.append(`trackPrice${index + 1}`, track.price.value);
+                formData.append(`trackPrice${index + 1}`, track.price.value ? track.price.value : 0);
                 formData.append(`trackDate_release${index + 1}`, track.date_release.value);
                 formData.append(`trackLyrics${index + 1}`, track.lyrics.value);
                 formData.append(`trackNb_listens${index + 1}`, track.nb_listens.value);
@@ -340,7 +333,7 @@ function MusicAdder() {
                 artist: { value: "", error: false, helperText: "" },
                 fileOrigin: { value: null, error: false, helperText: "" },
                 fileMp3: { value: null, error: false, helperText: "" },
-                price: { value: "", error: false, helperText: "" },
+                price: { value: 0, error: false, helperText: "" },
                 date_release: { value: "", error: false, helperText: "" },
                 lyrics: { value: "", error: false, helperText: "" },
                 nb_listens: {
