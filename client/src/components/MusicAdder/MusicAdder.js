@@ -162,58 +162,78 @@ function MusicAdder() {
         //
         // check error in album
         const newErrorAlbum = { ...album };
-        for (const [key, value] of Object.entries(album)) {
-            if (key !== "descr" && key !== "date_release") {
-                if (key === "price") {
-                    if (album["top_price"].value && !value.value) {
-                        errorForm = true;
-                        newErrorAlbum[key] = {
-                            ...newErrorAlbum[key],
-                            error: true,
-                            helperText: "This field is required",
-                        };
-                    }
-                } else {
-                    if (!value.value || value.value.length === 0) {
-                        errorForm = true;
-                        newErrorAlbum[key] = {
-                            ...newErrorAlbum[key],
-                            error: true,
-                            helperText: "This field is required",
-                        };
-                    }
-                }
+        const infosAlbumRequired = ["title", "artist", "cover", "date_release", "styles"];
+
+        // browse infosAlbumRequired to check if the field is empty, if it is, we add an error
+        for (let i = 0; i < infosAlbumRequired.length; i++) {
+            if (
+                !album[infosAlbumRequired[i]].value ||
+                album[infosAlbumRequired[i]].value.length === 0
+            ) {
+                errorForm = true;
+                newErrorAlbum[infosAlbumRequired[i]] = {
+                    ...newErrorAlbum[infosAlbumRequired[i]],
+                    error: true,
+                    helperText: "This field is required",
+                };
             }
-            setAlbum(newErrorAlbum);
         }
+
+        // check if top_price is true, if it is, we check if the price is empty, if it is, we add an error
+        if (album.top_price.value && !album.price.value) {
+            errorForm = true;
+            newErrorAlbum["price"] = {
+                ...newErrorAlbum["price"],
+                error: true,
+                helperText: "This field is required",
+            };
+        }
+        setAlbum(newErrorAlbum);
 
         //
         // check error in lstTrack
         const newErrorTrack = [...lstTrack];
+        const infosTrackRequired = ["title", "fileOrigin", "fileMp3", "nb_listens"];
+
+        // browse infosTrackRequired to check if the field is empty, if it is, we add an error
         for (let i = 0; i < lstTrack.length; i++) {
-            for (const [key, value] of Object.entries(lstTrack[i])) {
-                if (key !== "lyrics" && key !== "id" && key !== "date_release") {
-                    if (!value.value || value.value.length === 0) {
-                        errorForm = true;
-                        newErrorTrack[i][key] = {
-                            ...newErrorTrack[i][key],
-                            error: true,
-                            helperText: "This field is required",
-                        };
-                    }
+            for (let j = 0; j < infosTrackRequired.length; j++) {
+                if (
+                    !lstTrack[i][infosTrackRequired[j]].value ||
+                    lstTrack[i][infosTrackRequired[j]].value.length === 0
+                ) {
+                    errorForm = true;
+                    newErrorTrack[i][infosTrackRequired[j]] = {
+                        ...newErrorTrack[i][infosTrackRequired[j]],
+                        error: true,
+                        helperText: "This field is required",
+                    };
                 }
             }
-            setLstTrack(newErrorTrack);
+
+            // check if top_price is true, if it is, we check if the price is empty, if it is, we add an error
+            if (album.top_price.value === true && !lstTrack[i].price.value) {
+                errorForm = true;
+                newErrorTrack[i]["price"] = {
+                    ...newErrorTrack[i]["price"],
+                    error: true,
+                    helperText: "This field is required",
+                };
+            }
         }
 
-        console.log("album", album);
-        console.log("lstTrack", lstTrack);
+        setLstTrack(newErrorTrack);
+
+        console.log("Post album", album);
+        console.log("Post lstTrack", lstTrack);
 
         // collect all id in album.styles.value
         const styles = [];
         album.styles.value.forEach((style) => {
             styles.push(style.id);
         });
+
+        console.log("Post errorForm", errorForm);
 
         // if no error, we send the form data to the server
         if (errorForm === false) {
@@ -235,25 +255,18 @@ function MusicAdder() {
                 }
             }
 
-            // formData.append("title", album.title.value);
-            // formData.append("artist", album.artist.value);
-            // formData.append("file", album.cover.value, album.cover.value.name);
-            // formData.append("price", album.price.value);
-            // formData.append("date_release", album.date_release.value);
-            // formData.append("descr", album.descr.value);
-            // formData.append("styles", [styles]);
-            // formData.append("tags", album.tags.value);
-            // formData.append("top_price", album.top_price.value);
-            // formData.append("top_free", album.top_free.value);
-            // formData.append("top_custom_price", album.top_custom_price.value);
-
             // add the tracks data to the form data
             lstTrack.forEach((track, index) => {
                 formData.append(`trackId${index + 1}`, track.id.value);
                 formData.append(`trackTitle${index + 1}`, track.title.value);
                 formData.append(`trackArtist${index + 1}`, album.artist.value);
                 formData.append(`file`, track.fileOrigin.value, track.fileOrigin.value.name); // file origin
-                formData.append(`file`, track.fileMp3.value, track.fileMp3.value.name + ".mp3"); // file convert in mp3
+                // if .mp3 in mp3 file name, we add the fileMp3 to the form data
+                if (track.fileMp3.value.name.includes(".mp3")) {
+                    formData.append(`file`, track.fileMp3.value, track.fileMp3.value.name);
+                } else {
+                    formData.append(`file`, track.fileMp3.value, track.fileMp3.value.name + ".mp3");
+                }
                 formData.append(`trackPrice${index + 1}`, track.price.value);
                 formData.append(`trackDate_release${index + 1}`, track.date_release.value);
                 formData.append(`trackLyrics${index + 1}`, track.lyrics.value);
@@ -261,6 +274,7 @@ function MusicAdder() {
                 formData.append(`trackTop_price${index + 1}`, track.top_price.value);
             });
 
+            console.log("POST Album");
             // call api create album with album data and lstTrack data with axios
             axios
                 .post(backendUrl + "/createAlbum", formData, {

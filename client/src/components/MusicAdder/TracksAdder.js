@@ -48,7 +48,6 @@ function TracksAdder({
                 // call convertFile function to convert the file to mp3
                 convertFile(index, newMusicList, formDataConvert);
             } else {
-                console.log("TrackAdder.js - handleAddTrack - value.type", value.type);
                 newMusicList[index]["fileMp3"] = {
                     error: false,
                     helperText: "",

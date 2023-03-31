@@ -20,6 +20,9 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, topFileConvert }) {
 
     // get all Styles
     useEffect(() => {
+        if (lstStyles.length > 0) {
+            return;
+        }
         const response = getAxiosReq("/getStyles", {});
         response.then((data) => {
             setLstStyles(data);
