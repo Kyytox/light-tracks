@@ -10,30 +10,24 @@ import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 //         "./node_modules/@ffmpeg/core/dist/ffmpeg-core.js"
 // ).replace("file:", "");
 
-const FFmpegCoreLocation =
-    "/media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/core/dist/ffmpeg-core.js";
+const FFmpegCoreLocation = "/media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/core/dist/ffmpeg-core.js";
 
 // const FFmpegWasmLocation = join(
 //     dirname(import.meta.url),
 //     "./node_modules/@ffmpeg/core/dist/ffmpeg-core.wasm"
 // );
-const FFmpegWasmLocation =
-    "/media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/core/dist/ffmpeg-core.wasm";
+const FFmpegWasmLocation = "/media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/core/dist/ffmpeg-core.wasm";
 
 // function for count number of album for a user
 export const countAlbumUser = (req, res) => {
     const idUser = req.query.idUser;
-    pool.query(
-        "SELECT COUNT(*) FROM public.albums WHERE a_id_user = ($1)",
-        [idUser],
-        (err, result) => {
-            if (err) {
-                console.error("Error executing INSERT INTO:", err);
-            } else {
-                res.send({ count: parseInt(result.rows[0].count) + 1 });
-            }
+    pool.query("SELECT COUNT(*) FROM public.albums WHERE a_id_user = ($1)", [idUser], (err, result) => {
+        if (err) {
+            console.error("Error executing INSERT INTO:", err);
+        } else {
+            res.send({ count: parseInt(result.rows[0].count) + 1 });
         }
-    );
+    });
 };
 
 // create app.post for retrieve data from client this data contain fomrData and file (image in format jpg and tracks in format mp3)
@@ -56,7 +50,7 @@ export const createAlbum = (req, res) => {
         a_description: req.body.descr,
         a_cover: req.files[0].key.split("/").slice(-1)[0],
         a_cover_path: req.files[0].key.split("/").slice(0, -1).join("/"),
-        a_tags: req.body.tags,
+        a_tags: req.body.tags.split(",").map((item) => item.trim()),
         a_top_free: Boolean(req.body.top_free),
         a_top_custom_price: Boolean(req.body.top_custom_price),
         a_top_price: Boolean(req.body.top_price),
@@ -71,17 +65,13 @@ export const createAlbum = (req, res) => {
         // if i is impair
         if (i % 2 !== 0) {
             // retrive all index of req body who start with "track" and finish with var i
-            const track = Object.keys(req.body).filter(
-                (key) => key.startsWith("track") && key.endsWith(count)
-            );
+            const track = Object.keys(req.body).filter((key) => key.startsWith("track") && key.endsWith(count));
             /// browse const track and retrive the value of each index in req.body and insert into const tracks with dictionnary key:value (title: "title", artist: "artist", ...)
             const trackObj = {};
             track.forEach((key) => {
                 // enleve le mot track et le chiffre i et met le reste en minuscule
                 if (key === "trackPrice" + i) {
-                    trackObj[key.replace(/track|\d+/g, "").toLowerCase()] = parseFloat(
-                        req.body[key]
-                    );
+                    trackObj[key.replace(/track|\d+/g, "").toLowerCase()] = parseFloat(req.body[key]);
                 } else {
                     trackObj[key.replace(/track|\d+/g, "").toLowerCase()] = req.body[key];
                 }

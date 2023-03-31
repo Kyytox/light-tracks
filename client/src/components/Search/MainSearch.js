@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import SelectCountry from "../Forms/SelectCountry";
 import SelectGenres from "../Forms/selectGenres";
 import { getAxiosReq } from "../../Services/AxiosGet";
-import { Button, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import FormParamTextField from "../Forms/FormParamTextField";
+import FormAddTags from "../Forms/FormAddTags";
 
 // create component for search album by style or country
 function MainSearch() {
@@ -13,6 +14,7 @@ function MainSearch() {
     const [lstParams, setLstParams] = useState({
         search: { value: "", error: false, helperText: "" },
         styles: { value: [], error: false, helperText: "" },
+        tags: { value: [], error: false, helperText: "" },
         country: { value: [], error: false, helperText: "" },
     });
 
@@ -30,10 +32,8 @@ function MainSearch() {
             // create array with country distinct (string p_code_country)
             const arrCountries = [];
             data.forEach((item) => {
-                const existingCountry = arrCountries.find(
-                    (c) => c.c_code_country === item.p_code_country
-                );
-                if (!existingCountry) {
+                const existingCountry = arrCountries.find((c) => c.c_code_country === item.p_code_country);
+                if (!existingCountry && item.p_code_country !== null) {
                     arrCountries.push({
                         c_code_country: item.p_code_country,
                         c_name_country: item.p_name_country,
@@ -57,6 +57,7 @@ function MainSearch() {
         const data = {
             search: lstParams.search.value,
             styles: lstParams.styles.value,
+            tags: lstParams.tags.value,
             country: lstParams.country.value,
         };
 
@@ -83,18 +84,13 @@ function MainSearch() {
                 />
 
                 {/* Styles */}
-                <SelectGenres
-                    lstValues={lstParams}
-                    setLstValues={setLstParams}
-                    lstGenres={lstGenres}
-                />
+                <SelectGenres lstValues={lstParams} setLstValues={setLstParams} lstGenres={lstGenres} />
+
+                {/* Tags */}
+                <FormAddTags lstParams={lstParams} setLstParams={setLstParams} />
 
                 {/* Country */}
-                <SelectCountry
-                    lstParams={lstParams}
-                    setLstParams={setLstParams}
-                    lstCountries={lstCountry}
-                />
+                <SelectCountry lstParams={lstParams} setLstParams={setLstParams} lstCountries={lstCountry} />
 
                 <Button
                     variant="contained"

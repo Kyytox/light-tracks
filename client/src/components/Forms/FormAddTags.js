@@ -6,16 +6,16 @@ import Chip from "@mui/material/Chip";
 //  function for add tags to album
 // 1 textflied , 1 button for add tags to album
 // /display tags in album
-function FormAddTags({ album, setAlbum }) {
+function FormAddTags({ lstParams, setLstParams }) {
     const [inputTag, setInputTag] = useState("");
 
     const handleAddTag = (e) => {
         e.preventDefault();
-        const newTag = inputTag;
+        const newTag = inputTag.toLowerCase();
         if (newTag) {
-            setAlbum({
-                ...album,
-                tags: { value: [...album.tags.value, newTag], error: false, helperText: "" },
+            setLstParams({
+                ...lstParams,
+                tags: { value: [...lstParams.tags.value, newTag], error: false, helperText: "" },
             });
         }
         setInputTag("");
@@ -25,9 +25,9 @@ function FormAddTags({ album, setAlbum }) {
     };
 
     const handleDeleteTag = (tag) => {
-        const newTags = album.tags.value.filter((t) => t !== tag);
-        setAlbum({
-            ...album,
+        const newTags = lstParams.tags.value.filter((t) => t !== tag);
+        setLstParams({
+            ...lstParams,
             tags: { value: newTags, error: false, helperText: "" },
         });
     };
@@ -45,13 +45,8 @@ function FormAddTags({ album, setAlbum }) {
                 Add Tag
             </Button>
             <div>
-                {album.tags.value.map((tag) => (
-                    <Chip
-                        key={tag}
-                        label={tag}
-                        onDelete={() => handleDeleteTag(tag)}
-                        style={{ margin: "5px" }}
-                    />
+                {lstParams.tags.value.map((tag) => (
+                    <Chip key={tag} label={tag} onDelete={() => handleDeleteTag(tag)} style={{ margin: "5px" }} />
                 ))}
             </div>
         </div>

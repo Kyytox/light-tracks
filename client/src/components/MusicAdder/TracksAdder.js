@@ -120,25 +120,8 @@ function TracksAdder({
                             InputLabelProps={{ shrink: true }}
                             onChange={(e) => changeInfosTrack(index, "title", e.target.value)}
                             error={music.title.error}
-                            helperText={
-                                music.title.helperText ||
-                                "leave blank to put the same name of upload track"
-                            }
+                            helperText={music.title.helperText || "leave blank to put the same name of upload track"}
                         />
-                        {/* Artist
-                        <TextField
-                            id="track-artist"
-                            label="artist"
-                            variant="outlined"
-                            value={music.artist.value}
-                            InputLabelProps={{ shrink: true }}
-                            onChange={(e) => changeInfosTrack(index, "artist", e.target.value)}
-                            error={music.artist.error}
-                            helperText={
-                                music.artist.helperText ||
-                                "leave blank to put the same Album artist"
-                            }
-                        /> */}
                         {/* file */}
                         <Button
                             disabled={topFileConvert}
@@ -150,12 +133,7 @@ function TracksAdder({
                             color={(music.fileOrigin.error && "error") || "primary"}
                         >
                             Upload file track .mp3, .wav, .flac
-                            <input
-                                type="file"
-                                accept=".mp3, .wav, .flac"
-                                ref={fileInputRef}
-                                hidden
-                            />
+                            <input type="file" accept=".mp3, .wav, .flac" ref={fileInputRef} hidden />
                         </Button>
                         <FormHelperText error={music.fileOrigin.error} color="error">
                             {music.fileOrigin.helperText}
@@ -168,14 +146,10 @@ function TracksAdder({
                         {music.fileOrigin.value && (
                             <>
                                 <p>
-                                    {music.fileOrigin.value.name}{" "}
+                                    {music.title.value}.{music.fileOrigin.value.name.split(".").pop()} -{" "}
                                     {(music.fileOrigin.value.size / (1024 * 1024)).toFixed(2)} Mo
                                 </p>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={(e) => handleDeleteFile(index)}
-                                >
+                                <Button variant="contained" color="secondary" onClick={(e) => handleDeleteFile(index)}>
                                     X
                                 </Button>
                             </>
@@ -208,9 +182,7 @@ function TracksAdder({
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            onChange={(e) =>
-                                changeInfosTrack(index, "date_release", e.target.value)
-                            }
+                            onChange={(e) => changeInfosTrack(index, "date_release", e.target.value)}
                             helperText="leave blank to put the same Album date release"
                         />
                         {/* Lyrics */}
@@ -230,20 +202,13 @@ function TracksAdder({
                             variant="outlined"
                             type="number"
                             value={music.nb_listens.value}
-                            onChange={(e) =>
-                                changeInfosTrack(index, "nb_listens", parseInt(e.target.value))
-                            }
+                            onChange={(e) => changeInfosTrack(index, "nb_listens", parseInt(e.target.value))}
                             error={music.nb_listens.error}
                             helperText={music.nb_listens.helperText}
                         />
                     </div>
                 ))}
-                <Button
-                    disabled={topFileConvert}
-                    variant="contained"
-                    color="primary"
-                    onClick={handleAddFormTrack}
-                >
+                <Button disabled={topFileConvert} variant="contained" color="primary" onClick={handleAddFormTrack}>
                     Add track
                 </Button>
             </div>

@@ -254,11 +254,11 @@ function MusicAdder() {
                 formData.append(`trackTitle${index + 1}`, track.title.value);
                 formData.append(`trackArtist${index + 1}`, album.artist.value);
                 formData.append(`file`, track.fileOrigin.value, track.fileOrigin.value.name); // file origin
-                // if .mp3 in mp3 file name, we add the fileMp3 to the form data
-                if (track.fileMp3.value.name.includes(".mp3")) {
-                    formData.append(`file`, track.fileMp3.value, track.fileMp3.value.name);
+                // if file is Blob (mp3) we add it to the form data, else we convert it to mp3 and add it to the form data
+                if (track.fileMp3.value instanceof Blob) {
+                    formData.append(`file`, track.fileMp3.value, track.title.value + ".mp3");
                 } else {
-                    formData.append(`file`, track.fileMp3.value, track.fileMp3.value.name + ".mp3");
+                    formData.append(`file`, track.fileMp3.value, track.fileMp3.value.name);
                 }
                 formData.append(`trackPrice${index + 1}`, track.price.value ? track.price.value : 0);
                 formData.append(`trackDate_release${index + 1}`, track.date_release.value);
@@ -351,6 +351,7 @@ function MusicAdder() {
     };
 
     console.log("lstTrack", lstTrack);
+    console.log("album", album);
 
     return (
         <div>

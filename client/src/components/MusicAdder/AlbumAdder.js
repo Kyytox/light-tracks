@@ -61,11 +61,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, topFileConvert }) {
         }, {});
 
         // if all top_ = false, set top_price = true
-        if (
-            !newAlbum.top_free.value &&
-            !newAlbum.top_custom_price.value &&
-            !newAlbum.top_price.value
-        ) {
+        if (!newAlbum.top_free.value && !newAlbum.top_custom_price.value && !newAlbum.top_price.value) {
             newAlbum.top_price = { ...album.top_price, value: true, error: false, helperText: "" };
         }
 
@@ -138,11 +134,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, topFileConvert }) {
                 {album.cover.value && (
                     <>
                         <img src={album.cover.url} alt="album-cover" style={{ width: "75px" }} />
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={(e) => handleDeleteCover("cover")}
-                        >
+                        <Button variant="contained" color="secondary" onClick={(e) => handleDeleteCover("cover")}>
                             X
                         </Button>
                     </>
@@ -244,8 +236,8 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, topFileConvert }) {
                         shrink: true,
                     }}
                     onChange={(e) => changeInfosAlbum("date_release", e.target.value)}
-                    // error={album.date_release.error}
-                    // helperText={album.date_release.helperText}
+                    error={album.date_release.error}
+                    helperText={album.date_release.helperText}
                 />
                 {/* description */}
                 <TextField
@@ -261,7 +253,7 @@ function AlbumAdder({ album, setAlbum, ImgInputRef, topFileConvert }) {
                 {/* genres */}
                 <SelectGenres lstValues={album} setLstValues={setAlbum} lstGenres={lstStyles} />
                 {/* Tags */}
-                <FormAddTags album={album} setAlbum={setAlbum} />
+                <FormAddTags lstParams={album} setLstParams={setAlbum} />
             </div>
         </div>
     );
