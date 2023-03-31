@@ -43,21 +43,41 @@ export const createAlbum = (req, res) => {
     console.log("req.file", req.files);
     const idUser = req.body.idUser;
 
+    // create album
     const album = {
-        idAlbum: req.body.idAlbum,
-        title: req.body.title,
-        artist: req.body.artist,
-        price: req.body.price,
-        date_release: req.body.date_release,
-        descr: req.body.descr,
-        style: req.body.styles.split(",").map((item) => parseInt(item)),
-        cover: req.files[0].key.split("/").slice(-1)[0],
-        coverPath: req.files[0].key.split("/").slice(0, -1).join("/"),
-        tags: req.body.tags,
-        top_price: req.body.top_price,
-        top_free: req.body.top_free,
-        top_custom_price: req.body.top_custom_price,
+        a_id_user: req.body.idUser,
+        a_id_album_user: req.body.idAlbum,
+        a_title: req.body.title,
+        a_artist: req.body.artist,
+        a_price: req.body.price,
+        a_date_release: req.body.date_release,
+        a_date_create: new Date(),
+        a_styles: req.body.styles.split(",").map((item) => parseInt(item)),
+        a_description: req.body.descr,
+        a_cover: req.files[0].key.split("/").slice(-1)[0],
+        a_cover_path: req.files[0].key.split("/").slice(0, -1).join("/"),
+        a_tags: req.body.tags,
+        a_top_free: req.body.top_free,
+        a_top_custom_price: req.body.top_custom_price,
+        a_top_price: req.body.top_price,
     };
+
+    // const album = {
+    //     // a_id_user: req.body.idUser,
+    //     // idAlbum: req.body.idAlbum,
+    //     // title: req.body.title,
+    //     // artist: req.body.artist,
+    //     // price: req.body.price,
+    //     // date_release: req.body.date_release,
+    //     // descr: req.body.descr,
+    //     // style: req.body.styles.split(",").map((item) => parseInt(item)),
+    //     // cover: req.files[0].key.split("/").slice(-1)[0],
+    //     // coverPath: req.files[0].key.split("/").slice(0, -1).join("/"),
+    //     // tags: req.body.tags,
+    //     // top_price: req.body.top_price,
+    //     // top_free: req.body.top_free,
+    //     // top_custom_price: req.body.top_custom_price,
+    // };
 
     const tracks = [];
 
@@ -97,24 +117,9 @@ export const createAlbum = (req, res) => {
 
     // insert into bd
     pool.query(
-        "INSERT INTO public.albums (a_id_user, a_id_album_user, a_title, a_artist, a_price, a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path, a_tags, a_top_price, a_top_free, a_top_custom_price) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING a_id",
-        [
-            idUser,
-            album.idAlbum,
-            album.title,
-            album.artist,
-            album.price,
-            album.date_release === "" ? new Date() : album.date_release,
-            new Date(),
-            album.style,
-            album.descr,
-            album.cover,
-            album.coverPath,
-            album.tags,
-            album.top_price,
-            album.top_free,
-            album.top_custom_price,
-        ],
+        // "INSERT INTO public.albums (a_id_user, a_id_album_user, a_title, a_artist, a_price, a_date_release, a_date_create, a_styles, a_description, a_cover, a_cover_path, a_tags, a_top_price, a_top_free, a_top_custom_price) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING a_id",
+        "INSERT INTO public.albums SET ? RETURNING a_id",
+        [album],
         (err, result) => {
             if (err) {
                 console.error("Error executing INSERT INTO:", err);

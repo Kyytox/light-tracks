@@ -10,12 +10,12 @@ import TracksAdder from "./TracksAdder";
 
 function MusicAdder() {
     const idUser = getLocalStorage("id");
-    const nameUser = getLocalStorage("username");
+    const username = getLocalStorage("username");
     const [idAlbum, setIdAlbum] = useState(0);
     const [album, setAlbum] = useState({
         title: { value: "", error: false, helperText: "" },
-        artist: { value: nameUser, error: false, helperText: "" },
-        image: { value: null, url: "", error: false, helperText: "" },
+        artist: { value: username, error: false, helperText: "" },
+        cover: { value: null, url: "", error: false, helperText: "" },
         price: { value: "", error: false, helperText: "" },
         descr: { value: "", error: false, helperText: "" },
         date_release: { value: "", error: false, helperText: "" },
@@ -38,6 +38,7 @@ function MusicAdder() {
             lyrics: { value: "", error: false, helperText: "" },
             nb_listens: { value: 20, error: false, helperText: "" },
             top_price: { value: true, error: false, helperText: "" },
+            top_convert: { value: false, error: false, helperText: "" },
         },
     ]);
 
@@ -47,17 +48,15 @@ function MusicAdder() {
     // top for Calculate Price Auto
     const [topCalculatePriceAuto, setTopCalculatePriceAuto] = useState(false);
 
-    // formats accepted for the file track
-    const acceptedFormatsTrack = ["audio/mpeg", "audio/flac", "audio/wav"];
-    const acceptedFormatsImg = ["image/png", "image/jpeg", "image/jpg"];
-
     // ref to the file input
     const fileInputRef = useRef(null);
     const ImgInputRef = useRef(null);
 
-    // use useeffect to get the number of album of the user
-    // use axios .get and call countAlbumUser with Body {idUser: idUser}
-    // then set the numAlbum
+    ///////////////////////////
+    //
+    // Get Count Album User
+    //
+    ///////////////////////////
     useEffect(() => {
         console.log("id user", idUser);
         axios
@@ -121,84 +120,6 @@ function MusicAdder() {
 
     ///////////////////////////
     //
-    // Handle Change Album and Track
-    //
-    ///////////////////////////
-    // function to change the value of an album
-    // if the field is file, we check if the type file is accepted
-    // if not, we set the error to true and the value to null ELSE we set the error to false and the value to the file
-    const handleAlbumChange = (field, value) => {
-        if (field === "image") {
-            const error = value && !acceptedFormatsImg.includes(value.type);
-            setAlbum({
-                ...album,
-                [field]: {
-                    error: error,
-                    helperText: error ? "This file format is not accepted" : "",
-                    value: error ? null : value,
-                    url: error ? "" : URL.createObjectURL(value),
-                },
-            });
-            if (error) ImgInputRef.current.value = null;
-        } else {
-            setAlbum({
-                ...album,
-                [field]: { ...album[field], value: value, error: false, helperText: "" },
-            });
-        }
-    };
-
-    ///////////////////////////
-    //
-    // Add File Track
-    //
-    ///////////////////////////
-    const handleAddTrack = (index, field, value) => {
-        const newMusicList = [...lstTrack];
-        const error = value && !acceptedFormatsTrack.includes(value.type);
-        const errSize = value && value.size > 260000000;
-
-        newMusicList[index]["fileOrigin"] = {
-            error: error || errSize,
-            helperText: error
-                ? "This file format is not accepted"
-                : errSize
-                ? "the file size is greater than 260 MB"
-                : "",
-            value: error || errSize ? null : value,
-        };
-
-        // if no error and no error size, create fromdata and convert file
-        if (!error && !errSize) {
-            const formDataConvert = new FormData();
-            formDataConvert.append("file", value);
-
-            // call convertFile function to convert the file to mp3
-            convertFile(index, newMusicList, formDataConvert);
-        }
-    };
-
-    ///////////////////////////
-    //
-    // add a infos track
-    //
-    ///////////////////////////
-    const handleTrackChange = (index, field, value) => {
-        const newMusicList = [...lstTrack];
-
-        newMusicList[index][field] = {
-            ...newMusicList[index][field],
-            value: value,
-            error: false,
-            helperText: "",
-        };
-
-        setLstTrack(newMusicList);
-        // if (field === "file" && newMusicList[index][field].error) fileInputRef.current.value = null;
-    };
-
-    ///////////////////////////
-    //
     // Convert File track to mp3
     //
     ///////////////////////////
@@ -211,42 +132,15 @@ function MusicAdder() {
                 },
             })
             .then((res) => {
-                console.log(res.data);
                 const blob = new Blob([new Uint8Array(Object.values(res.data))], {
                     type: "audio/mpeg",
                 });
-                console.log("blob", blob);
                 newMusicList[index]["fileMp3"] = { error: false, helperText: "", value: blob };
             })
             .catch((err) => {
                 console.log(err);
             });
         setTopFileConvert(false);
-    };
-
-    ///////////////////////////
-    //
-    // Delete File track and Image Album
-    //
-    ///////////////////////////
-    const handleFileDelete = (index) => {
-        const delMusicFile = [...lstTrack];
-        delMusicFile[index]["fileOrigin"] = { error: false, helperText: "", value: null };
-        delMusicFile[index]["fileMp3"] = { error: false, helperText: "", value: null };
-
-        setLstTrack(delMusicFile);
-        // quand on va faire le CSS il faudra récup le div du file input pour pouvoir reset le bon file input car actuelement on reset uniquement le dernier file input
-        fileInputRef.current.value = null;
-    };
-
-    ///////////////////////////
-    //
-    // Delete Image Album
-    //
-    ///////////////////////////
-    const handleImgDelete = (field) => {
-        setAlbum({ ...album, [field]: { error: false, helperText: "", value: null } });
-        ImgInputRef.current.value = null;
     };
 
     ///////////////////////////
@@ -329,17 +223,29 @@ function MusicAdder() {
             const formData = new FormData();
             formData.append("idUser", idUser);
             formData.append("idAlbum", idAlbum);
-            formData.append("title", album.title.value);
-            formData.append("artist", album.artist.value);
-            formData.append("file", album.image.value, album.image.value.name);
-            formData.append("price", album.price.value);
-            formData.append("date_release", album.date_release.value);
-            formData.append("descr", album.descr.value);
-            formData.append("styles", [styles]);
-            formData.append("tags", album.tags.value);
-            formData.append("top_price", album.top_price.value);
-            formData.append("top_free", album.top_free.value);
-            formData.append("top_custom_price", album.top_custom_price.value);
+
+            // browse the album data and add it to the form data
+            for (const [key, alb] of Object.entries(album)) {
+                if (key === "styles") {
+                    formData.append(key, [styles]);
+                } else if (key === "cover") {
+                    formData.append("file", alb.value, alb.value.name);
+                } else {
+                    formData.append(key, alb.value);
+                }
+            }
+
+            // formData.append("title", album.title.value);
+            // formData.append("artist", album.artist.value);
+            // formData.append("file", album.cover.value, album.cover.value.name);
+            // formData.append("price", album.price.value);
+            // formData.append("date_release", album.date_release.value);
+            // formData.append("descr", album.descr.value);
+            // formData.append("styles", [styles]);
+            // formData.append("tags", album.tags.value);
+            // formData.append("top_price", album.top_price.value);
+            // formData.append("top_free", album.top_free.value);
+            // formData.append("top_custom_price", album.top_custom_price.value);
 
             // add the tracks data to the form data
             lstTrack.forEach((track, index) => {
@@ -382,7 +288,7 @@ function MusicAdder() {
         // if they are empty, we set listTrack with value artist, date_release of album and title with track.filename
         const newTrack = [...lstTrack];
         const i = lstTrack.length - 1;
-        // for (let i = 0; i < lstTrack.length; i++) {
+
         if (!lstTrack[i].title.value) {
             if (lstTrack[i].fileOrigin.value) {
                 newTrack[i].title = {
@@ -391,9 +297,6 @@ function MusicAdder() {
                 };
             }
         }
-        // if (!lstTrack[i].artist.value) {
-        //     newTrack[i].artist = { ...newTrack[i].artist, value: album.artist.value };
-        // }
 
         // check if date_release is empty
         if (!lstTrack[i].date_release.value) {
@@ -449,25 +352,18 @@ function MusicAdder() {
                     album={album}
                     setAlbum={setAlbum}
                     ImgInputRef={ImgInputRef}
-                    handleImgDelete={(field) => handleImgDelete(field)}
-                    onAlbumChange={(field, newAlbum) => handleAlbumChange(field, newAlbum)}
                     topFileConvert={topFileConvert}
                 />
                 <br></br>
                 <TracksAdder
                     lstTrack={lstTrack}
+                    setLstTrack={setLstTrack}
                     fileInputRef={fileInputRef}
                     handleAddFormTrack={handleAddFormTrack}
-                    handleFileDelete={(index, field) => handleFileDelete(index, field)}
-                    handleAddTrack={(index, field, newFile) =>
-                        handleAddTrack(index, field, newFile)
-                    }
-                    onTrackChange={(index, field, newTrack) =>
-                        handleTrackChange(index, field, newTrack)
-                    }
                     topFileConvert={topFileConvert}
                     topCalculatePriceAuto={topCalculatePriceAuto}
                     setTopCalculatePriceAuto={setTopCalculatePriceAuto}
+                    convertFile={convertFile}
                 />
                 <Button disabled={topFileConvert} variant="contained" type="submit" color="success">
                     Create Album

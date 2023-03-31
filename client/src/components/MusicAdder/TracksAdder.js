@@ -8,15 +8,92 @@ import { Checkbox, FormControlLabel } from "@mui/material";
 
 function TracksAdder({
     lstTrack,
+    setLstTrack,
     fileInputRef,
-    onTrackChange,
     handleAddFormTrack,
-    handleAddTrack,
-    handleFileDelete,
     topFileConvert,
     topCalculatePriceAuto,
     setTopCalculatePriceAuto,
+    convertFile,
 }) {
+    // formats accepted for the file track
+    const acceptedFormatsTrack = ["audio/mpeg", "audio/flac", "audio/wav"];
+
+    ///////////////////////////
+    //
+    // Add File Track
+    //
+    ///////////////////////////
+    const handleAddTrack = (index, value) => {
+        const newMusicList = [...lstTrack];
+        const error = value && !acceptedFormatsTrack.includes(value.type);
+        const errSize = value && value.size > 260000000;
+
+        newMusicList[index]["fileOrigin"] = {
+            error: error || errSize,
+            helperText: error
+                ? "This file format is not accepted"
+                : errSize
+                ? "the file size is greater than 260 MB"
+                : "",
+            value: error || errSize ? null : value,
+        };
+
+        // if no error and no error size, create fromdata and convert file
+        if (!error && !errSize) {
+            const formDataConvert = new FormData();
+            formDataConvert.append("file", value);
+
+            if (value.type !== "audio/mpeg") {
+                // call convertFile function to convert the file to mp3
+                convertFile(index, newMusicList, formDataConvert);
+            } else {
+                console.log("TrackAdder.js - handleAddTrack - value.type", value.type);
+                newMusicList[index]["fileMp3"] = {
+                    error: false,
+                    helperText: "",
+                    value: value,
+                };
+            }
+
+            setLstTrack(newMusicList);
+        }
+    };
+
+    ///////////////////////////
+    //
+    // add a infos track
+    //
+    ///////////////////////////
+    const changeInfosTrack = (index, field, value) => {
+        const newMusicList = [...lstTrack];
+
+        newMusicList[index][field] = {
+            ...newMusicList[index][field],
+            value: value,
+            error: false,
+            helperText: "",
+        };
+
+        setLstTrack(newMusicList);
+        // if (field === "file" && newMusicList[index][field].error) fileInputRef.current.value = null;
+    };
+
+    ///////////////////////////
+    //
+    // Delete File track
+    //
+    ///////////////////////////
+    const handleDeleteFile = (index) => {
+        const delMusicFile = [...lstTrack];
+        delMusicFile[index]["fileOrigin"] = { error: false, helperText: "", value: null };
+        delMusicFile[index]["fileMp3"] = { error: false, helperText: "", value: null };
+
+        setLstTrack(delMusicFile);
+        // quand on va faire le CSS il faudra récup le div du file input pour pouvoir reset le bon file input car actuelement on reset uniquement le dernier file input
+        fileInputRef.current.value = null;
+    };
+
     return (
         <div>
             <h1>Add Tracks</h1>
@@ -42,7 +119,7 @@ function TracksAdder({
                             variant="outlined"
                             value={music.title.value}
                             InputLabelProps={{ shrink: true }}
-                            onChange={(e) => onTrackChange(index, "title", e.target.value)}
+                            onChange={(e) => changeInfosTrack(index, "title", e.target.value)}
                             error={music.title.error}
                             helperText={
                                 music.title.helperText ||
@@ -56,7 +133,7 @@ function TracksAdder({
                             variant="outlined"
                             value={music.artist.value}
                             InputLabelProps={{ shrink: true }}
-                            onChange={(e) => onTrackChange(index, "artist", e.target.value)}
+                            onChange={(e) => changeInfosTrack(index, "artist", e.target.value)}
                             error={music.artist.error}
                             helperText={
                                 music.artist.helperText ||
@@ -70,7 +147,7 @@ function TracksAdder({
                             label="file"
                             variant="contained"
                             component="label"
-                            onChange={(e) => handleAddTrack(index, "file", e.target.files[0])}
+                            onChange={(e) => handleAddTrack(index, e.target.files[0])}
                             color={(music.fileOrigin.error && "error") || "primary"}
                         >
                             Upload file track .mp3, .wav, .flac
@@ -98,7 +175,7 @@ function TracksAdder({
                                 <Button
                                     variant="contained"
                                     color="secondary"
-                                    onClick={(e) => handleFileDelete(index)}
+                                    onClick={(e) => handleDeleteFile(index)}
                                 >
                                     X
                                 </Button>
@@ -114,7 +191,7 @@ function TracksAdder({
                             label="price"
                             value={music.price.value}
                             type="number"
-                            onChange={(e) => onTrackChange(index, "price", e.target.value)}
+                            onChange={(e) => changeInfosTrack(index, "price", e.target.value)}
                             error={music.price.error}
                             helperText={music.price.helperText}
                             InputProps={{
@@ -132,9 +209,10 @@ function TracksAdder({
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            onChange={(e) => onTrackChange(index, "date_release", e.target.value)}
-                            // error={music.date_release.error}
-                            // helperText={music.date_release.helperText || "leave blank to put the same Album date realease"}
+                            onChange={(e) =>
+                                changeInfosTrack(index, "date_release", e.target.value)
+                            }
+                            helperText="leave blank to put the same Album date release"
                         />
                         {/* Lyrics */}
                         <TextField
@@ -143,7 +221,7 @@ function TracksAdder({
                             label="lyrics"
                             variant="outlined"
                             value={lstTrack.Lyrics}
-                            onChange={(e) => onTrackChange(index, "lyrics", e.target.value)}
+                            onChange={(e) => changeInfosTrack(index, "lyrics", e.target.value)}
                         />
                         {/* nb listens */}
                         <TextField
@@ -154,7 +232,7 @@ function TracksAdder({
                             type="number"
                             value={music.nb_listens.value}
                             onChange={(e) =>
-                                onTrackChange(index, "nb_listens", parseInt(e.target.value))
+                                changeInfosTrack(index, "nb_listens", parseInt(e.target.value))
                             }
                             error={music.nb_listens.error}
                             helperText={music.nb_listens.helperText}

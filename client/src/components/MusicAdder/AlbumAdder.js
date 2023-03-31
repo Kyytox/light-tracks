@@ -11,18 +11,23 @@ import SelectGenres from "../Forms/selectGenres";
 import { getAxiosReq } from "../../Services/AxiosGet";
 import FormAddTags from "../Forms/FormAddTags";
 
-function AlbumAdder({
-    album,
-    setAlbum,
-    ImgInputRef,
-    onAlbumChange,
-    handleImgDelete,
-    topFileConvert,
-}) {
-    const [lstGenres, setLstGenres] = useState([]);
+function AlbumAdder({ album, setAlbum, ImgInputRef, topFileConvert }) {
+    // formats accepted for the file track
+    const acceptedFormatsImg = ["image/png", "image/jpeg", "image/jpg"];
 
-    // change checkbox value
-    const handleChangeCheckbox = (e) => {
+    // list of Styles
+    const [lstStyles, setLstStyles] = useState([]);
+
+    // get all Styles
+    useEffect(() => {
+        const response = getAxiosReq("/getStyles", {});
+        response.then((data) => {
+            setLstStyles(data);
+        });
+    }, []);
+
+    // change checkbox Price
+    const changeCheckboxPrice = (e) => {
         const { name, checked } = e.target;
 
         // browse all key start with "top_"; if key = name, set value = true else set value = false
@@ -64,43 +69,76 @@ function AlbumAdder({
         setAlbum({ ...album, ...newAlbum });
     };
 
-    useEffect(() => {
-        // get all genres
-        const response = getAxiosReq("/getStyles", {});
-        response.then((data) => {
-            setLstGenres(data);
+    ///////////////////////////
+    //
+    // Change Infos Album
+    //
+    ///////////////////////////
+    const changeInfosAlbum = (field, value) => {
+        setAlbum({
+            ...album,
+            [field]: { ...album[field], value: value, error: false, helperText: "" },
         });
-    }, []);
+    };
+
+    ///////////////////////////
+    //
+    // Change Cover Album
+    //
+    ///////////////////////////
+    const changeCoverAlbum = (field, value) => {
+        const error = value && !acceptedFormatsImg.includes(value.type);
+        setAlbum({
+            ...album,
+            [field]: {
+                error: error,
+                helperText: error ? "This file format is not accepted" : "",
+                value: error ? null : value,
+                url: error ? "" : URL.createObjectURL(value),
+            },
+        });
+        if (error) ImgInputRef.current.value = null;
+    };
+
+    ///////////////////////////
+    //
+    // Delete Image Album
+    //
+    ///////////////////////////
+    const handleDeleteCover = (field) => {
+        setAlbum({ ...album, [field]: { error: false, helperText: "", value: null } });
+        ImgInputRef.current.value = null;
+    };
 
     return (
         <div>
             <h1>Add Album</h1>
             <div>
-                {/* Image */}
+                {/* Cover */}
                 <Button
                     required
                     disabled={topFileConvert}
-                    id="album-image"
-                    label="image"
+                    id="album-cover"
+                    label="cover"
                     variant="contained"
                     component="label"
-                    value={album.image.value}
-                    onChange={(e) => onAlbumChange("image", e.target.files[0])}
-                    color={(album.image.error && "error") || "primary"}
+                    value={album.cover.value}
+                    onChange={(e) => changeCoverAlbum("cover", e.target.files[0])}
+                    color={(album.cover.error && "error") || "primary"}
                 >
                     Upload Album Image .jpg, .jpeg, .png
                     <input type="file" accept=".jpg, .jpeg, .png" ref={ImgInputRef} hidden />
                 </Button>
-                <FormHelperText error={album.image.error} color="error">
-                    {album.image.helperText}
+                <FormHelperText error={album.cover.error} color="error">
+                    {album.cover.helperText}
                 </FormHelperText>
-                {album.image.value && (
+                {album.cover.value && (
                     <>
-                        <img src={album.image.url} alt="album-cover" style={{ width: "75px" }} />
+                        <img src={album.cover.url} alt="album-cover" style={{ width: "75px" }} />
                         <Button
                             variant="contained"
                             color="secondary"
-                            onClick={(e) => handleImgDelete("image")}
+                            onClick={(e) => handleDeleteCover("cover")}
                         >
                             X
                         </Button>
@@ -114,7 +152,7 @@ function AlbumAdder({
                     label="title"
                     variant="outlined"
                     value={album.title.value}
-                    onChange={(e) => onAlbumChange("title", e.target.value)}
+                    onChange={(e) => changeInfosAlbum("title", e.target.value)}
                     error={album.title.error}
                     helperText={album.title.helperText}
                 />
@@ -126,7 +164,7 @@ function AlbumAdder({
                     label="artist"
                     variant="outlined"
                     value={album.artist.value}
-                    onChange={(e) => onAlbumChange("artist", e.target.value)}
+                    onChange={(e) => changeInfosAlbum("artist", e.target.value)}
                     error={album.artist.error}
                     helperText={album.artist.helperText}
                 />
@@ -140,7 +178,7 @@ function AlbumAdder({
                                 name="top_price"
                                 value={album.top_price.value}
                                 checked={album.top_price.value}
-                                onChange={handleChangeCheckbox}
+                                onChange={changeCheckboxPrice}
                             />
                         }
                         label="I choose the price"
@@ -154,7 +192,7 @@ function AlbumAdder({
                                 name="top_custom_price"
                                 value={album.top_custom_price.value}
                                 checked={album.top_custom_price.value}
-                                onChange={handleChangeCheckbox}
+                                onChange={changeCheckboxPrice}
                             />
                         }
                         label="Fans choose the price"
@@ -168,7 +206,7 @@ function AlbumAdder({
                                 name="top_free"
                                 value={album.top_free.value}
                                 checked={album.top_free.value}
-                                onChange={handleChangeCheckbox}
+                                onChange={changeCheckboxPrice}
                             />
                         }
                         label="Album is free"
@@ -181,7 +219,7 @@ function AlbumAdder({
                         label="price"
                         value={album.price.value}
                         type="number"
-                        onChange={(e) => onAlbumChange("price", e.target.value)}
+                        onChange={(e) => changeInfosAlbum("price", e.target.value)}
                         error={album.price.error}
                         helperText={album.price.helperText}
                         InputProps={{
@@ -202,7 +240,7 @@ function AlbumAdder({
                     InputLabelProps={{
                         shrink: true,
                     }}
-                    onChange={(e) => onAlbumChange("date_release", e.target.value)}
+                    onChange={(e) => changeInfosAlbum("date_release", e.target.value)}
                     // error={album.date_release.error}
                     // helperText={album.date_release.helperText}
                 />
@@ -215,10 +253,10 @@ function AlbumAdder({
                     value={album.descr.value}
                     multiline
                     rows={10}
-                    onChange={(e) => onAlbumChange("descr", e.target.value)}
+                    onChange={(e) => changeInfosAlbum("descr", e.target.value)}
                 />
                 {/* genres */}
-                <SelectGenres lstValues={album} setLstValues={setAlbum} lstGenres={lstGenres} />
+                <SelectGenres lstValues={album} setLstValues={setAlbum} lstGenres={lstStyles} />
                 {/* Tags */}
                 <FormAddTags album={album} setAlbum={setAlbum} />
             </div>
