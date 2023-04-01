@@ -3,12 +3,9 @@ import React, { useState } from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { addFavoris, removeFavoris } from "../../Globals/GlobalFunctions";
 import { colorsFav } from "../../Globals/Colors";
-// use location
-import { useLocation } from "react-router-dom";
 
-function BtnFavorisAlbum({ idUser, isLoggedIn, idAlbum }) {
-    const location = useLocation();
-    const [favorisAlbum, setFavorisAlbum] = useState(location.pathname.includes("wantlist"));
+function BtnFavorisAlbum({ idUser, idAlbum, topFav }) {
+    const [favorisAlbum, setFavorisAlbum] = useState(topFav);
 
     const toggleFavoriAlbum = (idAlbum) => {
         setFavorisAlbum(!favorisAlbum);
@@ -29,15 +26,13 @@ function BtnFavorisAlbum({ idUser, isLoggedIn, idAlbum }) {
 
     return (
         <div className="btn-fav">
-            {isLoggedIn && (
-                <FavoriteIcon
-                    id={`fav-album-${idAlbum}`}
-                    sx={{
-                        color: favorisAlbum ? colorsFav.primary : colorsFav.secondary,
-                    }}
-                    onClick={() => toggleFavoriAlbum(idAlbum)}
-                />
-            )}
+            <FavoriteIcon
+                id={`fav-album-${idAlbum}`}
+                sx={{
+                    color: favorisAlbum ? colorsFav.primary : colorsFav.secondary,
+                }}
+                onClick={() => toggleFavoriAlbum(idAlbum)}
+            />
         </div>
     );
 }

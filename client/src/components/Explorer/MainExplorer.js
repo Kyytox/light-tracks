@@ -8,34 +8,28 @@ import PlayerAudio from "../PlayerAudio/PlayerAudio";
 import MainSearch from "../Search/MainSearch";
 
 function MainExplorer() {
+    const { idUser, isLoggedIn, checkToken } = useContext(AuthContext);
     const [lstAlbums, setLstAlbums] = useState([]);
     const [lstSalesFavoris, setLstSalesFavoris] = useState([]);
     const date = new Date();
-    const { idUser, isLoggedIn, checkToken } = useContext(AuthContext);
 
-    // const [idAlbumPlay, setIdAlbumPlay] = useState(0);
     const [lstTracksPlay, setLstTracksPlay] = useState([]);
 
     // get albums and sales favoris
     useEffect(() => {
         checkToken();
 
-        // get albums
-        const data = { date: date };
-        const response = getAxiosReq("/getAlbums", data);
-        response.then((data) => {
-            setLstAlbums(data);
-        });
+        const token = getLocalStorage("token");
+        const data = { date: date, idUser: idUser };
 
-        // get sales favoris
-        if (isLoggedIn) {
-            const token = getLocalStorage("token");
-            const data = { idUser: idUser };
-            const response = getAxiosReqAuth("/getSalesFavoris", data, token);
-            response.then((data) => {
-                setLstSalesFavoris(data);
-            });
-        }
+        const response = isLoggedIn
+            ? getAxiosReqAuth("/getAlbumsSalesFavoris", data, token)
+            : getAxiosReq("/getAlbums", data);
+
+        response.then((res) => {
+            console.log("MainExplorer -- res = ", res);
+            setLstAlbums(res);
+        });
     }, [checkToken]);
 
     // // change idAlbumPlay and charge tracks
@@ -46,11 +40,14 @@ function MainExplorer() {
         const lstTracks = album.tracks.map((track) => {
             track.t_id_album = idAlbum;
             track.id_user = parseInt(idUser);
+            var cptPlay = 0;
 
-            // find cptPlay in album.user_song_played
-            const cptPlay = album.user_song_played.find(
-                (trackCptPlay) => trackCptPlay.usp_id_album_track === track.t_id_album_track
-            );
+            if (idUser) {
+                // find cptPlay in album.user_song_played
+                cptPlay = album.user_song_played.find(
+                    (trackCptPlay) => trackCptPlay.usp_id_album_track === track.t_id_album_track
+                );
+            }
 
             // insert cptPlay in track else cptPlay = 0
             track.t_cpt_play = cptPlay ? cptPlay.usp_cpt_play : 0;

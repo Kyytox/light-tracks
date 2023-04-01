@@ -113,7 +113,7 @@ export const getFavoris = (req, res) => {
 
     // get all favoris from user id
     pool.query(
-        `SELECT *,
+        `SELECT *, true as top_favoris_album,
             (SELECT json_agg(json_build_object(
                 'gm_id', gm.gm_id,
                 'gm_name_genre', gm.gm_name_genre))

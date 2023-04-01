@@ -28,8 +28,7 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
     // lst albums is an array of objects
     const LstDisplayAlbums = lstAlbums.map((album, key) => {
         // const coverPath = backendUrl + "/" + "images/logo.png";
-        const coverPath =
-            "https://d3s5ffas0ydxtp.cloudfront.net/" + album.a_cover_path + "/" + album.a_cover;
+        const coverPath = "https://d3s5ffas0ydxtp.cloudfront.net/" + album.a_cover_path + "/" + album.a_cover;
 
         //
         // Location Album
@@ -74,7 +73,9 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
                     />
 
                     {/* Favoris */}
-                    <BtnFavorisAlbum idUser={idUser} isLoggedIn={isLoggedIn} idAlbum={album.a_id} />
+                    {isLoggedIn && (
+                        <BtnFavorisAlbum idUser={idUser} idAlbum={album.a_id} topFav={album.top_favoris_album} />
+                    )}
 
                     <button type="button" onClick={() => changeIdAlbumPlay(album.a_id)}>
                         Play

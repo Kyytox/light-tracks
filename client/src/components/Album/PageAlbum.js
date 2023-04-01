@@ -5,7 +5,7 @@ import { backendUrl } from "../../Globals/GlobalVariables";
 import { Button } from "@mui/material";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { AuthContext } from "../../Services/AuthContext";
-import BtnFavoris from "../Favoris/BtnFavorisAlbum";
+import BtnFavorisAlbum from "../Favoris/BtnFavorisAlbum";
 import BtnFollow from "../Bouttons/BtnFollow";
 import { checkFollowed } from "../../Globals/FctsFollow";
 import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
@@ -156,7 +156,7 @@ function PageAlbum() {
                     >
                         Buy
                     </Button>
-                    <BtnFavoris idUser={idUser} isLoggedIn={isLoggedIn} idAlbum={infosAlbum.a_id} />
+                    <BtnFavorisAlbum idUser={idUser} idAlbum={infosAlbum.a_id} topFav={infosAlbum.top_favoris_album} />
                 </>
             )}
             <h4>Id : {infosAlbum.a_id}</h4>

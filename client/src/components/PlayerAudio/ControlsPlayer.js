@@ -12,7 +12,7 @@ import { postAxiosReq } from "../../Services/AxiosPost";
 
 function ControlsPlayer(props) {
     // play/pause
-    const [isPlaying, setIsPlaying] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(false);
 
     // volume
     const [volume, setVolume] = useState(0.01);
@@ -27,8 +27,7 @@ function ControlsPlayer(props) {
         if (isPlaying) {
             // verif if song is available for listening (t_nb_listen)
             if (
-                props.playlist[props.currentSongIndex].t_cpt_play >=
-                props.playlist[props.currentSongIndex].t_nb_listen
+                props.playlist[props.currentSongIndex].t_cpt_play >= props.playlist[props.currentSongIndex].t_nb_listen
             ) {
                 props.audioElement.current.pause();
                 alert("This song is not available anymore");
@@ -49,24 +48,19 @@ function ControlsPlayer(props) {
     useEffect(() => {
         // console.log("ControlsPlayer useEffect currentTime = ", currentTime);
 
-        // // send song played to server after 5 seconds
-        // if (
-        //     currentTime > 2 &&
-        //     !props.songPlayed &&
-        //     props.playlist[props.currentSongIndex].id_user
-        // ) {
-        //     props.setSongPlayed(true);
-        //     console.log(
-        //         "ControlsPlayer useEffect props.playlist[currentSongIndex] = ",
-        //         props.playlist[props.currentSongIndex]
-        //     );
-
-        //     const data = props.playlist[props.currentSongIndex];
-        //     const response = postAxiosReq("/cptSongPlayed", data);
-        //     response.then((data) => {
-        //         console.log("ControlsPlayer useEffect data = ", data);
-        //     });
-        // }
+        if (props.playlist[props.currentSongIndex].top_sale_album === false) {
+            if (props.playlist[props.currentSongIndex].top_sale_track === false) {
+                // send song played to server after 5 seconds
+                if (currentTime > 5 && !props.songPlayed && props.playlist[props.currentSongIndex].id_user) {
+                    props.setSongPlayed(true);
+                    const data = props.playlist[props.currentSongIndex];
+                    const response = postAxiosReq("/cptSongPlayed", data);
+                    response.then((data) => {
+                        console.log("ControlsPlayer useEffect data = ", data);
+                    });
+                }
+            }
+        }
 
         if (props.audioElement.current) {
             // set current time and progress bar
@@ -136,29 +130,13 @@ function ControlsPlayer(props) {
 
     return (
         <div>
-            {isPlaying ? (
-                <PauseCircleIcon onClick={handlePlayPause} />
-            ) : (
-                <PlayCircleIcon onClick={handlePlayPause} />
-            )}
+            {isPlaying ? <PauseCircleIcon onClick={handlePlayPause} /> : <PlayCircleIcon onClick={handlePlayPause} />}
             <SkipPreviousIcon onClick={handlePrev} />
             <SkipNextIcon onClick={handleNext} />
-            <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={props.volume}
-                onChange={handleVolumeChange}
-            />
+            <input type="range" min="0" max="1" step="0.01" value={props.volume} onChange={handleVolumeChange} />
 
             {/* progress bar */}
-            <ProgressBar
-                progress={progress}
-                handleSeek={handleSeek}
-                currentTime={currentTime}
-                duration={duration}
-            />
+            <ProgressBar progress={progress} handleSeek={handleSeek} currentTime={currentTime} duration={duration} />
 
             {/* Display playlist */}
             <QueueMusicIcon onClick={handleTogglePlaylist} />
