@@ -32,14 +32,13 @@ function UserCollections({ setLstTracksPlay }) {
         setLstTracksPlay(lstTracks);
     };
 
+    console.log("UserCollections -- lstCollections = ", lstCollections);
+
     return (
         <div>
             {isLoggedIn ? (
                 <div>
-                    <LstCollection
-                        lstAlbums={lstCollections}
-                        changeIdAlbumPlay={changeIdAlbumPlay}
-                    />
+                    <LstCollection lstAlbums={lstCollections} changeIdAlbumPlay={changeIdAlbumPlay} />
                 </div>
             ) : (
                 <div>u need to be logged in to see your collections</div>

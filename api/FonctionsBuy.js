@@ -5,8 +5,18 @@ export const buyAlbum = (req, res) => {
     console.log("req.body", req.body);
 
     pool.query(
-        "INSERT INTO public.sales (s_id_user, s_id_album, s_id_track, s_id_track_album, s_price, s_date_sale) VALUES ($1,$2,$3,$4,$5,$6)",
-        [req.body.idUser, req.body.idAlbum, req.body.idTrack, req.body.idTrackAlbum, req.body.price, new Date()],
+        `INSERT INTO public.sales (s_id_user, s_id_album, s_id_track, s_id_track_album, s_price, s_date_sale, s_top_sale_album, s_top_sale_track) 
+        VALUES ($1, $2, $3, $4, $5, $6,$7,$8)`,
+        [
+            req.body.idUser,
+            req.body.idAlbum,
+            req.body.idTrack,
+            req.body.idTrackAlbum,
+            req.body.price,
+            new Date(),
+            true,
+            false,
+        ],
         (err, result) => {
             if (err) {
                 console.error("Error executing INSERT INTO:", err);

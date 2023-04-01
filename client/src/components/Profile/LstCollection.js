@@ -7,11 +7,8 @@ function LstCollection({ lstAlbums, changeIdAlbumPlay }) {
     // create a map to display
     // lst albums is an array of objects
     const LstDisplayAlbums = lstAlbums.map((album, key) => {
-        console.log("album", album);
-
         // const coverPath = backendUrl + "/" + "images/logo.png";
-        const coverPath =
-            "https://d3s5ffas0ydxtp.cloudfront.net/" + album.a_cover_path + "/" + album.a_cover;
+        const coverPath = "https://d3s5ffas0ydxtp.cloudfront.net/" + album.a_cover_path + "/" + album.a_cover;
         const location = {
             pathname: `/album/${album.a_id}`,
         };
