@@ -10,6 +10,7 @@ import BtnFollow from "../Bouttons/BtnFollow";
 import { checkFollowed } from "../../Globals/FctsFollow";
 import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 import PlayerAudio from "../PlayerAudio/PlayerAudio";
+import { postAxiosReqAuth } from "../../Services/AxiosPost";
 
 function PageAlbum() {
     const { isLoggedIn, checkToken } = useContext(AuthContext);
@@ -62,7 +63,11 @@ function PageAlbum() {
         }
     }, [lstTracks, isLoggedIn]);
 
-    const ClickBuyAlbum = async (idAlbum, idTrack, idTrackAlbum, price) => {
+    // buy Track
+    const ClickBuyTrack = async (idAlbum, idTrack, idTrackAlbum, price) => {
+        await checkToken();
+        const token = getLocalStorage("token");
+
         // create const data with infosAlbum
         const data = {
             idUser: idUser,
@@ -72,46 +77,66 @@ function PageAlbum() {
             price: price,
         };
 
-        // call /buyAlbum with axios post
-        axios
-            .post(backendUrl + "/buyAlbum", data)
-            .then((response) => {
-                console.log(response);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        if (isLoggedIn) {
+            console.log("PageAlbum -> /buyTrack");
+            try {
+                const response = await postAxiosReqAuth("/buyTrack", data, token);
+                console.log("response", response);
+                if (response.succes) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.log("error", error);
+            }
+        }
+    };
+
+    const ClickBuyAlbum = async (idAlbum, idTrack, idTrackAlbum, price) => {
+        await checkToken();
+        const token = getLocalStorage("token");
+
+        // create const data with infosAlbum
+        const data = {
+            idUser: idUser,
+            idAlbum: idAlbum,
+            idTrack: idTrack,
+            idTrackAlbum: idTrackAlbum,
+            price: price,
+        };
+
+        if (isLoggedIn) {
+            console.log("PageAlbum -> /buyAlbum");
+            try {
+                const response = await postAxiosReqAuth("/buyAlbum", data, token);
+                if (response.data.succes) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.log("error", error);
+            }
+        }
     };
 
     // create a map to display all tracks
     const LstDisplayTracks = lstTracks.map((track, key) => {
+        console.log("track", track);
         return (
             <>
                 <div className="card" key={track.t_id}>
                     <div className="card-body" style={{ display: "flex" }}>
                         <h5 className="card-title">{track.t_title}</h5>
-                        <p className="card-text">{track.t_artist}</p>
+                        {/* <p className="card-text">{track.t_artist}</p> */}
                         <p className="card-text">{track.t_price}</p>
-                        <p className="card-text">{track.t_date_release}</p>
+                        {/* <p className="card-text">{track.t_date_release}</p>
                         <p className="card-text">{track.t_nb_listen}</p>
-                        <p className="card-text">{track.t_lyrics}</p>
-                        <audio controls>
-                            <source
-                                src={
-                                    "https://d3s5ffas0ydxtp.cloudfront.net/" +
-                                    track.t_file_path +
-                                    "/" +
-                                    track.t_file_name_mp3
-                                }
-                                type="audio/mpeg"
-                            />
-                        </audio>
-                        {isLoggedIn && (
+                        <p className="card-text">{track.t_lyrics}</p> */}
+
+                        {isLoggedIn && !track.top_sale_track && !track.top_sale_album && (
                             <>
                                 <Button
                                     variant="contained"
                                     onClick={() =>
-                                        ClickBuyAlbum(
+                                        ClickBuyTrack(
                                             infosAlbum.a_id,
                                             track.t_id,
                                             track.t_id_album_track,
@@ -163,14 +188,13 @@ function PageAlbum() {
             <p>descr : {infosAlbum.a_description}</p>
             {/* <p>Styles : {infosAlbum.a_styles}</p> */}
             <p>Styles : {lstStyles}</p>
-            {/* <PlayerAudio playList={playList} /> */}
 
             {lstTracks.length > 0 && <PlayerAudio playlist={lstTracks} />}
 
             <br></br>
             <br></br>
 
-            {/* {LstDisplayTracks} */}
+            {LstDisplayTracks}
             <br></br>
             <br></br>
         </div>

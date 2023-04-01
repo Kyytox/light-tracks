@@ -12,7 +12,7 @@ import {
 } from "../FunctionsExplorer.js";
 import { getAudioFileStream } from "../AwsS3.js";
 import { generateUniqueName, convertFileAudio } from "../FunctionsAlbum.js";
-import { buyAlbum } from "../FonctionsBuy.js";
+import { buyAlbum, buyTrack } from "../FonctionsBuy.js";
 import {
     getProfileInfos,
     updateProfileInfos,
@@ -94,7 +94,8 @@ router.post("/convertFileAudio", uploadConvertFile.single("file"), convertFileAu
 router.get("/getSearch", getSearch);
 
 // Buy
-router.post("/buyAlbum", buyAlbum);
+router.post("/buyAlbum", authenticateToken, buyAlbum);
+router.post("/buyTrack", authenticateToken, buyTrack);
 
 // Profile
 router.get("/getProfileInfos", authenticateToken, getProfileInfos);

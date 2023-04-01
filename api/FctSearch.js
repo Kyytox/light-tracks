@@ -20,11 +20,12 @@ export const getSearch = (req, res) => {
                         't_file_name_mp3', t.t_file_name_mp3,
                         't_nb_listen', t.t_nb_listen))
                     FROM public.tracks t WHERE t.t_id_album = a.a_id) as tracks
-                    FROM public.albums a`;
+                    FROM public.albums a
+                    JOIN public.profiles p ON a.a_id_user = p.p_id_user`;
 
     // oint tables profiles and countries
     if (countries.length > 0) {
-        const reqCountry = ` join profiles p on a.a_id_user = p.p_id_user join countries c on c.c_code_country = p.p_code_country`;
+        const reqCountry = ` JOIN profiles p on a.a_id_user = p.p_id_user JOIN countries c on c.c_code_country = p.p_code_country`;
         reqSQL += reqCountry;
     }
 

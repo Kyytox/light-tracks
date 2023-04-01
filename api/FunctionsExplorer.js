@@ -97,8 +97,8 @@ export const getTracksAuth = (req, res) => {
             'gm_name_genre', gm.gm_name_genre))
             FROM public.genres_music gm
             WHERE gm.gm_id = ANY(a.a_styles)) as styles,
-            EXISTS(SELECT 1 FROM public.sales s WHERE s.s_id_album = a.a_id AND s.s_id_user = $1) AS top_sale_album,
-            EXISTS(SELECT 1 FROM public.sales s WHERE s.s_id_track = t.t_id AND s.s_id_user = $1) AS top_sale_track,
+            EXISTS(SELECT 1 FROM public.sales s WHERE s.s_id_album = a.a_id AND s.s_id_user = $1 AND s.s_top_sale_album = true) AS top_sale_album,
+            EXISTS(SELECT 1 FROM public.sales s WHERE s.s_id_track = t.t_id AND s.s_id_user = $1 AND s.s_top_sale_track = true) AS top_sale_track,
             EXISTS(SELECT 1 FROM public.favoris f WHERE f.f_id_album = a.a_id AND f.f_id_user = $1) AS top_favoris_album
         FROM public.albums a 
         JOIN public.tracks t ON a.a_id = t.t_id_album
