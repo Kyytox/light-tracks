@@ -116,8 +116,6 @@ export const getTracksAuth = (req, res) => {
 
 // get all genres and country from database present in table albums (for genres) and table profiles (for country)
 export const getStylesCountryInAlbums = (req, res) => {
-    console.log("API /getStylesCountryInAlbums");
-
     pool.query(
         `SELECT p.p_code_country, p.p_name_country, gm.gm_id, gm.gm_name_genre
         FROM public.albums a

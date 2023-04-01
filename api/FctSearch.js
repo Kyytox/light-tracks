@@ -3,14 +3,10 @@ import pool from "./database/database.js";
 //
 // get search results from database with search, styles and country
 export const getSearch = (req, res) => {
-    console.log("API /getSearch");
-    console.log("req.query", req.query);
     const search = req.query.search.toLowerCase();
     const styles = req.query.styles?.map((item) => item.id) ?? [];
     const tags = req.query.tags?.map((item) => `'${item}'`) ?? [];
     const countries = req.query.country?.map((item) => item.c_code_country) ?? [];
-
-    console.log("tags", tags);
 
     var reqSQL = "select * from albums a";
 

@@ -5,17 +5,8 @@ import { join, dirname } from "path";
 // ffmpeg.wasm
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
-// const FFmpegCoreLocation = join(
-//         dirname(import.meta.url),
-//         "./node_modules/@ffmpeg/core/dist/ffmpeg-core.js"
-// ).replace("file:", "");
-
 const FFmpegCoreLocation = "/media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/core/dist/ffmpeg-core.js";
 
-// const FFmpegWasmLocation = join(
-//     dirname(import.meta.url),
-//     "./node_modules/@ffmpeg/core/dist/ffmpeg-core.wasm"
-// );
 const FFmpegWasmLocation = "/media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/core/dist/ffmpeg-core.wasm";
 
 // function for count number of album for a user
@@ -168,8 +159,6 @@ export const convertFileAudio = async (req, res) => {
     console.log("FFmpegWasmLocation", FFmpegWasmLocation);
 
     const ffmpeg = createFFmpeg({
-        // corePath: "/media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/core/dist/ffmpeg-core.js",
-        // wasmPath: "./media/kytox/Jeux/DEV/LightTracks/api/node_modules/@ffmpeg/ffmpeg/dist/ffmpeg.wasm",
         log: true,
         logger: ({ message }) => console.log(message),
         progress: (p) => console.log(p),
@@ -177,20 +166,10 @@ export const convertFileAudio = async (req, res) => {
 
     ffmpeg.setLogger(({ type, message }) => {
         console.log("logger", type, message);
-        /*
-         * type can be one of following:
-         *
-         * info: internal workflow debug messages
-         * fferr: ffmpeg native stderr output
-         * ffout: ffmpeg native stdout output
-         */
     });
 
     ffmpeg.setProgress(({ ratio }) => {
         console.log("progress", ratio);
-        /*
-         * ratio is a float number between 0 to 1.
-         */
     });
 
     // convert the file to mp3 and return the result

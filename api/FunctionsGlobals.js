@@ -1,8 +1,6 @@
 import pool from "./database/database.js";
 
 export const getStyles = (req, res) => {
-    console.log("API /getStyles");
-
     pool.query(
         `SELECT *
         FROM public.genres_music
@@ -19,8 +17,6 @@ export const getStyles = (req, res) => {
 
 // get all genres from database in table genres_music
 export const getStylesCountries = (req, res) => {
-    console.log("API /getStylesCountries");
-
     // retrieve data of table genres_music and countries, make 2 requests, send data to client in an array
     pool.query(
         `SELECT *

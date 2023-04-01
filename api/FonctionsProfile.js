@@ -3,8 +3,6 @@ import { deleteAlbumInS3 } from "./AwsS3.js";
 
 // get infos of user by id
 export const getProfileInfos = (req, res) => {
-    console.log("API /getProfileInfos");
-
     pool.query(
         // `SELECT u_id, u_username, u_avatar, u_email, u_bio, u_code_country, u_name_country, gm_id, gm_name_genre
         // FROM public.users
@@ -41,9 +39,6 @@ export const getProfileInfos = (req, res) => {
 
 // update profile infos
 export const updateProfileInfos = (req, res) => {
-    console.log("API /updateProfileInfos");
-    console.log("req.body", req.body);
-
     // create text for update
     var textUpdate = "UPDATE public.profiles SET ";
     for (const [key, value] of Object.entries(req.body)) {
@@ -61,8 +56,6 @@ export const updateProfileInfos = (req, res) => {
     textUpdate = textUpdate.slice(0, -2); // remove the last comma and space
     textUpdate += ` WHERE p_id_user = ${req.body.id}`;
 
-    console.log("textUpdate", textUpdate);
-
     // update user infos
     pool.query(textUpdate, [], (err, result) => {
         if (err) {
@@ -74,10 +67,6 @@ export const updateProfileInfos = (req, res) => {
 };
 
 export const getCollection = (req, res) => {
-    console.log("API /getCollection");
-
-    // this my table sales s_id_sale s_id_user; s_id_album; s_id_track; s_id_track_album; s_price; s_date_sale;
-    // get all sales from user id , sorted by date of sale
     pool.query(
         `SELECT *,
             (SELECT json_agg(json_build_object(
@@ -109,8 +98,6 @@ export const getCollection = (req, res) => {
 
 // get all favoris from user id
 export const getFavoris = (req, res) => {
-    console.log("API /getFavoris");
-
     // get all favoris from user id
     pool.query(
         `SELECT *, true as top_favoris_album,
@@ -149,8 +136,6 @@ export const getFavoris = (req, res) => {
 
 // get all albums created by user id
 export const getMyAlbums = (req, res) => {
-    console.log("API /getMyAlbums");
-
     // get all albums created by user id
     pool.query(
         "SELECT * FROM public.albums where a_id_user = $1 order by a_date_create desc",
@@ -168,9 +153,6 @@ export const getMyAlbums = (req, res) => {
 // add favoris to the user
 // this is my table favoris f_id_fav f_id_user f_id_album f_id_track f_date_fav
 export const addFavoris = (req, res) => {
-    console.log("API /addFavoris");
-    console.log("req.body", req.body);
-
     // insert into bd in table favoris the id of the user, the id of the album, the id of the track, the date of the favoris
     pool.query(
         "INSERT INTO public.favoris (f_id_user, f_id_album, f_id_track, f_date_fav) VALUES ($1,$2,$3,$4)",
@@ -187,9 +169,6 @@ export const addFavoris = (req, res) => {
 
 // delete favoris to the user
 export const deleteFavoris = (req, res) => {
-    console.log("API /deleteFavoris");
-    console.log("req.body", req.body);
-
     // delete from bd in table favoris the id of the user, the id of the album, the id of the track
     pool.query(
         "DELETE FROM public.favoris WHERE f_id_user = $1 and f_id_album = $2 ",
@@ -206,9 +185,6 @@ export const deleteFavoris = (req, res) => {
 
 // get all sales and favoris from user id
 export const getSalesFavoris = (req, res) => {
-    console.log("API /getSalesFavoris");
-    console.log("req.query.idUser", req.query.idUser);
-
     // get all sales and favoris from user id
     pool.query(
         `SELECT res.album_id, res.date, res.source 
@@ -235,10 +211,6 @@ export const getSalesFavoris = (req, res) => {
 
 // get if the album id is in favoris or in sales
 export const getAlbumInFavorisOrSales = (req, res) => {
-    console.log("API /getAlbumInFavorisOrSales");
-    console.log("req.query.idUser", req.query.idUser);
-    console.log("req.query.idAlbum", req.query.idAlbum);
-
     // get if the album id is in favoris or in sales
     pool.query(
         `SELECT res.source 
@@ -265,9 +237,6 @@ export const getAlbumInFavorisOrSales = (req, res) => {
 
 // delete album from the user id with album id
 export const deleteAlbum = async (req, res) => {
-    console.log("API /deleteAlbum");
-    console.log("req.body", req.body);
-
     // delete img and folder album from S3
     await deleteAlbumInS3(req);
     console.log("deleteAlbumInS3-----------");
