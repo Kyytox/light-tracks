@@ -14,6 +14,7 @@ function UserMyAlbums() {
         const token = getLocalStorage("token");
 
         // get my albums
+        console.log("UserMyAlbums -- /getMyAlbums");
         const data = { idUser: idUser };
         const response = getAxiosReqAuth("/getMyAlbums", data, token);
         response.then((data) => {

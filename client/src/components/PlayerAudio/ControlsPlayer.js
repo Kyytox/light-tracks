@@ -53,6 +53,7 @@ function ControlsPlayer(props) {
                 // send song played to server after 5 seconds
                 if (currentTime > 5 && !props.songPlayed && props.playlist[props.currentSongIndex].id_user) {
                     props.setSongPlayed(true);
+                    console.log("ControlsPlayer -- /cptSongPlayed");
                     const data = props.playlist[props.currentSongIndex];
                     const response = postAxiosReq("/cptSongPlayed", data);
                     response.then((data) => {

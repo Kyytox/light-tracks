@@ -16,6 +16,7 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
             const token = getLocalStorage("token");
 
             // get follows
+            console.log("LstAlbums -- get follows");
             const data = { idUser: idUser };
             const response = getAxiosReqAuth("/getFollows", data, token);
             response.then((data) => {

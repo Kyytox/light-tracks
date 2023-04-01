@@ -5,7 +5,7 @@ import { AuthContext } from "../../Services/AuthContext";
 import { getAxiosReqAuth } from "../../Services/AxiosGet";
 
 function UserWantlist({ setLstTracksPlay }) {
-    const { isLoggedIn } = useContext(AuthContext);
+    const { isLoggedIn, checkToken } = useContext(AuthContext);
     const [lstFavoris, setLstFavoris] = useState([]);
     const idUser = getLocalStorage("id");
 
@@ -13,12 +13,17 @@ function UserWantlist({ setLstTracksPlay }) {
 
     // get favoris
     useEffect(() => {
-        const token = getLocalStorage("token");
-        const data = { idUser: idUser };
-        const response = getAxiosReqAuth("/getFavoris", data, token);
-        response.then((data) => {
-            setLstFavoris(data);
-        });
+        checkToken();
+
+        if (isLoggedIn) {
+            console.log("UserWantlist -- /getFavoris");
+            const token = getLocalStorage("token");
+            const data = { idUser: idUser };
+            const response = getAxiosReqAuth("/getFavoris", data, token);
+            response.then((data) => {
+                setLstFavoris(data);
+            });
+        }
     }, []);
 
     // // change idAlbumPlay and charge tracks

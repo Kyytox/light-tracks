@@ -12,6 +12,7 @@ function PageUser() {
 
     useEffect(() => {
         // get user info with get axios on getUserById
+        console.log("PageUser -- /getUserById");
         const data = { idUser: idUserUrl };
         const response = getAxiosReq("/getUserById", data);
         response.then((data) => {

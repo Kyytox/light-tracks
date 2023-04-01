@@ -14,6 +14,7 @@ function UserCollections({ setLstTracksPlay }) {
         const token = getLocalStorage("token");
 
         // call /getCollections with axios post
+        console.log("UserCollections -- /getCollection");
         const data = { idUser: idUser };
         const response = getAxiosReqAuth("/getCollection", data, token);
         response.then((data) => {

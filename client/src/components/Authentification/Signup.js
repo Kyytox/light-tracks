@@ -97,10 +97,7 @@ function SignUp() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (
-            values.password.value === values.confirmPassword.value &&
-            values.password.error === false
-        ) {
+        if (values.password.value === values.confirmPassword.value && values.password.error === false) {
             setValues({
                 ...values,
                 confirmPassword: {
@@ -116,6 +113,7 @@ function SignUp() {
             };
 
             // call /signup for INSERT user
+            console.log("Signup.js -- /signup");
             const response = postAxiosReq("/signup", data);
             response.then((res) => {
                 console.log(res);

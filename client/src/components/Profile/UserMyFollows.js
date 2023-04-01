@@ -9,14 +9,17 @@ function UserMyFollows() {
     const [lstFollows, setLstFollows] = useState([]);
     const idUser = getLocalStorage("id");
 
+    // get follows
     useEffect(() => {
-        // get follows
-        const token = getLocalStorage("token");
-        const data = { idUser: idUser };
-        const response = getAxiosReqAuth("/getFollows", data, token);
-        response.then((data) => {
-            setLstFollows(data);
-        });
+        if (isLoggedIn) {
+            const token = getLocalStorage("token");
+            console.log("UserMyFollows -- /getFollows");
+            const data = { idUser: idUser };
+            const response = getAxiosReqAuth("/getFollows", data, token);
+            response.then((data) => {
+                setLstFollows(data);
+            });
+        }
     }, []);
 
     return (

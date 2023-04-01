@@ -41,6 +41,7 @@ function Login() {
         };
 
         // call /login for check username
+        console.log("Login -- /login");
         const response = postAxiosReq("/login", data);
         response.then((data) => {
             if (data.errUsr) {

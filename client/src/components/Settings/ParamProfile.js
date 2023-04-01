@@ -34,6 +34,7 @@ function ParamProfile() {
         //
         // get Profile Infos
         const data = { idUser: idUser };
+        console.log("ParamProfile -- /getProfileInfos");
         const response = getAxiosReqAuth("/getProfileInfos", data, token);
         response.then((data) => {
             setLstParams({
@@ -51,6 +52,7 @@ function ParamProfile() {
 
         //
         // get all genres from getGenres with axios
+        console.log("ParamProfile -- /getStylesCountries");
         const response2 = getAxiosReq("/getStylesCountries", {});
         response2.then((data) => {
             setLstGenres(data.styles);
@@ -76,9 +78,7 @@ function ParamProfile() {
     const handleChanges = (key, value) => {
         // check if value has a valid format
         const isValid =
-            (key === "avatar" && value.startsWith("http")) ||
-            (key === "email" && value.includes("@")) ||
-            key === "bio";
+            (key === "avatar" && value.startsWith("http")) || (key === "email" && value.includes("@")) || key === "bio";
 
         if (isValid) {
             setLstParams({ ...lstParams, [key]: { value: value, error: false, helperText: "" } });
@@ -113,6 +113,7 @@ function ParamProfile() {
                     styles_music: styles,
                 };
 
+                console.log("ParamProfile.js -- /updateProfileInfos");
                 const response = postAxiosReqAuth("/updateProfileInfos", data, token);
                 response.then((data) => {
                     console.log(data);
@@ -159,18 +160,10 @@ function ParamProfile() {
                 />
 
                 {/* Country */}
-                <SelectCountry
-                    lstParams={lstParams}
-                    setLstParams={setLstParams}
-                    lstCountries={lstCountries}
-                />
+                <SelectCountry lstParams={lstParams} setLstParams={setLstParams} lstCountries={lstCountries} />
 
                 {/* Genres Music */}
-                <SelectGenres
-                    lstValues={lstParams}
-                    setLstValues={setLstParams}
-                    lstGenres={lstGenres}
-                />
+                <SelectGenres lstValues={lstParams} setLstValues={setLstParams} lstGenres={lstGenres} />
 
                 {/* Submit */}
                 <Button variant="contained" type="submit">

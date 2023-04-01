@@ -19,6 +19,7 @@ function MainSearch() {
     });
 
     useEffect(() => {
+        console.log("MainSearch -- /getStylesCountryInAlbums");
         const response = getAxiosReq("/getStylesCountryInAlbums", {});
         response.then((data) => {
             // create array with styles distinct
@@ -61,6 +62,7 @@ function MainSearch() {
             country: lstParams.country.value,
         };
 
+        console.log("MainSearch -- /getSearch");
         const response = getAxiosReq("/getSearch", data);
         response.then((data) => {
             console.log("data", data);

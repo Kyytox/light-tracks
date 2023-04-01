@@ -22,6 +22,8 @@ function MainExplorer() {
         const token = getLocalStorage("token");
         const data = { date: date, idUser: idUser };
 
+        console.log("MainExplorer -- " + (isLoggedIn ? "/getAlbumsSalesFavoris" : "/getAlbums"));
+
         const response = isLoggedIn
             ? getAxiosReqAuth("/getAlbumsSalesFavoris", data, token)
             : getAxiosReq("/getAlbums", data);
