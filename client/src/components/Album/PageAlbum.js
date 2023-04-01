@@ -20,17 +20,21 @@ function PageAlbum() {
     const idUser = getLocalStorage("id");
     const [isFollowed, setIsFollowed] = useState(false);
     const [lstStyles, setLstStyles] = useState([]);
+    const [topAlbumBuy, setTopAlbumBuy] = useState(false);
 
     // get tracks
     useEffect(() => {
         checkToken();
 
-        const data = { id: id };
-        const response = getAxiosReq("/getTracks", data);
-        response.then((data) => {
-            setLstTracks(data);
+        const token = getLocalStorage("token");
+        const data = { id: id, idUser: idUser };
 
-            const lstStyles = data[0].styles.map((style, key) => {
+        const response = isLoggedIn ? getAxiosReqAuth("/getTracksAuth", data, token) : getAxiosReq("/getTracks", data);
+        response.then((res) => {
+            setLstTracks(res);
+            setTopAlbumBuy(res[0].top_sale_album);
+
+            const lstStyles = res[0].styles.map((style, key) => {
                 return (
                     <span key={key} className="">
                         {style.gm_name_genre} --
@@ -138,24 +142,17 @@ function PageAlbum() {
                 isFollowedProp={isFollowed}
             />
             <img
-                src={
-                    "https://d3s5ffas0ydxtp.cloudfront.net/" +
-                    infosAlbum.a_cover_path +
-                    "/" +
-                    infosAlbum.a_cover
-                }
+                src={"https://d3s5ffas0ydxtp.cloudfront.net/" + infosAlbum.a_cover_path + "/" + infosAlbum.a_cover}
                 className="card-img-top"
                 alt="Cover Album"
                 style={{ width: "100px", height: "100px" }}
             />
             <h3>Price : {infosAlbum.a_price}</h3>
-            {isLoggedIn && (
+            {isLoggedIn && !topAlbumBuy && (
                 <>
                     <Button
                         variant="contained"
-                        onClick={() =>
-                            ClickBuyAlbum(infosAlbum.a_id, null, null, infosAlbum.a_price)
-                        }
+                        onClick={() => ClickBuyAlbum(infosAlbum.a_id, null, null, infosAlbum.a_price)}
                     >
                         Buy
                     </Button>

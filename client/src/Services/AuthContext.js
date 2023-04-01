@@ -1,11 +1,6 @@
 import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-    removeLocalStorage,
-    getLocalStorage,
-    setLocalStorage,
-    verifyUser,
-} from "../Globals/GlobalFunctions";
+import { removeLocalStorage, getLocalStorage, setLocalStorage, verifyUser } from "../Globals/GlobalFunctions";
 
 const AuthContext = createContext();
 
@@ -34,6 +29,7 @@ const AuthProvider = ({ children }) => {
         window.location.reload();
     };
 
+    // Remove all local storage
     const removeAllLocalStorage = () => {
         removeLocalStorage("token");
         removeLocalStorage("id");
@@ -72,9 +68,7 @@ const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider
-            value={{ idUser, username, isLoggedIn, handleLogin, handleLogout, checkToken }}
-        >
+        <AuthContext.Provider value={{ idUser, username, isLoggedIn, handleLogin, handleLogout, checkToken }}>
             {children}
         </AuthContext.Provider>
     );

@@ -7,7 +7,7 @@ function DisplayPlaylist(props) {
                 <ul>
                     {props.playlist.map((song, index) => (
                         <li key={index} onClick={() => props.handleSelectSong(index)}>
-                            {song.t_title} - {song.t_artist}
+                            {song.t_title}
                         </li>
                     ))}
                 </ul>

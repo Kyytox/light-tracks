@@ -54,6 +54,34 @@ export const getTracks = (req, res) => {
     );
 };
 
+// getTracks for User connected for retrieve the tracks and if user as bought the album
+export const getTracksAuth = (req, res) => {
+    const id = req.query.id;
+    const idUser = req.query.idUser;
+
+    pool.query(
+        `SELECT *,
+        (SELECT json_agg(json_build_object(
+            'gm_id', gm.gm_id,
+            'gm_name_genre', gm.gm_name_genre))
+            FROM public.genres_music gm
+            WHERE gm.gm_id = ANY(a.a_styles)) as styles,
+            EXISTS(SELECT 1 FROM public.sales s WHERE s.s_id_album = a.a_id AND s.s_id_user = $1) AS top_sale_album,
+            EXISTS(SELECT 1 FROM public.sales s WHERE s.s_id_track = t.t_id AND s.s_id_user = $1) AS top_sale_track
+        FROM public.albums a 
+        JOIN public.tracks t ON a.a_id = t.t_id_album
+        WHERE t.t_id_album = $2;`,
+        [idUser, id],
+        (err, result) => {
+            if (err) {
+                console.error("Error executing SELECT:", err);
+            } else {
+                res.send(result.rows);
+            }
+        }
+    );
+};
+
 // get all genres and country from database present in table albums (for genres) and table profiles (for country)
 export const getStylesCountryInAlbums = (req, res) => {
     console.log("API /getStylesCountryInAlbums");
