@@ -7,7 +7,7 @@ import FormParamTextField from "../Forms/FormParamTextField";
 import FormAddTags from "../Forms/FormAddTags";
 
 // create component for search album by style or country
-function MainSearch() {
+function MainSearch({ setLstAlbums }) {
     const [lstGenres, setLstGenres] = useState([]);
     const [lstCountry, setLstCountry] = useState([]);
 
@@ -66,6 +66,7 @@ function MainSearch() {
         const response = getAxiosReq("/getSearch", data);
         response.then((data) => {
             console.log("data", data);
+            setLstAlbums(data);
         });
     };
 

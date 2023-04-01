@@ -8,7 +8,19 @@ export const getSearch = (req, res) => {
     const tags = req.query.tags?.map((item) => `'${item}'`) ?? [];
     const countries = req.query.country?.map((item) => item.c_code_country) ?? [];
 
-    var reqSQL = "select * from albums a";
+    var reqSQL = `SELECT *,
+                    (SELECT json_agg(json_build_object(
+                        'gm_id', gm.gm_id,
+                        'gm_name_genre', gm.gm_name_genre))
+                    FROM public.genres_music gm WHERE gm.gm_id = ANY(a.a_styles)) as styles,
+                    (SELECT json_agg(json_build_object(
+                        't_id_album_track', t.t_id_album_track,
+                        't_title', t.t_title,
+                        't_file_path', t.t_file_path,
+                        't_file_name_mp3', t.t_file_name_mp3,
+                        't_nb_listen', t.t_nb_listen))
+                    FROM public.tracks t WHERE t.t_id_album = a.a_id) as tracks
+                    FROM public.albums a`;
 
     // oint tables profiles and countries
     if (countries.length > 0) {

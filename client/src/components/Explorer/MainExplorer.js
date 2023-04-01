@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext, useLayoutEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import LstAlbums from "../Album/LstAlbums";
 import { AuthContext } from "../../Services/AuthContext";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
-import { changeBtnFavoris } from "../../Globals/GlobalFunctions";
 import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 import PlayerAudio from "../PlayerAudio/PlayerAudio";
 import MainSearch from "../Search/MainSearch";
@@ -10,7 +9,6 @@ import MainSearch from "../Search/MainSearch";
 function MainExplorer() {
     const { idUser, isLoggedIn, checkToken } = useContext(AuthContext);
     const [lstAlbums, setLstAlbums] = useState([]);
-    const [lstSalesFavoris, setLstSalesFavoris] = useState([]);
     const date = new Date();
 
     const [lstTracksPlay, setLstTracksPlay] = useState([]);
@@ -60,13 +58,6 @@ function MainExplorer() {
         setLstTracksPlay(lstTracks);
     };
 
-    // change btnFavoris
-    useLayoutEffect(() => {
-        if (lstAlbums.length > 0 && lstSalesFavoris.length > 0) {
-            changeBtnFavoris(lstSalesFavoris);
-        }
-    }, [lstAlbums, lstSalesFavoris]);
-
     console.log("MainExplorer -- lstAlbums = ", lstAlbums);
 
     return (
@@ -74,7 +65,7 @@ function MainExplorer() {
             <h1>Explorer</h1>
 
             {/* Search Inputs */}
-            <MainSearch />
+            <MainSearch setLstAlbums={setLstAlbums} />
 
             {/* PlayerAudio */}
             {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} />}

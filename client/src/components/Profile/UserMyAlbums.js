@@ -6,20 +6,24 @@ import { getAxiosReqAuth } from "../../Services/AxiosGet";
 
 // created by display all Albums created by user (album buyed)
 function UserMyAlbums() {
-    const { isLoggedIn } = useContext(AuthContext);
+    const { isLoggedIn, checkToken } = useContext(AuthContext);
     const idUser = getLocalStorage("id");
     const [lstMyAlbums, setLstMyAlbums] = useState([]);
 
     useEffect(() => {
-        const token = getLocalStorage("token");
+        checkToken();
 
-        // get my albums
-        console.log("UserMyAlbums -- /getMyAlbums");
-        const data = { idUser: idUser };
-        const response = getAxiosReqAuth("/getMyAlbums", data, token);
-        response.then((data) => {
-            setLstMyAlbums(data);
-        });
+        if (isLoggedIn) {
+            const token = getLocalStorage("token");
+
+            // get my albums
+            console.log("UserMyAlbums -- /getMyAlbums");
+            const data = { idUser: idUser };
+            const response = getAxiosReqAuth("/getMyAlbums", data, token);
+            response.then((data) => {
+                setLstMyAlbums(data);
+            });
+        }
     }, [idUser]);
 
     return (
