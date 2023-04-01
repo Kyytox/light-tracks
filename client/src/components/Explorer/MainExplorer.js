@@ -39,18 +39,6 @@ function MainExplorer() {
         const lstTracks = album.tracks.map((track) => {
             track.t_id_album = idAlbum;
             track.id_user = parseInt(idUser);
-            // var cptPlay = 0;
-
-            // if (idUser) {
-            //     // find cptPlay in album.user_song_played
-            //     cptPlay = album.user_song_played.find(
-            //         (trackCptPlay) => trackCptPlay.usp_id_album_track === track.t_id_album_track
-            //     );
-            // }
-
-            // // insert cptPlay in track else cptPlay = 0
-            // track.t_cpt_play = cptPlay ? cptPlay.usp_cpt_play : 0;
-
             return track;
         });
 

@@ -46,28 +46,21 @@ function ControlsPlayer(props) {
 
     // update current time and progress bar and increment song played to server
     useEffect(() => {
-        // console.log("ControlsPlayer useEffect currentTime = ", currentTime);
-        console.log("ControlsPlayer useEffect props.playlist = ", props.playlist);
+        console.log("ControlsPlayer useEffect");
         console.log(
-            "ControlsPlayer useEffect props.playlist[props.currentSongIndex].top_sale_album",
-            props.playlist[props.currentSongIndex].top_sale_album
+            "ControlsPlayer useEffect props.playlist[props.currentSongIndex] = ",
+            props.playlist[props.currentSongIndex]
         );
-        console.log(
-            "ControlsPlayer useEffect props.playlist[props.currentSongIndex].top_sale_track",
-            props.playlist[props.currentSongIndex].top_sale_track
-        );
-        console.log(
-            "ControlsPlayer useEffect props.playlist[props.currentSongIndex].t_cpt_play",
-            props.playlist[props.currentSongIndex].t_cpt_play
-        );
-
+        // album not bought
         if (!props.playlist[props.currentSongIndex].top_sale_album) {
+            // song not bought
             if (!props.playlist[props.currentSongIndex].top_sale_track) {
-                // send song played to server after 5 seconds
+                // cpt_play < nb_listen => go increment cpt_play
                 if (
                     props.playlist[props.currentSongIndex].t_cpt_play <
                     props.playlist[props.currentSongIndex].t_nb_listen
                 ) {
+                    // song played for more than 5 seconds and not already incremented cpt_play with id_user
                     if (currentTime > 5 && !props.songPlayed && props.playlist[props.currentSongIndex].id_user) {
                         props.setSongPlayed(true);
                         console.log("ControlsPlayer -- /cptSongPlayed");
