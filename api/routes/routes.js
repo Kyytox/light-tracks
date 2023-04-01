@@ -29,7 +29,7 @@ import { getFollows, getFollowsByIdUser, followUser, unfollowUser } from "../Fon
 import { getUserById } from "../FonctionsUser.js";
 import { getStylesCountries, getStyles } from "../FunctionsGlobals.js";
 import { cptSongPlayed } from "../FctPlayerAudio.js";
-import { getSearch } from "../FctSearch.js";
+import { getSearch, getSearchAuth } from "../FctSearch.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -92,6 +92,7 @@ router.post("/convertFileAudio", uploadConvertFile.single("file"), convertFileAu
 
 // Search
 router.get("/getSearch", getSearch);
+router.get("/getSearchAuth", authenticateToken, getSearchAuth);
 
 // Buy
 router.post("/buyAlbum", authenticateToken, buyAlbum);

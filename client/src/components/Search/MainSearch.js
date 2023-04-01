@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import SelectCountry from "../Forms/SelectCountry";
 import SelectGenres from "../Forms/selectGenres";
-import { getAxiosReq } from "../../Services/AxiosGet";
+import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 import { Button } from "@mui/material";
 import FormParamTextField from "../Forms/FormParamTextField";
 import FormAddTags from "../Forms/FormAddTags";
+import { AuthContext } from "../../Services/AuthContext";
+import { getLocalStorage } from "../../Globals/GlobalFunctions";
 
 // create component for search album by style or country
 function MainSearch({ setLstAlbums }) {
+    const { isLoggedIn, checkToken, idUser } = useContext(AuthContext);
     const [lstGenres, setLstGenres] = useState([]);
     const [lstCountry, setLstCountry] = useState([]);
 
@@ -52,21 +55,30 @@ function MainSearch({ setLstAlbums }) {
         setLstParams({ ...lstParams, [key]: { value: value, error: false, helperText: "" } });
     };
 
-    const onSubmit = (e) => {
+    // get albums by search
+    const onSubmit = async (e) => {
         e.preventDefault();
+        await checkToken();
+        const token = getLocalStorage("token");
 
         const data = {
+            idUser: idUser,
             search: lstParams.search.value,
             styles: lstParams.styles.value,
             tags: lstParams.tags.value,
             country: lstParams.country.value,
         };
 
-        console.log("MainSearch -- /getSearch");
-        const response = getAxiosReq("/getSearch", data);
-        response.then((data) => {
-            setLstAlbums(data);
-        });
+        console.log("MainSearch -- ", isLoggedIn ? "/getSearchAuth" : "/getSearch");
+        try {
+            const response = isLoggedIn
+                ? await getAxiosReqAuth("/getSearchAuth", data, token)
+                : await getAxiosReq("/getSearch", data);
+
+            setLstAlbums(response);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
