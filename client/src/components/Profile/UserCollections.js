@@ -6,20 +6,24 @@ import { getAxiosReqAuth } from "../../Services/AxiosGet";
 
 // display all collections of user (album buyed)
 function UserCollections({ setLstTracksPlay }) {
-    const { isLoggedIn } = useContext(AuthContext);
+    const { isLoggedIn, checkToken } = useContext(AuthContext);
     const idUser = getLocalStorage("id");
     const [lstCollections, setLstCollections] = useState([]);
 
     useEffect(() => {
+        checkToken();
         const token = getLocalStorage("token");
 
-        // call /getCollections with axios post
-        console.log("UserCollections -- /getCollection");
-        const data = { idUser: idUser };
-        const response = getAxiosReqAuth("/getCollection", data, token);
-        response.then((data) => {
-            setLstCollections(data);
-        });
+        if (isLoggedIn) {
+            // call /getCollections with axios post
+            console.log("UserCollections -- /getCollection");
+            const data = { idUser: idUser };
+            const response = getAxiosReqAuth("/getCollection", data, token);
+            response.then((data) => {
+                console.log("UserCollections -- data = ", data);
+                setLstCollections(data);
+            });
+        }
     }, []);
 
     // change idAlbumPlay and charge tracks

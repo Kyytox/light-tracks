@@ -47,18 +47,36 @@ function ControlsPlayer(props) {
     // update current time and progress bar and increment song played to server
     useEffect(() => {
         // console.log("ControlsPlayer useEffect currentTime = ", currentTime);
+        console.log("ControlsPlayer useEffect props.playlist = ", props.playlist);
+        console.log(
+            "ControlsPlayer useEffect props.playlist[props.currentSongIndex].top_sale_album",
+            props.playlist[props.currentSongIndex].top_sale_album
+        );
+        console.log(
+            "ControlsPlayer useEffect props.playlist[props.currentSongIndex].top_sale_track",
+            props.playlist[props.currentSongIndex].top_sale_track
+        );
+        console.log(
+            "ControlsPlayer useEffect props.playlist[props.currentSongIndex].t_cpt_play",
+            props.playlist[props.currentSongIndex].t_cpt_play
+        );
 
-        if (props.playlist[props.currentSongIndex].top_sale_album === false) {
-            if (props.playlist[props.currentSongIndex].top_sale_track === false) {
+        if (!props.playlist[props.currentSongIndex].top_sale_album) {
+            if (!props.playlist[props.currentSongIndex].top_sale_track) {
                 // send song played to server after 5 seconds
-                if (currentTime > 5 && !props.songPlayed && props.playlist[props.currentSongIndex].id_user) {
-                    props.setSongPlayed(true);
-                    console.log("ControlsPlayer -- /cptSongPlayed");
-                    const data = props.playlist[props.currentSongIndex];
-                    const response = postAxiosReq("/cptSongPlayed", data);
-                    response.then((data) => {
-                        console.log("ControlsPlayer useEffect data = ", data);
-                    });
+                if (
+                    props.playlist[props.currentSongIndex].t_cpt_play <
+                    props.playlist[props.currentSongIndex].t_nb_listen
+                ) {
+                    if (currentTime > 5 && !props.songPlayed && props.playlist[props.currentSongIndex].id_user) {
+                        props.setSongPlayed(true);
+                        console.log("ControlsPlayer -- /cptSongPlayed");
+                        const data = props.playlist[props.currentSongIndex];
+                        const response = postAxiosReq("/cptSongPlayed", data);
+                        response.then((data) => {
+                            console.log("ControlsPlayer useEffect data = ", data);
+                        });
+                    }
                 }
             }
         }

@@ -68,7 +68,7 @@ export const updateProfileInfos = (req, res) => {
 
 export const getCollection = (req, res) => {
     pool.query(
-        `SELECT *,
+        `SELECT DISTINCT ON (s.s_id_album) *, 
             (SELECT json_agg(json_build_object(
                 'gm_id', gm.gm_id,
                 'gm_name_genre', gm.gm_name_genre))
@@ -83,7 +83,7 @@ export const getCollection = (req, res) => {
         FROM public.sales s 
         JOIN public.albums a ON s.s_id_album = a.a_id AND s.s_id_user = $1
         JOIN public.profiles p ON a.a_id_user = p.p_id_user
-        ORDER BY s.s_date_sale DESC
+        ORDER BY s.s_id_album, s.s_date_sale DESC
         LIMIT 50;`,
         [req.query.idUser],
         (err, result) => {

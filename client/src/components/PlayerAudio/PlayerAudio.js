@@ -6,6 +6,8 @@ function PlayerAudio(props) {
     const [currentSongIndex, setCurrentSongIndex] = useState(0);
     const [showPlaylist, setShowPlaylist] = useState(false);
     const audioElement = useRef(null);
+
+    // state top for knowing if song is played and is cpt_play incremented
     const [songPlayed, setSongPlayed] = useState(false);
 
     // determine which song to play

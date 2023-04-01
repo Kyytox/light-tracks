@@ -6,7 +6,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 
 function SelectCountry({ lstParams, setLstParams, lstCountries }) {
-    console.log("lstCountries", lstCountries);
     const handleCountryChange = (e) => {
         const country = lstCountries.find((c) => c.c_code_country === e.target.value[e.target.value.length - 1]);
 

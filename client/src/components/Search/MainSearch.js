@@ -65,12 +65,9 @@ function MainSearch({ setLstAlbums }) {
         console.log("MainSearch -- /getSearch");
         const response = getAxiosReq("/getSearch", data);
         response.then((data) => {
-            console.log("data", data);
             setLstAlbums(data);
         });
     };
-
-    console.log("lstParams", lstParams);
 
     return (
         <div>
