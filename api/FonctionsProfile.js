@@ -67,6 +67,7 @@ export const updateProfileInfos = (req, res) => {
 };
 
 export const getCollection = (req, res) => {
+    console.log("API /getCollection");
     pool.query(
         `SELECT DISTINCT ON (s.s_id_album) *, 
             (SELECT json_agg(json_build_object(

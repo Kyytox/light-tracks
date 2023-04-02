@@ -13,17 +13,22 @@ function UserWantlist({ setLstTracksPlay }) {
 
     // get favoris
     useEffect(() => {
-        checkToken();
-
-        if (isLoggedIn) {
-            console.log("UserWantlist -- /getFavoris");
+        const fetchData = async () => {
+            await checkToken();
             const token = getLocalStorage("token");
-            const data = { idUser: idUser };
-            const response = getAxiosReqAuth("/getFavoris", data, token);
-            response.then((data) => {
-                setLstFavoris(data);
-            });
-        }
+            console.log("UserWantlist -- /getFavoris");
+            if (isLoggedIn) {
+                try {
+                    const data = { idUser: idUser };
+                    const response = await getAxiosReqAuth("/getFavoris", data, token);
+                    setLstFavoris(response);
+                } catch (error) {
+                    console.log("Error fetching data from server: ", error);
+                }
+            }
+        };
+
+        fetchData();
     }, []);
 
     // // change idAlbumPlay and charge tracks

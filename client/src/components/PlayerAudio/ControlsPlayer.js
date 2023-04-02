@@ -46,11 +46,6 @@ function ControlsPlayer(props) {
 
     // update current time and progress bar and increment song played to server
     useEffect(() => {
-        console.log("ControlsPlayer useEffect");
-        console.log(
-            "ControlsPlayer useEffect props.playlist[props.currentSongIndex] = ",
-            props.playlist[props.currentSongIndex]
-        );
         // album not bought
         if (!props.playlist[props.currentSongIndex].top_sale_album) {
             // song not bought

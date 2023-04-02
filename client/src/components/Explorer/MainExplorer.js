@@ -15,20 +15,22 @@ function MainExplorer() {
 
     // get albums and sales favoris
     useEffect(() => {
-        checkToken();
+        const fetchData = async () => {
+            await checkToken();
+            const token = getLocalStorage("token");
+            console.log("MainExplorer -- " + (isLoggedIn ? "/getAlbumsSalesFavoris" : "/getAlbums"));
+            try {
+                const data = { date: date, idUser: idUser };
+                const response = isLoggedIn
+                    ? getAxiosReqAuth("/getAlbumsSalesFavoris", data, token)
+                    : getAxiosReq("/getAlbums", data);
+                response.then((res) => setLstAlbums(res));
+            } catch (error) {
+                console.log("Error fetching data from server: ", error);
+            }
+        };
 
-        const token = getLocalStorage("token");
-        const data = { date: date, idUser: idUser };
-
-        console.log("MainExplorer -- " + (isLoggedIn ? "/getAlbumsSalesFavoris" : "/getAlbums"));
-
-        const response = isLoggedIn
-            ? getAxiosReqAuth("/getAlbumsSalesFavoris", data, token)
-            : getAxiosReq("/getAlbums", data);
-
-        response.then((res) => {
-            setLstAlbums(res);
-        });
+        fetchData();
     }, [checkToken]);
 
     // // change idAlbumPlay and charge tracks

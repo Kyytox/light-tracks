@@ -11,19 +11,22 @@ function UserCollections({ setLstTracksPlay }) {
     const [lstCollections, setLstCollections] = useState([]);
 
     useEffect(() => {
-        checkToken();
-        const token = getLocalStorage("token");
+        const fetchData = async () => {
+            await checkToken();
+            const token = getLocalStorage("token");
+            if (isLoggedIn) {
+                try {
+                    const data = { idUser: idUser };
+                    console.log("UserCollections -- /getCollection");
+                    const response = await getAxiosReqAuth("/getCollection", data, token);
+                    setLstCollections(response);
+                } catch (error) {
+                    console.log("Error fetching data from server: ", error);
+                }
+            }
+        };
 
-        if (isLoggedIn) {
-            // call /getCollections with axios post
-            console.log("UserCollections -- /getCollection");
-            const data = { idUser: idUser };
-            const response = getAxiosReqAuth("/getCollection", data, token);
-            response.then((data) => {
-                console.log("UserCollections -- data = ", data);
-                setLstCollections(data);
-            });
-        }
+        fetchData();
     }, []);
 
     // change idAlbumPlay and charge tracks

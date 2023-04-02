@@ -25,26 +25,52 @@ function PageAlbum() {
 
     // get tracks
     useEffect(() => {
-        checkToken();
+        // checkToken();
 
-        const token = getLocalStorage("token");
-        const data = { id: id, idUser: idUser };
+        // const token = getLocalStorage("token");
+        // const data = { id: id, idUser: idUser };
 
-        const response = isLoggedIn ? getAxiosReqAuth("/getTracksAuth", data, token) : getAxiosReq("/getTracks", data);
-        response.then((res) => {
-            setLstTracks(res);
-            setTopAlbumBuy(res[0].top_sale_album);
+        // const response = isLoggedIn ? getAxiosReqAuth("/getTracksAuth", data, token) : getAxiosReq("/getTracks", data);
+        // response.then((res) => {
+        //     setLstTracks(res);
+        //     setTopAlbumBuy(res[0].top_sale_album);
 
-            const lstStyles = res[0].styles.map((style, key) => {
-                return (
-                    <span key={key} className="">
-                        {style.gm_name_genre} --
-                    </span>
-                );
-            });
-            setLstStyles(lstStyles);
-        });
-    }, [checkToken]);
+        //     const lstStyles = res[0].styles.map((style, key) => {
+        //         return (
+        //             <span key={key} className="">
+        //                 {style.gm_name_genre} --
+        //             </span>
+        //         );
+        //     });
+        //     setLstStyles(lstStyles);
+        // });
+
+        const fetchData = async () => {
+            await checkToken();
+            const token = getLocalStorage("token");
+            const data = { id: id, idUser: idUser };
+
+            try {
+                const response = isLoggedIn
+                    ? await getAxiosReqAuth("/getTracksAuth", data, token)
+                    : await getAxiosReq("/getTracks", data);
+                setLstTracks(response);
+                setTopAlbumBuy(response[0].top_sale_album);
+
+                const lstStyles = response[0].styles.map((style, key) => {
+                    return (
+                        <span key={key} className="">
+                            {style.gm_name_genre} --
+                        </span>
+                    );
+                });
+                setLstStyles(lstStyles);
+            } catch (error) {
+                console.log("error", error);
+            }
+        };
+        fetchData();
+    }, []);
 
     // chack if user follow artist
     useEffect(() => {
