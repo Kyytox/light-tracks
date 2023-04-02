@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import LinkNavUser from "../User/LinkNavUser";
 import { formatDate } from "../../Globals/GlobalFunctions";
 
-function LstCollection({ lstAlbums, changeIdAlbumPlay }) {
+function LstCollection({ lstAlbums, changeIdAlbumPlay, downloadAlbum }) {
     // create a map to display
     // lst albums is an array of objects
     const LstDisplayAlbums = lstAlbums.map((album, key) => {
@@ -32,6 +32,12 @@ function LstCollection({ lstAlbums, changeIdAlbumPlay }) {
                         <LinkNavUser data={album} />
                     </nav>
 
+                    {/* Download */}
+                    <button type="button" onClick={() => downloadAlbum(album.a_id)}>
+                        Download
+                    </button>
+
+                    {/* Play */}
                     <button type="button" onClick={() => changeIdAlbumPlay(album.a_id)}>
                         Play
                     </button>

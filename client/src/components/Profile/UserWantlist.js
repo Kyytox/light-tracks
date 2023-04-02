@@ -21,7 +21,7 @@ function UserWantlist({ setLstTracksPlay }) {
                 try {
                     const data = { idUser: idUser };
                     const response = await getAxiosReqAuth("/getFavoris", data, token);
-                    setLstFavoris(response);
+                    setLstFavoris(response.data);
                 } catch (error) {
                     console.log("Error fetching data from server: ", error);
                 }

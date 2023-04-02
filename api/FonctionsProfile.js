@@ -1,5 +1,5 @@
 import pool from "./database/database.js";
-import { deleteAlbumInS3 } from "./AwsS3.js";
+import { deleteAlbumInS3 } from "./AwsS3/DeleteObjects.js";
 
 // get infos of user by id
 export const getProfileInfos = (req, res) => {

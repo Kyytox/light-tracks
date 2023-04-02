@@ -19,7 +19,7 @@ function UserCollections({ setLstTracksPlay }) {
                     const data = { idUser: idUser };
                     console.log("UserCollections -- /getCollection");
                     const response = await getAxiosReqAuth("/getCollection", data, token);
-                    setLstCollections(response);
+                    setLstCollections(response.data);
                 } catch (error) {
                     console.log("Error fetching data from server: ", error);
                 }
@@ -40,13 +40,40 @@ function UserCollections({ setLstTracksPlay }) {
         setLstTracksPlay(lstTracks);
     };
 
+    // download album
+    const downloadAlbum = async (idAlbum) => {
+        console.log("downloadAlbum -- idAlbum: ", idAlbum);
+        await checkToken();
+        const token = getLocalStorage("token");
+        const data = { idUser: idUser, idAlbum: idAlbum };
+        try {
+            console.log("downloadAlbum -- /downloadAlbum");
+            const response = await getAxiosReqAuth("/downloadAlbum", data, token, {
+                responseType: "blob",
+            });
+            console.log("downloadAlbum -- response: ", response);
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "file.zip");
+            document.body.appendChild(link);
+            link.click();
+        } catch (error) {
+            console.log("Error fetching data from server: ", error);
+        }
+    };
+
     console.log("UserCollections -- lstCollections = ", lstCollections);
 
     return (
         <div>
             {isLoggedIn ? (
                 <div>
-                    <LstCollection lstAlbums={lstCollections} changeIdAlbumPlay={changeIdAlbumPlay} />
+                    <LstCollection
+                        lstAlbums={lstCollections}
+                        changeIdAlbumPlay={changeIdAlbumPlay}
+                        downloadAlbum={downloadAlbum}
+                    />
                 </div>
             ) : (
                 <div>u need to be logged in to see your collections</div>

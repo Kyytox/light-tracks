@@ -59,7 +59,6 @@ function ParamProfile() {
                 console.log("Error fetching data from server: ", error);
             }
         };
-
         fetchData();
 
         //

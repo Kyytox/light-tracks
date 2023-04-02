@@ -10,7 +10,7 @@ import {
     getTracksAuth,
     getStylesCountryInAlbums,
 } from "../FunctionsExplorer.js";
-import { getAudioFileStream } from "../AwsS3.js";
+// import { getAudioFileStream } from
 import { generateUniqueName, convertFileAudio } from "../FunctionsAlbum.js";
 import { buyAlbum, buyTrack } from "../FonctionsBuy.js";
 import {
@@ -38,7 +38,8 @@ dotenv.config();
 // configure storage for multer when file is uploaded
 import multer from "multer";
 import multerS3 from "multer-s3";
-import { s3Client } from "../AwsS3.js";
+import { s3Client } from "../AwsS3/AwsS3.js";
+import { downloadAlbum } from "../AwsS3/DownloadObjects.js";
 
 const storage2 = multerS3({
     s3: s3Client,
@@ -87,7 +88,7 @@ router.get("/getTracks", getTracks);
 router.get("/getTracksAuth", authenticateToken, getTracksAuth);
 router.get("/getStylesCountryInAlbums", getStylesCountryInAlbums);
 
-router.post("/getAudioFileStream", getAudioFileStream);
+// router.post("/getAudioFileStream", getAudioFileStream);
 router.post("/convertFileAudio", uploadConvertFile.single("file"), convertFileAudio);
 
 // Search
@@ -122,5 +123,8 @@ router.post("/cptSongPlayed", cptSongPlayed);
 
 // User
 router.get("/getUserById", getUserById);
+
+// Dowload
+router.get("/downloadAlbum", authenticateToken, downloadAlbum);
 
 export default router;

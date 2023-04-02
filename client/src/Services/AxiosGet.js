@@ -18,7 +18,8 @@ export async function getAxiosReqAuth(backFunct, data, token) {
             params: data,
             headers: { Authorization: `Bearer ${token}` },
         });
-        return response.data;
+        console.log("getAxiosReqAuth -- response: ", response);
+        return response;
     } catch (error) {
         console.error(error);
     }
