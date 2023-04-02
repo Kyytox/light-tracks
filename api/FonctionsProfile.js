@@ -39,17 +39,21 @@ export const getProfileInfos = (req, res) => {
 
 // update profile infos
 export const updateProfileInfos = (req, res) => {
+    console.log("API /updateProfileInfos");
+    console.log("req.body", req.body);
     // create text for update
     var textUpdate = "UPDATE public.profiles SET ";
     for (const [key, value] of Object.entries(req.body)) {
         if (key !== "id") {
-            if (value !== "") {
-                if (key === "styles_music") {
-                    textUpdate += `p_${key} = ARRAY[${value}], `;
-                } else {
-                    textUpdate += `p_${key} = '${value}', `;
-                }
+            // if (value !== "") {
+            if (key === "styles_music") {
+                // if value = 0 mettre null
+                // textUpdate += `p_${key} = ARRAY[${value}], `;
+                textUpdate += `p_${key} = ARRAY[${value === 0 ? null : value}], `;
+            } else {
+                textUpdate += `p_${key} = '${value}', `;
             }
+            // }
         }
     }
 

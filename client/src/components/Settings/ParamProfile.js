@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 
 // lib Components en global variables en functions
-import { AuthContext } from "../../Services/AuthContext";
+import { AuthContext, checkToken } from "../../Services/AuthContext";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import SelectGenres from "../Forms/selectGenres";
 import SelectCountry from "../Forms/SelectCountry";
@@ -14,7 +14,7 @@ import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 import { postAxiosReqAuth } from "../../Services/AxiosPost";
 
 function ParamProfile() {
-    const { isLoggedIn } = useContext(AuthContext);
+    const { isLoggedIn, checkToken } = useContext(AuthContext);
     const idUser = getLocalStorage("id");
 
     const [lstGenres, setLstGenres] = useState([]);
@@ -29,26 +29,38 @@ function ParamProfile() {
     });
 
     useEffect(() => {
-        const token = getLocalStorage("token");
+        const fetchData = async () => {
+            await checkToken();
+            const token = getLocalStorage("token");
+            //
+            // get Profile Infos
+            const data = { idUser: idUser };
 
-        //
-        // get Profile Infos
-        const data = { idUser: idUser };
-        console.log("ParamProfile -- /getProfileInfos");
-        const response = getAxiosReqAuth("/getProfileInfos", data, token);
-        response.then((data) => {
-            setLstParams({
-                avatar: { value: data.avatar, error: false, helperText: "" },
-                bio: { value: data.bio, error: false, helperText: "" },
-                email: { value: data.email, error: false, helperText: "" },
-                country: {
-                    value: [{ c_code_country: data.code_country, c_name_country: data.country }],
-                    error: false,
-                    helperText: "",
-                },
-                styles: { value: data.styles, error: false, helperText: "" },
-            });
-        });
+            try {
+                console.log("ParamProfile -- /getProfileInfos");
+                const response = await getAxiosReqAuth("/getProfileInfos", data, token);
+                console.log("ParamProfile -- /getProfileInfos -- response: ", response.styles);
+                setLstParams({
+                    avatar: { value: response.avatar, error: false, helperText: "" },
+                    bio: { value: response.bio, error: false, helperText: "" },
+                    email: { value: response.email ? response.email : "", error: false, helperText: "" },
+                    country: {
+                        value: [{ c_code_country: response.code_country, c_name_country: response.country }],
+                        error: false,
+                        helperText: "",
+                    },
+                    styles: {
+                        value: response.styles[0].id !== null ? response.styles : [],
+                        error: false,
+                        helperText: "",
+                    },
+                });
+            } catch (error) {
+                console.log("Error fetching data from server: ", error);
+            }
+        };
+
+        fetchData();
 
         //
         // get all genres from getGenres with axios
@@ -76,9 +88,11 @@ function ParamProfile() {
     //
     // handle change for inputs
     const handleChanges = (key, value) => {
-        // check if value has a valid format
+        console.log(key, value);
+
+        // check if value has a valid format and value email = ""
         const isValid =
-            (key === "avatar" && value.startsWith("http")) || (key === "email" && value.includes("@")) || key === "bio";
+            (key === "avatar" && value.startsWith("http")) || (key === "email" && value.includes("@")) || value === "";
 
         if (isValid) {
             setLstParams({ ...lstParams, [key]: { value: value, error: false, helperText: "" } });
@@ -96,8 +110,13 @@ function ParamProfile() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const token = getLocalStorage("token");
+        var styles = [];
 
-        const styles = lstParams.styles.value.map((style) => style.id);
+        if (lstParams.styles.value.length > 0) {
+            styles = lstParams.styles.value.map((style) => style.id);
+        } else {
+            styles = [0];
+        }
 
         if (isLoggedIn) {
             // check if all errors are false send data to server at /updateUser
@@ -108,8 +127,8 @@ function ParamProfile() {
                     avatar: lstParams.avatar.value,
                     bio: lstParams.bio.value,
                     email: lstParams.email.value,
-                    code_country: lstParams.country.value[0].c_code_country,
-                    name_country: lstParams.country.value[0].c_name_country,
+                    code_country: lstParams.country.value.length > 0 ? lstParams.country.value[0].c_code_country : "",
+                    name_country: lstParams.country.value.length > 0 ? lstParams.country.value[0].c_name_country : "",
                     styles_music: styles,
                 };
 
@@ -121,6 +140,8 @@ function ParamProfile() {
             }
         }
     };
+
+    console.log("ParamProfile.js -- lstParams: ", lstParams);
 
     return (
         <div>

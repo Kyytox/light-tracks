@@ -25,26 +25,6 @@ function PageAlbum() {
 
     // get tracks
     useEffect(() => {
-        // checkToken();
-
-        // const token = getLocalStorage("token");
-        // const data = { id: id, idUser: idUser };
-
-        // const response = isLoggedIn ? getAxiosReqAuth("/getTracksAuth", data, token) : getAxiosReq("/getTracks", data);
-        // response.then((res) => {
-        //     setLstTracks(res);
-        //     setTopAlbumBuy(res[0].top_sale_album);
-
-        //     const lstStyles = res[0].styles.map((style, key) => {
-        //         return (
-        //             <span key={key} className="">
-        //                 {style.gm_name_genre} --
-        //             </span>
-        //         );
-        //     });
-        //     setLstStyles(lstStyles);
-        // });
-
         const fetchData = async () => {
             await checkToken();
             const token = getLocalStorage("token");

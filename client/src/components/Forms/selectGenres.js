@@ -19,6 +19,8 @@ function SelectGenres({ lstValues, setLstValues, lstGenres }) {
         });
     };
 
+    console.log("SelectGenres -- lstValues.styles.value", lstValues.styles.value);
+
     return (
         <div>
             {/* Styles Music */}
@@ -37,11 +39,7 @@ function SelectGenres({ lstValues, setLstValues, lstGenres }) {
                 freeSolo
                 renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
-                        <Chip
-                            variant="outlined"
-                            label={option.gm_name_genre}
-                            {...getTagProps({ index })}
-                        />
+                        <Chip variant="outlined" label={option.gm_name_genre} {...getTagProps({ index })} />
                     ))
                 }
                 renderInput={(params) => (
