@@ -6,6 +6,7 @@ export async function getAxiosReq(backFunct, data) {
         const response = await axios.get(backendUrl + backFunct, {
             params: data,
         });
+        console.log("getAxiosReq -- response: ", response);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -19,7 +20,7 @@ export async function getAxiosReqAuth(backFunct, data, token) {
             headers: { Authorization: `Bearer ${token}` },
         });
         console.log("getAxiosReqAuth -- response: ", response);
-        return response;
+        return response.data;
     } catch (error) {
         console.error(error);
     }

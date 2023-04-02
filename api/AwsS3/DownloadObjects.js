@@ -2,14 +2,18 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+// import fs from "fs";
+import { Readable } from "stream";
+import { createWriteStream } from "fs";
+
 // import aws s3
-import { s3Client } from "./AwsS3.js";
+import { s3Client, createS3Client } from "./AwsS3.js";
 
 // BD
 import pool from "../database/database.js";
 
 // import aws s3 commands
-import { GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
+import { S3Client, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import archiver from "archiver";
 import JSZip from "jszip";
@@ -62,66 +66,32 @@ const getTracksAlbum = async (req, res) => {
     });
 };
 
-// // get dowload link object S3 bucket and create zip who send to client directly
-// export const getDowloadLinkObjectS3 = async (req, res) => {
-//     console.log("getDowloadLinkObjectS3 : ", req.rows);
-//     const tracks = req.rows;
-//     // const tracksLength = tracks.length;
-//     const tracksLength = 1;
-//     let tracksDowload = [];
+// get file S3 bucket and send to client
+export const getFilesS3 = async (req, res) => {
+    // console.log("getFilesS3 : ", req.rows);
+    const s3 = createS3Client();
+    const tracks = req.rows;
+    const tracksLength = tracks.length;
+    const listUrl = [];
 
-//     for (let i = 0; i < tracksLength; i++) {
-//         console.log(
-//             "tracks[i].t_file_path + tracks[i].t_file_name",
-//             tracks[i].t_file_path + "/" + tracks[i].t_file_name
-//         );
-//         const paramsGetFile = {
-//             Bucket: bucketName,
-//             Key: tracks[i].t_file_path + "/" + tracks[i].t_file_name,
-//         };
+    // browse tracks
+    for (let i = 0; i < tracksLength; i++) {
+        // Init params for S3 bucket file
+        const params = {
+            Bucket: bucketName,
+            Key: tracks[i].t_file_path + "/" + tracks[i].t_file_name,
+        };
 
-//         console.log("paramsGetFile", paramsGetFile);
+        // get file
+        const s3Item = await s3.send(new GetObjectCommand(params));
 
-//         try {
-//             // const command = await s3Client.send(new GetObjectCommand(paramsGetFile));
-//             const command = new GetObjectCommand(paramsGetFile);
-//             const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 60 });
-//             tracksDowload.push(signedUrl);
-//         } catch (err) {
-//             console.log("Error", err);
-//         }
-//     }
+        // create signed url
+        const signedUrl = await getSignedUrl(s3, new GetObjectCommand(params), {
+            expiresIn: 3600,
+        });
+        listUrl.push(signedUrl);
+    }
 
-//     console.log("tracksDowload", tracksDowload);
-
-//     // // create zip file
-//     // const archive = archiver("zip", {
-//     //     zlib: { level: 9 },
-//     // });
-
-//     // // send zip file to client
-//     // archive.pipe(res);
-//     // tracksDowload.forEach((track) => {
-//     //     archive.append(track, { name: track });
-//     // });
-//     // archive.finalize();
-
-//     // Une fois que toutes les URLs signées sont disponibles, créer un dossier zip et y ajouter les fichiers téléchargés
-//     // const JSZip = require("jszip");
-//     const zip = new JSZip();
-
-//     tracksDowload.forEach((url) => {
-//         const fileName = url.split("?")[0].split("/").pop(); // Extraire le nom de fichier de l'URL signée
-//         zip.file(fileName, url, { binary: true }); // Ajouter le fichier au dossier zip
-//     });
-
-//     // Générer le dossier zip
-//     zip.generateAsync({ type: "nodebuffer" }).then(function (content) {
-//         // Renvoyer le contenu du dossier zip en tant que réponse HTTP
-//         res.set("Content-Type", "application/zip");
-//         res.set("Content-Disposition", 'attachment; filename="dossier.zip"');
-//         res.send(content);
-//     });
-
-//     // res.status(200).json({ message: "ok" });
-// };
+    // send list url to client
+    res.send(listUrl);
+};
