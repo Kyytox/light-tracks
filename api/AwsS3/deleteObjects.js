@@ -3,7 +3,7 @@ dotenv.config();
 
 // Create service client module using ES6 syntax.
 import { DeleteObjectCommand, DeleteObjectsCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
-import { s3Client } from "./AwsS3.js";
+import { s3Client } from "./awsS3.js";
 
 // Set params for S3 bucket
 const bucketName = process.env.AWS_BUCKET_NAME;

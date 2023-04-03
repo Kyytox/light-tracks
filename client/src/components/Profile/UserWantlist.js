@@ -6,22 +6,22 @@ import { getAxiosReqAuth } from "../../Services/AxiosGet";
 
 function UserWantlist({ setLstTracksPlay }) {
     const { isLoggedIn, checkToken } = useContext(AuthContext);
-    const [lstFavoris, setLstFavoris] = useState([]);
+    const [lstWantlist, setLstWantlist] = useState([]);
     const idUser = getLocalStorage("id");
 
-    console.log("UserWantlist -- lstFavoris = ", lstFavoris);
+    console.log("UserWantlist -- lstWantlist = ", lstWantlist);
 
-    // get favoris
+    // get Wantlist
     useEffect(() => {
         const fetchData = async () => {
             await checkToken();
             const token = getLocalStorage("token");
-            console.log("UserWantlist -- /getFavoris");
+            console.log("UserWantlist -- /getWantlist");
             if (isLoggedIn) {
                 try {
                     const data = { idUser: idUser };
-                    const response = await getAxiosReqAuth("/getFavoris", data, token);
-                    setLstFavoris(response);
+                    const response = await getAxiosReqAuth("/getWantlist", data, token);
+                    setLstWantlist(response);
                 } catch (error) {
                     console.log("Error fetching data from server: ", error);
                 }
@@ -33,7 +33,7 @@ function UserWantlist({ setLstTracksPlay }) {
 
     // // change idAlbumPlay and charge tracks
     const changeIdAlbumPlay = (idAlbum) => {
-        const album = lstFavoris.find((album) => album.a_id === idAlbum);
+        const album = lstWantlist.find((album) => album.a_id === idAlbum);
         if (!album) return;
 
         const lstTracks = album.tracks.map((track) => {
@@ -53,7 +53,7 @@ function UserWantlist({ setLstTracksPlay }) {
                     <LstAlbums
                         idUser={idUser}
                         isLoggedIn={isLoggedIn}
-                        lstAlbums={lstFavoris}
+                        lstAlbums={lstWantlist}
                         changeIdAlbumPlay={changeIdAlbumPlay}
                     />
                 </div>

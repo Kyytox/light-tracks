@@ -1,4 +1,4 @@
-import pool from "./database/database.js";
+import pool from "./Database/database.js";
 
 export const getStyles = (req, res) => {
     pool.query(

@@ -7,10 +7,10 @@ import { Readable } from "stream";
 import { createWriteStream } from "fs";
 
 // import aws s3
-import { s3Client, createS3Client } from "./AwsS3.js";
+import { s3Client, createS3Client } from "./awsS3.js";
 
 // BD
-import pool from "../database/database.js";
+import pool from "../Database/database.js";
 
 // import aws s3 commands
 import { S3Client, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";

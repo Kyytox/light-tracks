@@ -1,4 +1,4 @@
-import pool from "./database/database.js";
+import pool from "../Database/database.js";
 
 // get infos of user by id
 export const getUserById = (req, res) => {

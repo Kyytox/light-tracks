@@ -1,10 +1,7 @@
-import pool from "./database/database.js";
+import pool from "../Database/database.js";
 
 // increment the number of times a song has been played
 export const cptSongPlayed = (req, res) => {
-    console.log("API /cptSongPlayed");
-    console.log("req.body", req.body);
-
     pool.query(
         `INSERT INTO public.user_song_played (usp_id_user, usp_id_album, usp_id_album_track, usp_cpt_play)
         VALUES ($1, $2, $3, 1)

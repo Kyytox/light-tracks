@@ -1,5 +1,5 @@
 import { createToken } from "./token.js";
-import pool from "../database/database.js";
+import pool from "../Database/database.js";
 
 import fs from "fs";
 import path from "path";

@@ -1,36 +1,67 @@
 import express from "express";
 
 import { checkToken, authenticateToken } from "../services/token.js";
+
+//
+// Auth
 import { signUp, login } from "../services/auth.js";
-import { createAlbum, countAlbumUser } from "../FunctionsAlbum.js";
+
+//
+// Album
+import { createAlbum, countAlbumUser } from "../Album/createAlbum.js";
+import { generateUniqueName, convertFileAudio } from "../Album/convertAudio.js";
+
+//
+// Explorer
+import { getAlbums, getTracks } from "../Explorer/explorerNotAuth.js";
 import {
-    getAlbums,
     getAlbumsAuthLatest,
-    getTracks,
     getTracksAuth,
     getAlbumsAuthFollows,
-    getStylesCountryInAlbums,
-} from "../FunctionsExplorer.js";
-// import { getAudioFileStream } from
-import { generateUniqueName, convertFileAudio } from "../FunctionsAlbum.js";
-import { buyAlbum, buyTrack } from "../FonctionsBuy.js";
+    getAlbumsAuthStyles,
+} from "../Explorer/explorerAuth.js";
+
+//
+// Buy
+import { buyAlbum } from "../Buy/buyAlbum.js";
+import { buyTrack } from "../Buy/buyTrack.js";
+
 import {
     getProfileInfos,
     updateProfileInfos,
     getCollection,
-    getFavoris,
     getMyAlbums,
-    addFavoris,
-    deleteFavoris,
     getSalesFavoris,
     getAlbumInFavorisOrSales,
     deleteAlbum,
-} from "../FonctionsProfile.js";
-import { getFollows, getFollowsByIdUser, followUser, unfollowUser } from "../FonctionsFollow.js";
-import { getUserById } from "../FonctionsUser.js";
-import { getStylesCountries, getStyles } from "../FunctionsGlobals.js";
-import { cptSongPlayed } from "../FctPlayerAudio.js";
-import { getSearch, getSearchAuth } from "../FctSearch.js";
+} from "../Profile/fctsProfile.js";
+
+//
+// Wantlist
+import { getWantlist, addWantlist, deleteWantlist } from "../Wantlist/actionsWantlist.js";
+
+//
+// Follows
+import { getFollows, getFollowsByIdUser } from "../Follows/fctsFollow.js";
+import { followUser, unfollowUser } from "../Follows/actionFollow.js";
+
+//
+// User
+import { getUserById } from "../User/fctsUser.js";
+
+//
+// Globals
+import { getStylesCountries, getStyles } from "../fctsGlobals.js";
+
+//
+// PlayerAudio
+import { cptSongPlayed } from "../PlayerAudio/fctPlayerAudio.js";
+
+//
+// Search
+import { getSearch } from "../Search/searchNotAuth.js";
+import { getSearchAuth } from "../Search/searchAuth.js";
+import { getStylesCountryInAlbums } from "../Search/fctSearch.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -39,8 +70,8 @@ dotenv.config();
 // configure storage for multer when file is uploaded
 import multer from "multer";
 import multerS3 from "multer-s3";
-import { s3Client } from "../AwsS3/AwsS3.js";
-import { downloadAlbum } from "../AwsS3/DownloadObjects.js";
+import { s3Client } from "../AwsS3/awsS3.js";
+import { downloadAlbum } from "../AwsS3/downloadObjects.js";
 
 const storage2 = multerS3({
     s3: s3Client,
@@ -79,8 +110,9 @@ router.get("/getStyles", getStyles);
 
 // Album
 router.post("/createAlbum", authenticateToken, upload.array("file"), createAlbum);
-router.get("/countAlbumUser", countAlbumUser);
 router.post("/deleteAlbum", authenticateToken, deleteAlbum);
+router.get("/countAlbumUser", countAlbumUser);
+router.post("/convertFileAudio", uploadConvertFile.single("file"), convertFileAudio);
 
 // Explorer
 router.get("/getAlbums", getAlbums);
@@ -88,12 +120,10 @@ router.get("/getAlbumsAuthLatest", authenticateToken, getAlbumsAuthLatest);
 router.get("/getTracks", getTracks);
 router.get("/getTracksAuth", authenticateToken, getTracksAuth);
 router.get("/getAlbumsAuthFollows", authenticateToken, getAlbumsAuthFollows);
-router.get("/getStylesCountryInAlbums", getStylesCountryInAlbums);
-
-// router.post("/getAudioFileStream", getAudioFileStream);
-router.post("/convertFileAudio", uploadConvertFile.single("file"), convertFileAudio);
+router.get("/getAlbumsAuthStyles", authenticateToken, getAlbumsAuthStyles);
 
 // Search
+router.get("/getStylesCountryInAlbums", getStylesCountryInAlbums);
 router.get("/getSearch", getSearch);
 router.get("/getSearchAuth", authenticateToken, getSearchAuth);
 
@@ -105,14 +135,14 @@ router.post("/buyTrack", authenticateToken, buyTrack);
 router.get("/getProfileInfos", authenticateToken, getProfileInfos);
 router.post("/updateProfileInfos", authenticateToken, updateProfileInfos);
 router.get("/getCollection", authenticateToken, getCollection);
-router.get("/getFavoris", authenticateToken, getFavoris);
 router.get("/getMyAlbums", authenticateToken, getMyAlbums);
 router.get("/getSalesFavoris", authenticateToken, getSalesFavoris);
 router.get("/getAlbumInFavorisOrSales", authenticateToken, getAlbumInFavorisOrSales);
 
-// Favoris
-router.post("/addFavoris", addFavoris);
-router.post("/deleteFavoris", deleteFavoris);
+// Wantlist
+router.get("/getWantlist", authenticateToken, getWantlist);
+router.post("/addWantlist", addWantlist);
+router.post("/deleteWantlist", deleteWantlist);
 
 // Follow
 router.get("/getFollows", authenticateToken, getFollows);
