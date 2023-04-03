@@ -26,9 +26,9 @@ function BtnFavorisAlbum({ idUser, idAlbum, topFav }) {
             try {
                 // call addFavoris or removeFavoris
                 if (favorisAlbum) {
-                    const response = await postAxiosReqAuth("/deleteFavoris", data, token);
+                    await postAxiosReqAuth("/deleteFavoris", data, token);
                 } else {
-                    const response = await postAxiosReqAuth("/addFavoris", data, token);
+                    await postAxiosReqAuth("/addFavoris", data, token);
                 }
             } catch (error) {
                 console.log("Error fetching data from server: ", error);

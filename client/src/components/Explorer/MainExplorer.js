@@ -1,71 +1,78 @@
 import React, { useState, useEffect, useContext } from "react";
-import LstAlbums from "../Album/LstAlbums";
 import { AuthContext } from "../../Services/AuthContext";
-import { getLocalStorage } from "../../Globals/GlobalFunctions";
-import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
+import { useLocation, useNavigate } from "react-router-dom";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import PlayerAudio from "../PlayerAudio/PlayerAudio";
+import Explorer from "./Explorer";
+import ExplorerFollows from "./ExplorerFollows";
+import ExplorerStyles from "./ExplorerStyles";
 import MainSearch from "../Search/MainSearch";
 
 function MainExplorer() {
-    const { idUser, isLoggedIn, checkToken } = useContext(AuthContext);
-    const [lstAlbums, setLstAlbums] = useState([]);
-    const date = new Date();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { username } = useContext(AuthContext);
 
+    // list of albums to display in Explorer
+    const [lstAlbums, setLstAlbums] = useState([]);
+
+    // list of tracks to play in PlayerAudio
     const [lstTracksPlay, setLstTracksPlay] = useState([]);
 
-    // get albums and sales favoris
+    const tabPaths = ["explorer", "explorer-follows", "explorer-styles"];
+    const [tabIndex, setTabIndex] = useState(() => {
+        const index = tabPaths.findIndex((path) => location.pathname.includes(path));
+        return index >= 0 ? index : 0;
+    });
+
     useEffect(() => {
-        const fetchData = async () => {
-            await checkToken();
-            const token = getLocalStorage("token");
-            console.log("MainExplorer -- " + (isLoggedIn ? "/getAlbumsSalesFavoris" : "/getAlbums"));
-            try {
-                const data = { date: date, idUser: idUser };
-                const response = isLoggedIn
-                    ? getAxiosReqAuth("/getAlbumsSalesFavoris", data, token)
-                    : getAxiosReq("/getAlbums", data);
-                response.then((res) => setLstAlbums(res));
-            } catch (error) {
-                console.log("Error fetching data from server: ", error);
-            }
-        };
+        const index = tabPaths.findIndex((path) => location.pathname.includes(path));
+        if (index >= 0) {
+            setTabIndex(index);
+        }
+    }, [location, tabPaths]);
 
-        fetchData();
-    }, [checkToken]);
-
-    // // change idAlbumPlay and charge tracks
-    const changeIdAlbumPlay = (idAlbum) => {
-        const album = lstAlbums.find((album) => album.a_id === idAlbum);
-        if (!album) return;
-
-        const lstTracks = album.tracks.map((track) => {
-            track.t_id_album = idAlbum;
-            track.id_user = parseInt(idUser);
-            return track;
-        });
-
-        setLstTracksPlay(lstTracks);
+    const handleTabChange = (event, newTabIndex) => {
+        setTabIndex(newTabIndex);
+        const newPath = tabPaths[newTabIndex];
+        navigate(`/profile/${username}/${newPath}`);
     };
-
-    console.log("MainExplorer -- lstAlbums = ", lstAlbums);
 
     return (
         <div>
-            <h1>Explorer</h1>
-
             {/* Search Inputs */}
             <MainSearch setLstAlbums={setLstAlbums} />
 
-            {/* PlayerAudio */}
-            {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} />}
+            <div>
+                <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Tabs Explorer">
+                    <Tab label="Explorer" />
+                    <Tab label="Explorer Follows" />
+                    <Tab label="Explorer Styles" />
+                </Tabs>
+                {tabIndex === 0 && (
+                    <Explorer lstAlbums={lstAlbums} setLstAlbums={setLstAlbums} setLstTracksPlay={setLstTracksPlay} />
+                )}
+                {tabIndex === 1 && (
+                    <ExplorerFollows
+                        lstAlbums={lstAlbums}
+                        setLstAlbums={setLstAlbums}
+                        setLstTracksPlay={setLstTracksPlay}
+                    />
+                )}
+                {tabIndex === 2 && (
+                    <ExplorerStyles
+                        lstAlbums={lstAlbums}
+                        setLstAlbums={setLstAlbums}
+                        setLstTracksPlay={setLstTracksPlay}
+                    />
+                )}
+            </div>
 
-            {/* LstAlbums */}
-            <LstAlbums
-                idUser={idUser}
-                isLoggedIn={isLoggedIn}
-                lstAlbums={lstAlbums}
-                changeIdAlbumPlay={changeIdAlbumPlay}
-            />
+            <div>
+                {/* PlayerAudio */}
+                {lstTracksPlay.length > 0 && <PlayerAudio playlist={lstTracksPlay} />}
+            </div>
         </div>
     );
 }
