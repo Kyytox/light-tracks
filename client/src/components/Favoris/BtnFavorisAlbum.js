@@ -1,26 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { addFavoris, removeFavoris } from "../../Globals/GlobalFunctions";
 import { colorsFav } from "../../Globals/Colors";
+import { AuthContext } from "../../Services/AuthContext";
+import { getLocalStorage } from "../../Globals/GlobalFunctions";
+import { postAxiosReqAuth } from "../../Services/AxiosPost";
 
 function BtnFavorisAlbum({ idUser, idAlbum, topFav }) {
+    const { isLoggedIn, checkToken } = useContext(AuthContext);
     const [favorisAlbum, setFavorisAlbum] = useState(topFav);
 
-    const toggleFavoriAlbum = (idAlbum) => {
-        setFavorisAlbum(!favorisAlbum);
+    const toggleFavoriAlbum = async (idAlbum) => {
+        await checkToken();
+        const token = getLocalStorage("token");
 
-        const data = {
-            idUser: idUser,
-            idAlbum: idAlbum,
-            idTrack: null,
-        };
+        if (isLoggedIn) {
+            setFavorisAlbum(!favorisAlbum);
 
-        // call addFavoris or removeFavoris
-        if (favorisAlbum) {
-            removeFavoris(data);
-        } else {
-            addFavoris(data);
+            const data = {
+                idUser: idUser,
+                idAlbum: idAlbum,
+                idTrack: null,
+            };
+
+            try {
+                // call addFavoris or removeFavoris
+                if (favorisAlbum) {
+                    const response = await postAxiosReqAuth("/deleteFavoris", data, token);
+                } else {
+                    const response = await postAxiosReqAuth("/addFavoris", data, token);
+                }
+            } catch (error) {
+                console.log("Error fetching data from server: ", error);
+            }
         }
     };
 

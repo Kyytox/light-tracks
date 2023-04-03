@@ -20,20 +20,6 @@ export async function verifyUser(data) {
     return response.status === 200 ? response.status : null;
 }
 
-// add Favoris
-export async function addFavoris(data) {
-    console.log("addFavoris");
-    const response = await axios.post(backendUrl + "/addFavoris", data, {});
-    return response.status === 200 ? response.status : null;
-}
-
-// remove Favoris
-export async function removeFavoris(data) {
-    console.log("deleteFavoris");
-    const response = await axios.post(backendUrl + "/deleteFavoris", data, {});
-    return response.status === 200 ? response.status : null;
-}
-
 // format date to display number of days, hours, minutes ago the album was published
 export function formatDate(dateString) {
     const diff = (new Date() - new Date(dateString)) / 1000 / 60;
