@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import LinkNavUser from "../User/LinkNavUser";
 import { formatDate } from "../../Globals/GlobalFunctions";
+import BtnDownload from "../DownloadFiles/BtnDownload";
 
 function LstCollection({ lstAlbums, changeIdAlbumPlay, downloadAlbum }) {
     // create a map to display
@@ -33,9 +34,7 @@ function LstCollection({ lstAlbums, changeIdAlbumPlay, downloadAlbum }) {
                     </nav>
 
                     {/* Download */}
-                    <button type="button" onClick={() => downloadAlbum(album.a_id)}>
-                        Download
-                    </button>
+                    <BtnDownload idAlbum={album.a_id} />
 
                     {/* Play */}
                     <button type="button" onClick={() => changeIdAlbumPlay(album.a_id)}>

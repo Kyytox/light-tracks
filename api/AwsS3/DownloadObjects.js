@@ -42,10 +42,11 @@ export const downloadAlbum = async (req, res) => {
                 // if rows is not empty and row number is 1, have s_top_sale_album = true ==> user have buy all tracks of album
                 else if (rows.rowCount === 1 && rows.rows[0].s_top_sale_album === true) {
                     console.log("user have buy all tracks of album");
-                    getTracksAlbum(req, res);
+                    getAllTracksAlbum(req, res);
                 } else {
                     // user have buy some tracks of album
                     console.log("user have buy some tracks of album");
+                    getSomeTracksAlbum(req, res);
                 }
             }
         }
@@ -53,22 +54,38 @@ export const downloadAlbum = async (req, res) => {
 };
 
 // get all tracks of album in bd
-const getTracksAlbum = async (req, res) => {
-    console.log("getTracksAlbum : ", req.query);
+const getAllTracksAlbum = async (req, res) => {
+    console.log("getAllTracksAlbum : ", req.query);
     pool.query(`SELECT * FROM tracks WHERE t_id_album = $1`, [req.query.idAlbum], (err, rows) => {
         if (err) {
             res.status(500).json({ message: err });
         } else {
             // console.log("rows", rows);
-            // getDowloadLinkObjectS3(rows, res);
-            getFilesS3(rows, res);
+            getDowloadLinkObjectS3(rows, res);
         }
     });
 };
 
+// get some tracks of album in bd
+const getSomeTracksAlbum = async (req, res) => {
+    console.log("getSomeTracksAlbum : ", req.query);
+    pool.query(
+        `SELECT * FROM tracks WHERE t_id_album = $1 AND t_id IN (SELECT s_id_track FROM sales WHERE s_id_user = $2 AND s_id_album = $3)`,
+        [req.query.idAlbum, req.query.idUser, req.query.idAlbum],
+        (err, rows) => {
+            if (err) {
+                res.status(500).json({ message: err });
+            } else {
+                // console.log("rows", rows);
+                getDowloadLinkObjectS3(rows, res);
+            }
+        }
+    );
+};
+
 // get file S3 bucket and send to client
-export const getFilesS3 = async (req, res) => {
-    console.log("getFilesS3 : ", req.rows);
+export const getDowloadLinkObjectS3 = async (req, res) => {
+    console.log("getDowloadLinkObjectS3 : ", req.rows);
     const s3 = createS3Client();
     const tracks = req.rows;
     const tracksLength = tracks.length;
@@ -82,10 +99,7 @@ export const getFilesS3 = async (req, res) => {
             Key: tracks[i].t_file_path + "/" + tracks[i].t_file_name,
         };
 
-        // get file
-        const s3Item = await s3.send(new GetObjectCommand(params));
-
-        // create signed url
+        // get file and create signed url
         const signedUrl = await getSignedUrl(s3, new GetObjectCommand(params), {
             expiresIn: 3600,
         });
