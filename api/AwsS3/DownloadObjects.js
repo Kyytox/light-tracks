@@ -33,7 +33,6 @@ export const downloadAlbum = async (req, res) => {
             if (err) {
                 res.status(500).json({ message: err });
             } else {
-                // console.log("rows", rows.rows);
                 // if rows is empty, user have not buy album
                 if (rows.rowCount === 0) {
                     console.log("User have not buy album");
@@ -56,21 +55,38 @@ export const downloadAlbum = async (req, res) => {
 // get all tracks of album in bd
 const getAllTracksAlbum = async (req, res) => {
     console.log("getAllTracksAlbum : ", req.query);
-    pool.query(`SELECT * FROM tracks WHERE t_id_album = $1`, [req.query.idAlbum], (err, rows) => {
-        if (err) {
-            res.status(500).json({ message: err });
-        } else {
-            // console.log("rows", rows);
-            getDowloadLinkObjectS3(rows, res);
+    pool.query(
+        `SELECT a_id_user, a_id, a_title, a_artist, t_id, t_id_album_track, t_title, t_file_path, t_file_name, a_cover_path, a_cover
+         FROM tracks t
+         join albums a 
+         on a.a_id = t.t_id_album 
+         WHERE t.t_id_album = $1`,
+        [req.query.idAlbum],
+        (err, rows) => {
+            if (err) {
+                res.status(500).json({ message: err });
+            } else {
+                // console.log("rows", rows);
+                getDowloadLinkObjectS3(rows, res);
+            }
         }
-    });
+    );
 };
 
 // get some tracks of album in bd
 const getSomeTracksAlbum = async (req, res) => {
     console.log("getSomeTracksAlbum : ", req.query);
     pool.query(
-        `SELECT * FROM tracks WHERE t_id_album = $1 AND t_id IN (SELECT s_id_track FROM sales WHERE s_id_user = $2 AND s_id_album = $3)`,
+        `SELECT a_id_user, a_id, a_title, a_artist, t_id, t_id_album_track, t_title, t_file_path, t_file_name, a_cover_path, a_cover
+        FROM tracks t
+        join albums a 
+        on a.a_id = t.t_id_album 
+        WHERE t.t_id_album = $1 
+        AND t.t_id IN 
+            (SELECT s_id_track 
+            FROM sales s
+            WHERE s.s_id_user = $2 
+            AND s.s_id_album = $3)`,
         [req.query.idAlbum, req.query.idUser, req.query.idAlbum],
         (err, rows) => {
             if (err) {
@@ -91,6 +107,8 @@ export const getDowloadLinkObjectS3 = async (req, res) => {
     const tracksLength = tracks.length;
     const listUrl = [];
 
+    console.log("tracks : ", tracks);
+
     // browse tracks
     for (let i = 0; i < tracksLength; i++) {
         // Init params for S3 bucket file
@@ -105,8 +123,12 @@ export const getDowloadLinkObjectS3 = async (req, res) => {
         });
         listUrl.push({
             idAlbum: tracks[i].t_id_album,
+            titleAlbum: tracks[i].a_title,
+            artistAlbum: tracks[i].a_artist,
             idTrack: tracks[i].t_id_track,
             filename: tracks[i].t_title,
+            coverPath: tracks[i].a_cover_path,
+            cover: tracks[i].a_cover,
             url: signedUrl,
         });
     }

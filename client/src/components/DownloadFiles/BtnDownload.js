@@ -12,7 +12,6 @@ const BtnDownload = ({ idAlbum }) => {
 
     // download album
     const downloadAlbum = async (idAlbum) => {
-        console.log("downloadAlbum -- idAlbum: ", idAlbum);
         await checkToken();
         const token = getLocalStorage("token");
         const data = { idUser: idUser, idAlbum: idAlbum };
@@ -24,10 +23,8 @@ const BtnDownload = ({ idAlbum }) => {
                 console.log("downloadAlbum -- response: ", response);
                 try {
                     const dataDownload = response;
-                    console.log("dataDownload: ", dataDownload);
                     const zip = await createZipFile(dataDownload);
-                    console.log("zip: ", zip);
-                    await downloadZipFile(zip);
+                    await downloadZipFile(dataDownload, zip);
                 } catch (error) {
                     console.log("Error downloading album:", error);
                 }
@@ -38,6 +35,7 @@ const BtnDownload = ({ idAlbum }) => {
     };
 
     const createZipFile = async (dataDownload) => {
+        console.log("DownloadFiles -- createZipFile");
         const zip = new JSZip();
         const promises = dataDownload.map(async (data) => {
             const response = await axios.get(data.url, { responseType: "blob" });
@@ -48,12 +46,13 @@ const BtnDownload = ({ idAlbum }) => {
         return zip.generateAsync({ type: "blob" });
     };
 
-    const downloadZipFile = async (zip) => {
+    const downloadZipFile = async (dataDownload, zip) => {
+        console.log("DownloadFiles -- downloadZipFile");
         const blob = new Blob([zip], { type: "application/zip" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = "Album.zip";
+        link.download = dataDownload[0].titleAlbum + " - " + dataDownload[0].artistAlbum + ".zip";
         link.click();
     };
 
