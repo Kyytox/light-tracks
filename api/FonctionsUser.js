@@ -2,12 +2,9 @@ import pool from "./database/database.js";
 
 // get infos of user by id
 export const getUserById = (req, res) => {
-    console.log("API /getUserById");
-    console.log("req.query", req.query);
-
     pool.query(
         `SELECT *
-        FROM public.             
+        FROM profiles     
         WHERE p_id_user = $1`,
         [req.query.idUser],
         (err, result) => {

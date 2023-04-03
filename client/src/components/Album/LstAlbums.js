@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import BtnFavorisAlbum from "../Favoris/BtnFavorisAlbum";
 import BtnFollow from "../Bouttons/BtnFollow";
-import { getLocalStorage } from "../../Globals/GlobalFunctions";
-import { checkFollowed } from "../../Globals/FctsFollow";
 import LinkNavUser from "../User/LinkNavUser";
-import { getAxiosReqAuth } from "../../Services/AxiosGet";
 import { formatDate } from "../../Globals/GlobalFunctions";
 
 function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {

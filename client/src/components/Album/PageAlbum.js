@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import axios from "axios";
-import { backendUrl } from "../../Globals/GlobalVariables";
 import { Button } from "@mui/material";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { AuthContext } from "../../Services/AuthContext";
 import BtnFavorisAlbum from "../Favoris/BtnFavorisAlbum";
 import BtnFollow from "../Bouttons/BtnFollow";
-import { checkFollowed } from "../../Globals/FctsFollow";
 import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 import PlayerAudio from "../PlayerAudio/PlayerAudio";
 import { postAxiosReqAuth } from "../../Services/AxiosPost";
@@ -19,7 +16,6 @@ function PageAlbum() {
     const infosAlbum = location.state?.album;
     const [lstTracks, setLstTracks] = useState([]);
     const idUser = getLocalStorage("id");
-    const [isFollowed, setIsFollowed] = useState(false);
     const [lstStyles, setLstStyles] = useState([]);
     const [topAlbumBuy, setTopAlbumBuy] = useState(false);
 
@@ -51,23 +47,6 @@ function PageAlbum() {
         };
         fetchData();
     }, []);
-
-    // chack if user follow artist
-    useEffect(() => {
-        if (isLoggedIn && lstTracks.length > 0) {
-            const token = getLocalStorage("token");
-
-            const data = {
-                idUser: idUser,
-                idUserFollow: lstTracks[0].t_id_user,
-            };
-
-            const response = getAxiosReqAuth("/getFollowsByIdUser", data, token);
-            response.then((data) => {
-                setIsFollowed(checkFollowed(data, lstTracks[0].t_id_user));
-            });
-        }
-    }, [lstTracks, isLoggedIn]);
 
     // buy Track
     const ClickBuyTrack = async (idAlbum, idTrack, idTrackAlbum, price) => {
@@ -170,7 +149,7 @@ function PageAlbum() {
                 idUser={idUser}
                 isLoggedIn={isLoggedIn}
                 idUserFollow={infosAlbum.a_id_user}
-                isFollowedProp={isFollowed}
+                isFollowedProp={infosAlbum.top_follow_artist}
             />
             <img
                 src={"https://d3s5ffas0ydxtp.cloudfront.net/" + infosAlbum.a_cover_path + "/" + infosAlbum.a_cover}

@@ -141,7 +141,7 @@ export const getFavoris = (req, res) => {
             FROM public.tracks t 
             left join public.user_song_played usp on usp.usp_id_album = t.t_id_album and usp.usp_id_album_track = t.t_id_album_track
             WHERE t.t_id_album = a.a_id) as tracks,
-            EXISTS(SELECT 1 FROM follows fo  WHERE fo.fo_id_user = $1 AND fo.fo_id_user_follow = a.a_id_user) AS top_follow_artistEXISTS(SELECT 1 FROM follows fo  WHERE fo.fo_id_user = $1 AND fo.fo_id_user_follow = a.a_id_user) AS top_follow_artist
+            EXISTS(SELECT 1 FROM follows fo  WHERE fo.fo_id_user = $1 AND fo.fo_id_user_follow = a.a_id_user) AS top_follow_artist
         FROM public.favoris f 
         JOIN public.albums a ON f.f_id_album  = a.a_id AND f.f_id_user = $1
         ORDER BY f.f_date_fav DESC
