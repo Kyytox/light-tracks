@@ -68,7 +68,7 @@ const getTracksAlbum = async (req, res) => {
 
 // get file S3 bucket and send to client
 export const getFilesS3 = async (req, res) => {
-    // console.log("getFilesS3 : ", req.rows);
+    console.log("getFilesS3 : ", req.rows);
     const s3 = createS3Client();
     const tracks = req.rows;
     const tracksLength = tracks.length;
@@ -89,7 +89,12 @@ export const getFilesS3 = async (req, res) => {
         const signedUrl = await getSignedUrl(s3, new GetObjectCommand(params), {
             expiresIn: 3600,
         });
-        listUrl.push(signedUrl);
+        listUrl.push({
+            idAlbum: tracks[i].t_id_album,
+            idTrack: tracks[i].t_id_track,
+            filename: tracks[i].t_title,
+            url: signedUrl,
+        });
     }
 
     // send list url to client
