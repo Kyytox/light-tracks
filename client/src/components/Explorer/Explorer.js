@@ -23,7 +23,7 @@ function Explorer({ option, lstAlbums, setLstAlbums, setLstTracksPlay }) {
                 const response = isLoggedIn
                     ? getAxiosReqAuth(explorerSection, data, token)
                     : getAxiosReq(explorerSection, data);
-                response.then((res) => setLstAlbums(res));
+                response.then((res) => setLstAlbums(res !== undefined ? res : []));
             } catch (error) {
                 console.log("Error fetching data from server: ", error);
             }

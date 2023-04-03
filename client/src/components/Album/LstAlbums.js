@@ -9,22 +9,6 @@ import { getAxiosReqAuth } from "../../Services/AxiosGet";
 import { formatDate } from "../../Globals/GlobalFunctions";
 
 function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
-    const [lstFollows, setLstFollows] = useState([]);
-
-    useEffect(() => {
-        if (isLoggedIn) {
-            const token = getLocalStorage("token");
-
-            // get follows
-            console.log("LstAlbums -- get follows");
-            const data = { idUser: idUser };
-            const response = getAxiosReqAuth("/getFollows", data, token);
-            response.then((data) => {
-                setLstFollows(data);
-            });
-        }
-    }, [isLoggedIn, idUser]);
-
     // create a map to display
     // lst albums is an array of objects
     const LstDisplayAlbums = lstAlbums.map((album, key) => {
@@ -37,15 +21,6 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
             pathname: `/album/${album.a_id}`,
         };
         const stateLocationAlbum = { album: album };
-
-        //
-        // Follow
-        var isFollowed = false;
-
-        if (isLoggedIn) {
-            // check if artist is followed by user
-            isFollowed = checkFollowed(lstFollows, album.a_id_user);
-        }
 
         //
         // retrieve list of gm_name_genre in album.styles
@@ -62,7 +37,7 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
                 <nav id={"album-" + album.a_id} key={album.a_id}>
                     {/* Artist */}
                     <nav id={"artist-" + album.a_id_user} key={album.a_id_user}>
-                        <LinkNavUser data={album} />
+                        <LinkNavUser data={album.profile_artist[0]} />
                     </nav>
 
                     {/* Follow */}
@@ -70,7 +45,7 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
                         idUser={idUser}
                         isLoggedIn={isLoggedIn}
                         idUserFollow={album.a_id_user}
-                        isFollowedProp={isFollowed}
+                        isFollowedProp={album.top_follow_artist}
                     />
 
                     {/* Favoris */}
