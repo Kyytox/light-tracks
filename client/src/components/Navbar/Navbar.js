@@ -23,6 +23,22 @@ const Navbar = () => {
                         <li>
                             <NavLink to="/">Home</NavLink>
                         </li>
+                        <li>
+                            <NavLink to="/explorer/new">Explorer</NavLink>
+                        </li>
+                        {isLoggedIn && (
+                            <>
+                                <li>
+                                    <NavLink to={`/profile/${username}/collection`}>Collection</NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to={`/profile/${username}/wantlist`}>Wantlist</NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/CreateAlbum">Add Music</NavLink>
+                                </li>
+                            </>
+                        )}
                         {isLoggedIn ? (
                             <li>
                                 <button onClick={handleLogout}>Logout</button>
@@ -34,19 +50,6 @@ const Navbar = () => {
                                 </li>
                                 <li>
                                     <NavLink to="/authentification/singup">Signup</NavLink>
-                                </li>
-                            </>
-                        )}
-                        {isLoggedIn && (
-                            <>
-                                <li>
-                                    <NavLink to={`/profile/${username}/collection`}>Collection</NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to={`/profile/${username}/wantlist`}>Wantlist</NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to="/CreateAlbum">Add Music</NavLink>
                                 </li>
                             </>
                         )}

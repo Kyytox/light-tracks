@@ -27,7 +27,7 @@ function Main() {
     console.log("audioUrl", audioUrl);
     return (
         <div>
-            <MainExplorer />
+            <h1>Home Page </h1>
         </div>
     );
 }

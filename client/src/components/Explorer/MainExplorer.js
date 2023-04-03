@@ -5,14 +5,11 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import PlayerAudio from "../PlayerAudio/PlayerAudio";
 import Explorer from "./Explorer";
-import ExplorerFollows from "./ExplorerFollows";
-import ExplorerStyles from "./ExplorerStyles";
 import MainSearch from "../Search/MainSearch";
 
 function MainExplorer() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { username } = useContext(AuthContext);
 
     // list of albums to display in Explorer
     const [lstAlbums, setLstAlbums] = useState([]);
@@ -20,7 +17,7 @@ function MainExplorer() {
     // list of tracks to play in PlayerAudio
     const [lstTracksPlay, setLstTracksPlay] = useState([]);
 
-    const tabPaths = ["explorer", "explorer-follows", "explorer-styles"];
+    const tabPaths = ["new", "explorer-follows", "explorer-styles"];
     const [tabIndex, setTabIndex] = useState(() => {
         const index = tabPaths.findIndex((path) => location.pathname.includes(path));
         return index >= 0 ? index : 0;
@@ -36,7 +33,7 @@ function MainExplorer() {
     const handleTabChange = (event, newTabIndex) => {
         setTabIndex(newTabIndex);
         const newPath = tabPaths[newTabIndex];
-        navigate(`/profile/${username}/${newPath}`);
+        navigate(`/explorer/${newPath}`);
     };
 
     return (
@@ -46,22 +43,32 @@ function MainExplorer() {
 
             <div>
                 <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Tabs Explorer">
-                    <Tab label="Explorer" />
+                    <Tab label="Latest Albums" />
                     <Tab label="Explorer Follows" />
                     <Tab label="Explorer Styles" />
                 </Tabs>
                 {tabIndex === 0 && (
-                    <Explorer lstAlbums={lstAlbums} setLstAlbums={setLstAlbums} setLstTracksPlay={setLstTracksPlay} />
+                    // Explorer - Latest Albums
+                    <Explorer
+                        option={"Latest"}
+                        lstAlbums={lstAlbums}
+                        setLstAlbums={setLstAlbums}
+                        setLstTracksPlay={setLstTracksPlay}
+                    />
                 )}
                 {tabIndex === 1 && (
-                    <ExplorerFollows
+                    // Explorer - Albums in fonction of Follows of user
+                    <Explorer
+                        option={"Follows"}
                         lstAlbums={lstAlbums}
                         setLstAlbums={setLstAlbums}
                         setLstTracksPlay={setLstTracksPlay}
                     />
                 )}
                 {tabIndex === 2 && (
-                    <ExplorerStyles
+                    // Explorer - Albums in fonction of Styles in params Profile
+                    <Explorer
+                        option={"Styles"}
                         lstAlbums={lstAlbums}
                         setLstAlbums={setLstAlbums}
                         setLstTracksPlay={setLstTracksPlay}

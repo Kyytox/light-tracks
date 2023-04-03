@@ -1,11 +1,11 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { AuthContext } from "../../Services/AuthContext";
 
 import LstAlbums from "../Album/LstAlbums";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 
-function Explorer({ lstAlbums, setLstAlbums, setLstTracksPlay }) {
+function Explorer({ option, lstAlbums, setLstAlbums, setLstTracksPlay }) {
     const { idUser, isLoggedIn, checkToken } = useContext(AuthContext);
     const date = new Date();
 
@@ -14,12 +14,15 @@ function Explorer({ lstAlbums, setLstAlbums, setLstTracksPlay }) {
         const fetchData = async () => {
             await checkToken();
             const token = getLocalStorage("token");
-            console.log("MainExplorer -- " + (isLoggedIn ? "/getAlbumsSalesFavoris" : "/getAlbums"));
+
+            const explorerSection = isLoggedIn ? `/getAlbumsAuth${option}` : "/getAlbums";
+            console.log("MainExplorer -- explorerSection = ", explorerSection);
+
             try {
                 const data = { date: date, idUser: idUser };
                 const response = isLoggedIn
-                    ? getAxiosReqAuth("/getAlbumsSalesFavoris", data, token)
-                    : getAxiosReq("/getAlbums", data);
+                    ? getAxiosReqAuth(explorerSection, data, token)
+                    : getAxiosReq(explorerSection, data);
                 response.then((res) => setLstAlbums(res));
             } catch (error) {
                 console.log("Error fetching data from server: ", error);

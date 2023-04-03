@@ -5,9 +5,10 @@ import { signUp, login } from "../services/auth.js";
 import { createAlbum, countAlbumUser } from "../FunctionsAlbum.js";
 import {
     getAlbums,
-    getAlbumsSalesFavoris,
+    getAlbumsAuthLatest,
     getTracks,
     getTracksAuth,
+    getAlbumsAuthFollows,
     getStylesCountryInAlbums,
 } from "../FunctionsExplorer.js";
 // import { getAudioFileStream } from
@@ -83,9 +84,10 @@ router.post("/deleteAlbum", authenticateToken, deleteAlbum);
 
 // Explorer
 router.get("/getAlbums", getAlbums);
-router.get("/getAlbumsSalesFavoris", authenticateToken, getAlbumsSalesFavoris);
+router.get("/getAlbumsAuthLatest", authenticateToken, getAlbumsAuthLatest);
 router.get("/getTracks", getTracks);
 router.get("/getTracksAuth", authenticateToken, getTracksAuth);
+router.get("/getAlbumsAuthFollows", authenticateToken, getAlbumsAuthFollows);
 router.get("/getStylesCountryInAlbums", getStylesCountryInAlbums);
 
 // router.post("/getAudioFileStream", getAudioFileStream);
