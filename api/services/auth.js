@@ -8,6 +8,9 @@ import path from "path";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 
+// Lnbits
+import { createUserLnbits } from "../Lnbits/createUser.js";
+
 // create folder for user
 function createFolderUser(idUser) {
     const dir = path.join("D:/DEV/LightTracks/api/" + idUser);
@@ -54,6 +57,7 @@ export const signUp = (req, res) => {
                                             // create token
                                             const token = createToken(result.rows[0]);
                                             // createFolderUser(result.rows[0].u_id);
+                                            createUserLnbits(result.rows[0].p_username, res);
                                             res.send({
                                                 succes: "SignupSuccess",
                                                 id: result.rows[0].p_id_user,
