@@ -57,7 +57,11 @@ export const signUp = (req, res) => {
                                             // create token
                                             const token = createToken(result.rows[0]);
                                             // createFolderUser(result.rows[0].u_id);
-                                            createUserLnbits(result.rows[0].p_username, res);
+                                            createUserLnbits(
+                                                result.rows[0].p_id_user,
+                                                result.rows[0].p_username,
+                                                password
+                                            );
                                             res.send({
                                                 succes: "SignupSuccess",
                                                 id: result.rows[0].p_id_user,
