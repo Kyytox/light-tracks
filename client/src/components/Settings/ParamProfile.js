@@ -149,7 +149,7 @@ function ParamProfile() {
         const response = postAxiosReqAuth("/deleteUser", data, token);
         response.then((data) => {
             console.log(data);
-            if (data === "User deleted") {
+            if (data.success === "User deleted") {
                 handleLogout();
             }
         });
@@ -207,7 +207,7 @@ function ParamProfile() {
             </form>
 
             {/* Delete Account */}
-            <Button variant="contained" color="error">
+            <Button variant="contained" color="error" onClick={handleDeleteUser}>
                 Delete Account
             </Button>
         </div>

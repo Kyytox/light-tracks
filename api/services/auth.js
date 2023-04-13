@@ -124,15 +124,15 @@ export const deleteUser = (req, res) => {
     const idUser = req.body.idUser;
 
     // check if username exist in BD
-    pool.query("DELETE FROM users WHERE u_id = ($1)", [idUser], (err, result) => {
+    pool.query("DELETE FROM profiles WHERE p_id_user = ($1)", [idUser], (err, result) => {
         if (err) {
             console.error("Error executing INSERT INTO:", err);
         } else {
-            pool.query("DELETE FROM profiles WHERE p_id_user = ($1)", [idUser], (err, result) => {
+            pool.query("DELETE FROM users WHERE u_id = ($1)", [idUser], (err, result) => {
                 if (err) {
                     console.error("Error executing INSERT INTO:", err);
                 } else {
-                    res.send({ success: "deleteUser" });
+                    res.send({ success: "User deleted" });
                 }
             });
         }
