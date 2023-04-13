@@ -122,58 +122,6 @@ export const getMyAlbums = (req, res) => {
     );
 };
 
-// get all sales and favoris from user id
-export const getSalesFavoris = (req, res) => {
-    // get all sales and favoris from user id
-    pool.query(
-        `SELECT res.album_id, res.date, res.source 
-        FROM 
-            (SELECT s.s_id_album AS album_id, s.s_date_sale AS date, 'sale' AS source
-            FROM sales s 
-            WHERE s.s_id_user = $1 
-            UNION 
-            SELECT f.f_id_album AS album_id, f.f_date_fav AS date, 'favoris' AS source
-            FROM favoris f 
-            WHERE f.f_id_user = $1 
-        ) res 
-        ORDER BY res.date DESC;`,
-        [req.query.idUser],
-        (err, result) => {
-            if (err) {
-                console.error("Error executing SELECT:", err);
-            } else {
-                res.send(result.rows);
-            }
-        }
-    );
-};
-
-// get if the album id is in favoris or in sales
-export const getAlbumInFavorisOrSales = (req, res) => {
-    // get if the album id is in favoris or in sales
-    pool.query(
-        `SELECT res.source 
-        FROM 
-            (SELECT 'sale' AS source
-            FROM sales s 
-            WHERE s.s_id_user = $1 and s.s_id_album = $2
-            UNION 
-            SELECT 'favoris' AS source
-            FROM favoris f 
-            WHERE f.f_id_user = $1 and f.f_id_album = $2
-        ) res 
-        ORDER BY res.source DESC;`,
-        [req.query.idUser, req.query.idAlbum],
-        (err, result) => {
-            if (err) {
-                console.error("Error executing SELECT:", err);
-            } else {
-                res.send(result.rows);
-            }
-        }
-    );
-};
-
 // delete album from the user id with album id
 export const deleteAlbum = async (req, res) => {
     // delete img and folder album from S3

@@ -20,7 +20,7 @@ function MainUserProfile() {
     const [lstTracksPlay, setLstTracksPlay] = useState([]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const tabPaths = ["collection", "wantlist", "myalbums", "myfollows", "Settings"];
+    const tabPaths = ["collection", "wantlist", "myalbums", "myfollows", "settings"];
     const [tabIndex, setTabIndex] = useState(() => {
         const index = tabPaths.findIndex((path) => location.pathname.includes(path));
         return index >= 0 ? index : 0;

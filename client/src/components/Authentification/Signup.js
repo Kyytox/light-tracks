@@ -3,20 +3,24 @@ import React, { useState, useContext } from "react";
 // lib Material UI
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Radio from "@mui/material/Radio";
 
 // lib Components en global variables en functions
 import { AuthContext } from "../../Services/AuthContext";
 import { setLocalStorage } from "../../Globals/GlobalFunctions";
 import { postAxiosReq } from "../../Services/AxiosPost";
 import Success from "./Success";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
+    const navigate = useNavigate();
     const { handleLogin } = useContext(AuthContext);
 
     const [values, setValues] = useState({
         username: { value: "", error: false, helperText: "" },
         password: { value: "", error: false, helperText: "" },
         confirmPassword: { value: "", error: false, helperText: "" },
+        topArtist: { value: false, error: false, helperText: "" },
     });
 
     const [succesConnect, setSuccesConnect] = useState({
@@ -83,14 +87,10 @@ function SignUp() {
     };
 
     const handleChange = (field, value) => {
-        if (field === "username") {
-            setValues({ ...values, [field]: { value: value, error: false, helperText: "" } });
-        } else if (field === "password") {
+        if (field === "password") {
             isPasswordValid(values.username, value);
-            setValues({ ...values, [field]: { value: value, error: false, helperText: "" } });
-        } else if (field === "confirmPassword") {
-            setValues({ ...values, [field]: { value: value, error: false, helperText: "" } });
         }
+        setValues({ ...values, [field]: { value, error: false, helperText: "" } });
     };
 
     // Submit Form
@@ -110,6 +110,7 @@ function SignUp() {
             const data = {
                 username: values.username.value,
                 password: values.password.value,
+                topArtist: values.topArtist.value,
             };
 
             // call /signup for INSERT user
@@ -133,10 +134,17 @@ function SignUp() {
                         success: true,
                         text: res.succes,
                     });
-                    setLocalStorage("token", response.data.token);
-                    setLocalStorage("id", response.data.id);
-                    setLocalStorage("username", response.data.username);
+
+                    // set localstorage
+                    setLocalStorage("token", res.token);
+                    setLocalStorage("id", res.id);
+                    setLocalStorage("username", res.username);
+
+                    // set User Logged
                     handleLogin();
+
+                    // redirect to /profile/settings
+                    navigate(`/profile/${res.username}/settings`);
                 }
             });
         } else {
@@ -150,6 +158,8 @@ function SignUp() {
             });
         }
     };
+
+    console.log("Signup.js -- render", values);
 
     return (
         <div>
@@ -165,6 +175,7 @@ function SignUp() {
                         helperText={values.username.helperText}
                         onChange={(event) => handleChange("username", event.target.value)}
                     />
+
                     <TextField
                         required
                         error={values.password.error}
@@ -174,6 +185,7 @@ function SignUp() {
                         helperText={values.password.helperText}
                         onChange={(event) => handleChange("password", event.target.value)}
                     />
+
                     <TextField
                         required
                         error={values.confirmPassword.error}
@@ -183,6 +195,28 @@ function SignUp() {
                         helperText={values.confirmPassword.helperText}
                         onChange={(event) => handleChange("confirmPassword", event.target.value)}
                     />
+
+                    {/* Radio group Top Artist */}
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        <span>
+                            <Radio
+                                checked={values.topArtist.value === true}
+                                onChange={(event) => handleChange("topArtist", true)}
+                                // value={true}
+                                name="radio-buttons"
+                            />
+                            Je suis un artiste
+                        </span>
+                        <span>
+                            <Radio
+                                checked={values.topArtist.value === false}
+                                onChange={(event) => handleChange("topArtist", false)}
+                                // value={false}
+                                name="radio-buttons"
+                            />
+                            Je suis un fan
+                        </span>
+                    </div>
 
                     <Button type="submit" variant="contained">
                         Sign Up

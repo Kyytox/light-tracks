@@ -25,9 +25,10 @@ export const signUp = (req, res) => {
 
     const username = req.body.username;
     const password = req.body.password;
+    const topArtist = req.body.topArtist;
 
     // check if username exist in BD
-    pool.query("SELECT * FROM public.users WHERE u_username = ($1)", [username], (err, result) => {
+    pool.query("SELECT * FROM users WHERE u_username = ($1)", [username], (err, result) => {
         if (err) {
             console.error("Error executing INSERT INTO:", err);
         } else {
@@ -36,23 +37,21 @@ export const signUp = (req, res) => {
                 // Hash the password
                 bcrypt.hash(password, saltRounds, function (err, hash) {
                     // Store hash in your password DB.
-                    console.log(`hash: ${hash}`);
                     pool.query(
-                        "INSERT INTO public.users (u_username, u_password) VALUES ($1,$2) RETURNING u_id, u_username",
+                        "INSERT INTO users (u_username, u_password) VALUES ($1,$2) RETURNING u_id, u_username",
                         [username, hash],
                         (err, result) => {
                             if (err) {
                                 console.error("Error executing INSERT INTO:", err);
                             } else {
                                 pool.query(
-                                    "INSERT INTO public.profiles (p_id_user, p_username) VALUES ($1,$2) RETURNING p_id_user, p_username",
-                                    [result.rows[0].u_id, result.rows[0].u_username],
+                                    "INSERT INTO profiles (p_id_user, p_username, p_top_artiste) VALUES ($1,$2, $3) RETURNING p_id_user, p_username",
+                                    [result.rows[0].u_id, result.rows[0].u_username, topArtist],
                                     (err, result) => {
                                         if (err) {
                                             console.error("Error executing INSERT INTO:", err);
                                         } else {
                                             // create token
-                                            // console.log("result.rows[0]", result.rows[0]);
                                             const token = createToken(result.rows[0]);
                                             // createFolderUser(result.rows[0].u_id);
                                             res.send({
@@ -113,6 +112,29 @@ export const login = (req, res) => {
             } else {
                 res.send({ errUsr: "Username not exist" });
             }
+        }
+    });
+};
+
+// delete user
+export const deleteUser = (req, res) => {
+    console.log("API /deleteUser");
+    console.log("req", req.body);
+
+    const idUser = req.body.idUser;
+
+    // check if username exist in BD
+    pool.query("DELETE FROM users WHERE u_id = ($1)", [idUser], (err, result) => {
+        if (err) {
+            console.error("Error executing INSERT INTO:", err);
+        } else {
+            pool.query("DELETE FROM profiles WHERE p_id_user = ($1)", [idUser], (err, result) => {
+                if (err) {
+                    console.error("Error executing INSERT INTO:", err);
+                } else {
+                    res.send({ success: "deleteUser" });
+                }
+            });
         }
     });
 };

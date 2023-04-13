@@ -9,7 +9,6 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
     // create a map to display
     // lst albums is an array of objects
     const LstDisplayAlbums = lstAlbums.map((album, key) => {
-        // const coverPath = backendUrl + "/" + "images/logo.png";
         const coverPath = "https://d3s5ffas0ydxtp.cloudfront.net/" + album.a_cover_path + "/" + album.a_cover;
 
         //

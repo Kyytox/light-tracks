@@ -1,10 +1,12 @@
 import express from "express";
+import dotenv from "dotenv";
+dotenv.config();
 
 import { checkToken, authenticateToken } from "../services/token.js";
 
 //
 // Auth
-import { signUp, login } from "../services/auth.js";
+import { signUp, login, deleteUser } from "../services/auth.js";
 
 //
 // Album
@@ -31,8 +33,6 @@ import {
     updateProfileInfos,
     getCollection,
     getMyAlbums,
-    getSalesFavoris,
-    getAlbumInFavorisOrSales,
     deleteAlbum,
 } from "../Profile/fctsProfile.js";
 
@@ -62,9 +62,6 @@ import { cptSongPlayed } from "../PlayerAudio/fctPlayerAudio.js";
 import { getSearch } from "../Search/searchNotAuth.js";
 import { getSearchAuth } from "../Search/searchAuth.js";
 import { getStylesCountryInAlbums } from "../Search/fctSearch.js";
-
-import dotenv from "dotenv";
-dotenv.config();
 
 // multer for upload file
 // configure storage for multer when file is uploaded
@@ -98,10 +95,10 @@ const upload = multer({ storage: storage2 });
 const uploadConvertFile = multer();
 
 const router = express.Router();
-dotenv.config();
 
 router.post("/signup", signUp);
 router.post("/login", login);
+router.post("/deleteUser", deleteUser);
 router.post("/verifyUser", checkToken);
 
 // Global Functions
@@ -116,11 +113,11 @@ router.post("/convertFileAudio", uploadConvertFile.single("file"), convertFileAu
 
 // Explorer
 router.get("/getAlbums", getAlbums);
-router.get("/getAlbumsAuthLatest", authenticateToken, getAlbumsAuthLatest);
 router.get("/getTracks", getTracks);
-router.get("/getTracksAuth", authenticateToken, getTracksAuth);
+router.get("/getAlbumsAuthLatest", authenticateToken, getAlbumsAuthLatest);
 router.get("/getAlbumsAuthFollows", authenticateToken, getAlbumsAuthFollows);
 router.get("/getAlbumsAuthStyles", authenticateToken, getAlbumsAuthStyles);
+router.get("/getTracksAuth", authenticateToken, getTracksAuth);
 
 // Search
 router.get("/getStylesCountryInAlbums", getStylesCountryInAlbums);
@@ -136,8 +133,6 @@ router.get("/getProfileInfos", authenticateToken, getProfileInfos);
 router.post("/updateProfileInfos", authenticateToken, updateProfileInfos);
 router.get("/getCollection", authenticateToken, getCollection);
 router.get("/getMyAlbums", authenticateToken, getMyAlbums);
-router.get("/getSalesFavoris", authenticateToken, getSalesFavoris);
-router.get("/getAlbumInFavorisOrSales", authenticateToken, getAlbumInFavorisOrSales);
 
 // Wantlist
 router.get("/getWantlist", authenticateToken, getWantlist);
@@ -156,7 +151,7 @@ router.post("/cptSongPlayed", cptSongPlayed);
 // User
 router.get("/getUserById", getUserById);
 
-// Dowload
+// Download
 router.get("/downloadAlbum", authenticateToken, downloadAlbum);
 
 export default router;

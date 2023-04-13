@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 
 // lib Components en global variables en functions
-import { AuthContext, checkToken } from "../../Services/AuthContext";
+import { AuthContext } from "../../Services/AuthContext";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import SelectGenres from "../Forms/selectGenres";
 import SelectCountry from "../Forms/SelectCountry";
@@ -14,7 +14,7 @@ import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 import { postAxiosReqAuth } from "../../Services/AxiosPost";
 
 function ParamProfile() {
-    const { isLoggedIn, checkToken } = useContext(AuthContext);
+    const { isLoggedIn, checkToken, handleLogout } = useContext(AuthContext);
     const idUser = getLocalStorage("id");
 
     const [lstGenres, setLstGenres] = useState([]);
@@ -138,6 +138,21 @@ function ParamProfile() {
                 });
             }
         }
+    };
+
+    // delete User
+    const handleDeleteUser = () => {
+        const token = getLocalStorage("token");
+        const data = { idUser: idUser };
+
+        console.log("ParamProfile.js -- /deleteUser");
+        const response = postAxiosReqAuth("/deleteUser", data, token);
+        response.then((data) => {
+            console.log(data);
+            if (data === "User deleted") {
+                handleLogout();
+            }
+        });
     };
 
     console.log("ParamProfile.js -- lstParams: ", lstParams);

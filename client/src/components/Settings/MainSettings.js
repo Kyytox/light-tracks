@@ -7,36 +7,33 @@ import Tab from "@mui/material/Tab";
 // components
 import ParamProfile from "../Settings/ParamProfile";
 
-
-
 function MainSettings() {
     const location = useLocation();
     const navigate = useNavigate();
     const { username } = useContext(AuthContext);
 
-    const tabPaths = ["settings Profile", "settings App"];
+    const tabPaths = ["settingsProfil", "settingsApp"];
     const [tabIndex, setTabIndex] = useState(() => {
-      const index = tabPaths.findIndex(path => location.pathname.includes(path));
-      return index >= 0 ? index : 0;
+        const index = tabPaths.findIndex((path) => location.pathname.includes(path));
+        return index >= 0 ? index : 0;
     });
-    
+
     useEffect(() => {
-      const index = tabPaths.findIndex(path => location.pathname.includes(path));
-      if (index >= 0) {
-        setTabIndex(index);
-      }
+        const index = tabPaths.findIndex((path) => location.pathname.includes(path));
+        if (index >= 0) {
+            setTabIndex(index);
+        }
     }, [location, tabPaths]);
 
-    
     const handleTabChange = (event, newTabIndex) => {
-      setTabIndex(newTabIndex);
-      const newPath = tabPaths[newTabIndex];
-      navigate(`/profile/${username}/${newPath}`);
+        setTabIndex(newTabIndex);
+        const newPath = tabPaths[newTabIndex];
+        navigate(`/profile/${username}/${newPath}`);
     };
 
     return (
         <div>
-            <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Tabs Login/SignUp">
+            <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Tabs setProfile/setApp">
                 <Tab label="Settings Profile" />
                 <Tab label="Settings App" />
             </Tabs>
