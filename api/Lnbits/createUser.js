@@ -2,6 +2,10 @@ import pool from "../Database/database.js";
 import poolLnbits from "../Database/database_lnbits.js";
 import dotenv from "dotenv";
 import axios from "axios";
+
+// Hash crypto js
+import crypto from "crypto-js";
+
 dotenv.config();
 
 // create user and iniial wallet in lnbits
@@ -35,8 +39,11 @@ export const createUserLnbits = async (idUser, username, password) => {
 // Update data User Lnbits in BD
 export const updateBdUserLnbits = (idUser, data) => {
     console.log("updateBdUserLnbits");
-    const idLnbits = data.id;
 
+    // hash idLnbits
+    const idLnbits = crypto.AES.encrypt(data.id, process.env.KEY_ENCRYPTION).toString();
+
+    // update idLnbits in BD Users
     pool.query("UPDATE users SET u_id_lnbits = ($1) WHERE u_id = ($2)", [idLnbits, idUser], (err, result) => {
         if (err) {
             console.error("Error executing INSERT INTO:", err);

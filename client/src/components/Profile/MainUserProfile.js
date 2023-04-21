@@ -12,6 +12,8 @@ import UserMyFollows from "./UserMyFollows";
 import MainSettings from "../Settings/MainSettings";
 import PlayerAudio from "../PlayerAudio/PlayerAudio";
 
+import BtnWithdraw from "../Bouttons/BtnWithdraw";
+
 function MainUserProfile() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -41,6 +43,7 @@ function MainUserProfile() {
 
     return (
         <div>
+            <BtnWithdraw />
             <div>
                 <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Tabs Login/SignUp">
                     <Tab label="My Collection" />

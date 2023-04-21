@@ -63,6 +63,10 @@ import { getSearch } from "../Search/searchNotAuth.js";
 import { getSearchAuth } from "../Search/searchAuth.js";
 import { getStylesCountryInAlbums } from "../Search/fctSearch.js";
 
+//
+// LnBits
+import { withdraw } from "../Lnbits/withdraw.js";
+
 // multer for upload file
 // configure storage for multer when file is uploaded
 import multer from "multer";
@@ -153,5 +157,8 @@ router.get("/getUserById", getUserById);
 
 // Download
 router.get("/downloadAlbum", authenticateToken, downloadAlbum);
+
+// Lnbits
+router.get("/withdraw", authenticateToken, withdraw);
 
 export default router;
