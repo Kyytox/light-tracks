@@ -25,7 +25,7 @@ import {
 
 //
 // Buy
-import { buyAlbum } from "../Buy/buyAlbum.js";
+import { buyAlbum, addAlbumToSales } from "../Buy/buyAlbum.js";
 import { buyTrack } from "../Buy/buyTrack.js";
 
 import {
@@ -66,6 +66,7 @@ import { getStylesCountryInAlbums } from "../Search/fctSearch.js";
 //
 // LnBits
 import { withdraw } from "../Lnbits/withdraw.js";
+import { verifyInvoice } from "../Lnbits/wallets.js";
 
 // multer for upload file
 // configure storage for multer when file is uploaded
@@ -130,6 +131,7 @@ router.get("/getSearchAuth", authenticateToken, getSearchAuth);
 
 // Buy
 router.post("/buyAlbum", authenticateToken, buyAlbum);
+router.post("/addAlbumToSales", authenticateToken, addAlbumToSales);
 router.post("/buyTrack", authenticateToken, buyTrack);
 
 // Profile
@@ -160,5 +162,6 @@ router.get("/downloadAlbum", authenticateToken, downloadAlbum);
 
 // Lnbits
 router.get("/withdraw", authenticateToken, withdraw);
+router.get("/verifyInvoice", verifyInvoice);
 
 export default router;

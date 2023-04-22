@@ -8,6 +8,7 @@ import BtnFollow from "../Bouttons/BtnFollow";
 import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 import PlayerAudio from "../PlayerAudio/PlayerAudio";
 import { postAxiosReqAuth } from "../../Services/AxiosPost";
+import QRCode from "qrcode.react";
 
 function PageAlbum() {
     const { isLoggedIn, checkToken } = useContext(AuthContext);
@@ -18,6 +19,12 @@ function PageAlbum() {
     const idUser = getLocalStorage("id");
     const [lstStyles, setLstStyles] = useState([]);
     const [topAlbumBuy, setTopAlbumBuy] = useState(false);
+
+    const [infosInvoice, setInfosInvoice] = useState({
+        invoiceKey: "",
+        payementHash: "",
+        payementRequest: "",
+    });
 
     // get tracks
     useEffect(() => {
@@ -68,7 +75,7 @@ function PageAlbum() {
                 const response = await postAxiosReqAuth("/buyTrack", data, token);
                 console.log("response", response);
                 if (response.succes) {
-                    window.location.reload();
+                    console.log("response");
                 }
             } catch (error) {
                 console.log("error", error);
@@ -84,16 +91,78 @@ function PageAlbum() {
         const data = {
             idUser: idUser,
             idAlbum: idAlbum,
-            idTrack: idTrack,
-            idTrackAlbum: idTrackAlbum,
-            price: price,
         };
 
         if (isLoggedIn) {
             console.log("PageAlbum -> /buyAlbum");
             try {
                 const response = await postAxiosReqAuth("/buyAlbum", data, token);
+                console.log("response", response);
+                setInfosInvoice({
+                    invoiceKey: response.invoiceKey,
+                    payementHash: response.payementHash,
+                    payementRequest: response.payementRequest,
+                });
+
+                verifyInvoice(idAlbum, idTrack, idTrackAlbum, price, response.invoiceKey, response.payementHash);
                 if (response.data.succes) {
+                    console.log("response");
+                }
+            } catch (error) {
+                console.log("error", error);
+            }
+        }
+    };
+
+    const verifyInvoice = async (idAlbum, idTrack, idTrackAlbum, price, invoiceKey, payementHash) => {
+        // create const data with infosAlbum
+        const data = {
+            invoiceKey: invoiceKey,
+            payementHash: payementHash,
+        };
+
+        console.log("data", data);
+
+        console.log("PageAlbum -> /verifyInvoice");
+        // Set up a loop that will execute the API call every 10 seconds
+        const intervalId = setInterval(async () => {
+            try {
+                const response = await getAxiosReq("/verifyInvoice", data);
+                console.log("response", response);
+                if (response.success) {
+                    console.log("Success! Response:", response);
+                    clearInterval(intervalId); // Stop the loop.
+                    AddAlbumToSales(idAlbum, idTrack, idTrackAlbum, price, invoiceKey, payementHash);
+                }
+            } catch (error) {
+                console.log("error", error);
+            }
+        }, 10000); // 10 seconds
+    };
+
+    // add album to Sales
+    const AddAlbumToSales = async (idAlbum, idTrack, idTrackAlbum, price, invoiceKey, payementHash) => {
+        await checkToken();
+        const token = getLocalStorage("token");
+
+        // create const data with infosAlbum
+        const data = {
+            idUser: idUser,
+            idAlbum: idAlbum,
+            idTrack: idTrack,
+            idTrackAlbum: idTrackAlbum,
+            price: price,
+            invoiceKey: invoiceKey,
+            payementHash: payementHash,
+        };
+
+        if (isLoggedIn) {
+            console.log("PageAlbum -> /addAlbumToSales");
+            try {
+                const response = await postAxiosReqAuth("/addAlbumToSales", data, token);
+                console.log("response", response);
+                if (response.succes) {
+                    console.log("response");
                     window.location.reload();
                 }
             } catch (error) {
@@ -143,6 +212,20 @@ function PageAlbum() {
 
     return (
         <div>
+            {/* if infosInvoice.payment_request is not empty, display the payment request */}
+            {infosInvoice.payementRequest && (
+                <div>
+                    <QRCode
+                        value={infosInvoice.payementRequest}
+                        width="1000"
+                        height="1000"
+                        includeMargin={true}
+                        level="L"
+                        renderAs="canvas"
+                    />
+                    <p>Send {infosAlbum.a_price} satoshis to the address above</p>
+                </div>
+            )}
             <h1>Album : {infosAlbum.a_title}</h1>
             <h2>Artist : {infosAlbum.a_artist}</h2>
             <BtnFollow

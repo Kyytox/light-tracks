@@ -1,10 +1,7 @@
-import pool from "../Database/database.js";
-import poolLnbits from "../Database/database_lnbits.js";
 import dotenv from "dotenv";
 import axios from "axios";
 
-// Hash crypto js
-import crypto from "crypto-js";
+import { getInfosUserLnbits } from "./getInfosUser.js";
 
 dotenv.config();
 
@@ -20,65 +17,6 @@ export const withdraw = (req, res) => {
     } else {
         res.status(401).json({ message: "idUser is not correct" });
     }
-};
-
-// get infos User Lnbits
-export const getInfosUserLnbits = async (idUser, res) => {
-    console.log("getInfosUserLnbits");
-
-    pool.query("SELECT u_id_lnbits FROM users WHERE u_id = ($1)", [idUser], (err, result) => {
-        if (err) {
-            console.error("Error executing INSERT INTO:", err);
-        } else {
-            console.log("getInfosUserLnbits -- Succes");
-            const idLnbits = result.rows[0].u_id_lnbits;
-            getInKeyWallet(idLnbits, res);
-        }
-    });
-};
-
-// get inkey wallet
-export const getInKeyWallet = async (idLnbits, res) => {
-    console.log("getBalanceWallet");
-    console.log("idLnbits: ", idLnbits);
-
-    // decrypt idLnbits
-    const idLnbitsDecrypt = crypto.AES.decrypt(idLnbits, process.env.KEY_ENCRYPTION).toString(crypto.enc.Utf8);
-    console.log("idLnbitsDecrypt: ", idLnbitsDecrypt);
-
-    // get inkey wallet
-    poolLnbits.query("SELECT * FROM wallets w WHERE w.user = ($1)", [idLnbitsDecrypt], (err, result) => {
-        if (err) {
-            console.error("Error executing INSERT INTO:", err);
-        } else {
-            console.log("getInKeyWallet -- Succes");
-            console.log(result);
-            const inkey = result.rows[0].inkey;
-            const adminKey = result.rows[0].adminkey;
-            getBalanceWallet(inkey, adminKey, res);
-        }
-    });
-};
-
-// get balance wallet
-export const getBalanceWallet = async (inkey, adminKey, res) => {
-    console.log("getBalanceWallet");
-    await axios
-        .get("http://127.0.0.1:5000/api/v1/wallet", {
-            headers: {
-                "X-Api-Key": inkey,
-                "Content-type": "application/json",
-            },
-        })
-        .then((response) => {
-            console.log("getBalanceWallet -- Succes");
-            console.log(response.data);
-            console.log(response.status);
-            getLinkwithdraw(adminKey, response.data.balance, res);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
 };
 
 // Withdraw
