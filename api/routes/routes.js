@@ -26,7 +26,7 @@ import {
 //
 // Buy
 import { buyAlbum, addAlbumToSales } from "../Buy/buyAlbum.js";
-import { buyTrack } from "../Buy/buyTrack.js";
+import { buyTrack, addTrackToSales } from "../Buy/buyTrack.js";
 
 import {
     getProfileInfos,
@@ -133,6 +133,7 @@ router.get("/getSearchAuth", authenticateToken, getSearchAuth);
 router.post("/buyAlbum", authenticateToken, buyAlbum);
 router.post("/addAlbumToSales", authenticateToken, addAlbumToSales);
 router.post("/buyTrack", authenticateToken, buyTrack);
+router.post("/addTrackToSales", authenticateToken, addTrackToSales);
 
 // Profile
 router.get("/getProfileInfos", authenticateToken, getProfileInfos);

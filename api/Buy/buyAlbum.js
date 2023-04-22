@@ -22,7 +22,7 @@ export const buyAlbum = async (req, res) => {
             console.log("infosUser", infosUser);
 
             // create invoice
-            const invoice = await createInvoice(infosUser.invoiceKey, price.a_price);
+            const invoice = await createInvoice(infosUser.invoiceKey, price);
             res.send({
                 invoiceKey: infosUser.invoiceKey,
                 payementHash: invoice.payment_hash,
@@ -45,12 +45,13 @@ export const checkTrackAlbum = async (req) => {
         );
 
         if (result.rowCount === 0) {
+            // get price of album
             console.log("User didn't buy tracks from album");
             return await getPriceAlbum(req);
         } else {
             console.log("User already bought tracks from album");
-            // return a default value here
-            return { a_price: 0 };
+            // calculate price of album with tracks already bought
+            return await calculPriceAlbum(req);
         }
     } catch (error) {
         console.log("checkTrackAlbum result -- Error");
@@ -69,7 +70,7 @@ export const getPriceAlbum = async (req) => {
         );
 
         console.log("getPriceAlbum result -- Success");
-        return result.rows[0];
+        return result.rows[0].a_price;
     } catch (error) {
         console.log("getPriceAlbum result -- Error");
         throw error;
@@ -130,6 +131,31 @@ export const deleteAlbumFromFavoris = async (req, res) => {
         res.send({ succes: "Album bought" });
     } catch (error) {
         console.log("deleteAlbumFromFavoris result -- Error");
+        throw error;
+    }
+};
+
+// calcul price of Album when user already bought tracks from album
+export const calculPriceAlbum = async (req) => {
+    console.log("API /calculPriceAlbum");
+    console.log("req.body", req.body);
+
+    // get price of album without tracks already bought
+    try {
+        const result = await pool.query(
+            `SELECT SUM(t_price) 
+            FROM tracks 
+            WHERE t_id_album = $1 AND t_id NOT IN (
+                SELECT s_id_track 
+                FROM sales 
+                WHERE s_id_user = $2 AND s_id_album = $3)`,
+            [req.body.idAlbum, req.body.idUser, req.body.idAlbum]
+        );
+
+        console.log("calculPriceAlbum result -- Success");
+        return result.rows[0].sum;
+    } catch (error) {
+        console.log("calculPriceAlbum result -- Error");
         throw error;
     }
 };

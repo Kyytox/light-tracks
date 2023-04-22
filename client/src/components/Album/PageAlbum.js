@@ -5,23 +5,28 @@ import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { AuthContext } from "../../Services/AuthContext";
 import BtnFavorisAlbum from "../Favoris/BtnFavorisAlbum";
 import BtnFollow from "../Bouttons/BtnFollow";
+import BuyTrack from "../Buy/BuyTrack";
+import BuyAlbum from "../Buy/BuyAlbum";
 import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 import PlayerAudio from "../PlayerAudio/PlayerAudio";
 import { postAxiosReqAuth } from "../../Services/AxiosPost";
 import QRCode from "qrcode.react";
 
 function PageAlbum() {
+    // nfos User
     const { isLoggedIn, checkToken } = useContext(AuthContext);
-    const { id } = useParams();
+    const idUser = getLocalStorage("id");
+
+    // get infos Album from params url
     const location = useLocation();
     const infosAlbum = location.state?.album;
+    console.log("PageAlbum -> infosAlbum", infosAlbum);
+
     const [lstTracks, setLstTracks] = useState([]);
-    const idUser = getLocalStorage("id");
     const [lstStyles, setLstStyles] = useState([]);
     const [topAlbumBuy, setTopAlbumBuy] = useState(false);
 
     const [infosInvoice, setInfosInvoice] = useState({
-        invoiceKey: "",
         payementHash: "",
         payementRequest: "",
     });
@@ -31,15 +36,18 @@ function PageAlbum() {
         const fetchData = async () => {
             await checkToken();
             const token = getLocalStorage("token");
-            const data = { id: id, idUser: idUser };
+            const data = { id: infosAlbum.a_id, idUser: idUser };
 
             try {
                 const response = isLoggedIn
                     ? await getAxiosReqAuth("/getTracksAuth", data, token)
                     : await getAxiosReq("/getTracks", data);
+
+                // update lstTracks
                 setLstTracks(response);
                 setTopAlbumBuy(response[0].top_sale_album);
 
+                // update lstStyles
                 const lstStyles = response[0].styles.map((style, key) => {
                     return (
                         <span key={key} className="">
@@ -54,65 +62,6 @@ function PageAlbum() {
         };
         fetchData();
     }, []);
-
-    // buy Track
-    const ClickBuyTrack = async (idAlbum, idTrack, idTrackAlbum, price) => {
-        await checkToken();
-        const token = getLocalStorage("token");
-
-        // create const data with infosAlbum
-        const data = {
-            idUser: idUser,
-            idAlbum: idAlbum,
-            idTrack: idTrack,
-            idTrackAlbum: idTrackAlbum,
-            price: price,
-        };
-
-        if (isLoggedIn) {
-            console.log("PageAlbum -> /buyTrack");
-            try {
-                const response = await postAxiosReqAuth("/buyTrack", data, token);
-                console.log("response", response);
-                if (response.succes) {
-                    console.log("response");
-                }
-            } catch (error) {
-                console.log("error", error);
-            }
-        }
-    };
-
-    const ClickBuyAlbum = async (idAlbum, idTrack, idTrackAlbum, price) => {
-        await checkToken();
-        const token = getLocalStorage("token");
-
-        // create const data with infosAlbum
-        const data = {
-            idUser: idUser,
-            idAlbum: idAlbum,
-        };
-
-        if (isLoggedIn) {
-            console.log("PageAlbum -> /buyAlbum");
-            try {
-                const response = await postAxiosReqAuth("/buyAlbum", data, token);
-                console.log("response", response);
-                setInfosInvoice({
-                    invoiceKey: response.invoiceKey,
-                    payementHash: response.payementHash,
-                    payementRequest: response.payementRequest,
-                });
-
-                verifyInvoice(idAlbum, idTrack, idTrackAlbum, price, response.invoiceKey, response.payementHash);
-                if (response.data.succes) {
-                    console.log("response");
-                }
-            } catch (error) {
-                console.log("error", error);
-            }
-        }
-    };
 
     const verifyInvoice = async (idAlbum, idTrack, idTrackAlbum, price, invoiceKey, payementHash) => {
         // create const data with infosAlbum
@@ -132,7 +81,8 @@ function PageAlbum() {
                 if (response.success) {
                     console.log("Success! Response:", response);
                     clearInterval(intervalId); // Stop the loop.
-                    AddAlbumToSales(idAlbum, idTrack, idTrackAlbum, price, invoiceKey, payementHash);
+                    // AddAlbumToSales(idAlbum, idTrack, idTrackAlbum, price, invoiceKey, payementHash);
+                    // AddTrackToSales(idAlbum, idTrack, idTrackAlbum, price, invoiceKey, payementHash);
                 }
             } catch (error) {
                 console.log("error", error);
@@ -140,40 +90,8 @@ function PageAlbum() {
         }, 10000); // 10 seconds
     };
 
-    // add album to Sales
-    const AddAlbumToSales = async (idAlbum, idTrack, idTrackAlbum, price, invoiceKey, payementHash) => {
-        await checkToken();
-        const token = getLocalStorage("token");
-
-        // create const data with infosAlbum
-        const data = {
-            idUser: idUser,
-            idAlbum: idAlbum,
-            idTrack: idTrack,
-            idTrackAlbum: idTrackAlbum,
-            price: price,
-            invoiceKey: invoiceKey,
-            payementHash: payementHash,
-        };
-
-        if (isLoggedIn) {
-            console.log("PageAlbum -> /addAlbumToSales");
-            try {
-                const response = await postAxiosReqAuth("/addAlbumToSales", data, token);
-                console.log("response", response);
-                if (response.succes) {
-                    console.log("response");
-                    window.location.reload();
-                }
-            } catch (error) {
-                console.log("error", error);
-            }
-        }
-    };
-
     // create a map to display all tracks
     const LstDisplayTracks = lstTracks.map((track, key) => {
-        console.log("track", track);
         return (
             <>
                 <div className="card" key={track.t_id}>
@@ -187,7 +105,7 @@ function PageAlbum() {
 
                         {isLoggedIn && !track.top_sale_track && !track.top_sale_album && (
                             <>
-                                <Button
+                                {/* <Button
                                     variant="contained"
                                     onClick={() =>
                                         ClickBuyTrack(
@@ -199,7 +117,14 @@ function PageAlbum() {
                                     }
                                 >
                                     Buy
-                                </Button>
+                                </Button> */}
+                                <BuyTrack
+                                    idAlbum={infosAlbum.a_id}
+                                    idTrack={track.t_id}
+                                    idTrackAlbum={track.t_id_album_track}
+                                    price={track.t_price}
+                                    verifyInvoice={verifyInvoice}
+                                />
                             </>
                         )}
                     </div>
@@ -243,12 +168,20 @@ function PageAlbum() {
             <h3>Price : {infosAlbum.a_price}</h3>
             {isLoggedIn && !topAlbumBuy && (
                 <>
-                    <Button
+                    {/* <Button
                         variant="contained"
                         onClick={() => ClickBuyAlbum(infosAlbum.a_id, null, null, infosAlbum.a_price)}
                     >
                         Buy
-                    </Button>
+                    </Button> */}
+                    <BuyAlbum
+                        idAlbum={infosAlbum.a_id}
+                        idTrack={null}
+                        idTrackAlbum={null}
+                        price={infosAlbum.a_price}
+                        verifyInvoice={verifyInvoice}
+                    />
+
                     <BtnFavorisAlbum idUser={idUser} idAlbum={infosAlbum.a_id} topFav={infosAlbum.top_favoris_album} />
                 </>
             )}
