@@ -35,7 +35,6 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
                     <nav id={"artist-" + album.a_id_user} key={album.a_id_user}>
                         <LinkNavUser data={album.profile_artist[0]} />
                     </nav>
-
                     {/* Follow */}
                     <BtnFollow
                         idUser={idUser}
@@ -43,16 +42,23 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
                         idUserFollow={album.a_id_user}
                         isFollowedProp={album.top_follow_artist}
                     />
-
                     {/* Favoris */}
                     {isLoggedIn && (
-                        <BtnFavorisAlbum idUser={idUser} idAlbum={album.a_id} topFav={album.top_favoris_album} />
+                        <>
+                            {album.top_sale_album ? (
+                                <p>Album bought</p>
+                            ) : (
+                                <BtnFavorisAlbum
+                                    idUser={idUser}
+                                    idAlbum={album.a_id}
+                                    topFav={album.top_favoris_album}
+                                />
+                            )}
+                        </>
                     )}
-
                     <button type="button" onClick={() => changeIdAlbumPlay(album.a_id)}>
                         Play
                     </button>
-
                     {/* Album */}
                     <Link to={locationAlbum} state={stateLocationAlbum}>
                         <div className="card" style={{ display: "flex" }}>
