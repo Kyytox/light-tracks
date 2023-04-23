@@ -56,24 +56,12 @@ export const createInvoice = async (invoiceKey, amount) => {
 export const verifyInvoice = async (req, res) => {
     console.log("verifyInvoice");
 
-    try {
-        const result = await axios.get(`http://127.0.0.1:5000/api/v1/payments/${req.query.payementHash}`, {
-            headers: {
-                "X-Api-Key": req.query.invoiceKey,
-                "Content-type": "application/json",
-            },
-        });
+    const topPayement = await checkPayement(req.query.invoiceKey, req.query.payementHash);
 
-        console.log("verifyInvoice -- Succes");
-        console.log(result.status);
-
-        if (result.data.paid) {
-            res.send({ success: true });
-        } else {
-            res.send({ success: false });
-        }
-    } catch (err) {
-        console.error("Error executing INSERT INTO:", err);
+    if (topPayement) {
+        res.send(true);
+    } else {
+        res.send(false);
     }
 };
 

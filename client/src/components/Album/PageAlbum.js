@@ -1,16 +1,22 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams, useLocation } from "react-router-dom";
-import { Button } from "@mui/material";
+import { useLocation } from "react-router-dom";
+
+// functions
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { AuthContext } from "../../Services/AuthContext";
+import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
+
+// Button Components
 import BtnFavorisAlbum from "../Favoris/BtnFavorisAlbum";
 import BtnFollow from "../Bouttons/BtnFollow";
-import BuyTrack from "../Buy/BuyTrack";
-import BuyAlbum from "../Buy/BuyAlbum";
-import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
+import BtnBuyItem from "../Bouttons/BtnBuy";
+import BtnDownload from "../DownloadFiles/BtnDownload";
+
+// Player Components
 import PlayerAudio from "../PlayerAudio/PlayerAudio";
-import { postAxiosReqAuth } from "../../Services/AxiosPost";
-import QRCode from "qrcode.react";
+
+// QrCode Components
+import QrCode from "../QrCode/QrCode";
 
 function PageAlbum() {
     // nfos User
@@ -22,10 +28,9 @@ function PageAlbum() {
     const infosAlbum = location.state?.album;
     console.log("PageAlbum -> infosAlbum", infosAlbum);
 
+    // states
     const [lstTracks, setLstTracks] = useState([]);
     const [lstStyles, setLstStyles] = useState([]);
-    const [topAlbumBuy, setTopAlbumBuy] = useState(false);
-
     const [infosInvoice, setInfosInvoice] = useState({
         payementHash: "",
         payementRequest: "",
@@ -45,7 +50,6 @@ function PageAlbum() {
 
                 // update lstTracks
                 setLstTracks(response);
-                setTopAlbumBuy(response[0].top_sale_album);
 
                 // update lstStyles
                 const lstStyles = response[0].styles.map((style, key) => {
@@ -63,35 +67,16 @@ function PageAlbum() {
         fetchData();
     }, []);
 
-    const verifyInvoice = async (idAlbum, idTrack, idTrackAlbum, price, invoiceKey, payementHash) => {
-        // create const data with infosAlbum
-        const data = {
-            invoiceKey: invoiceKey,
-            payementHash: payementHash,
-        };
-
-        console.log("data", data);
-
-        console.log("PageAlbum -> /verifyInvoice");
-        // Set up a loop that will execute the API call every 10 seconds
-        const intervalId = setInterval(async () => {
-            try {
-                const response = await getAxiosReq("/verifyInvoice", data);
-                console.log("response", response);
-                if (response.success) {
-                    console.log("Success! Response:", response);
-                    clearInterval(intervalId); // Stop the loop.
-                    // AddAlbumToSales(idAlbum, idTrack, idTrackAlbum, price, invoiceKey, payementHash);
-                    // AddTrackToSales(idAlbum, idTrack, idTrackAlbum, price, invoiceKey, payementHash);
-                }
-            } catch (error) {
-                console.log("error", error);
-            }
-        }, 10000); // 10 seconds
-    };
-
     // create a map to display all tracks
     const LstDisplayTracks = lstTracks.map((track, key) => {
+        console.log("track", track);
+        const infosBuyItem = {
+            idAlbum: infosAlbum.a_id,
+            idTrack: track.t_id,
+            idTrackAlbum: track.t_id_album_track,
+            price: track.t_price,
+        };
+
         return (
             <>
                 <div className="card" key={track.t_id}>
@@ -103,27 +88,12 @@ function PageAlbum() {
                         <p className="card-text">{track.t_nb_listen}</p>
                         <p className="card-text">{track.t_lyrics}</p> */}
 
-                        {isLoggedIn && !track.top_sale_track && !track.top_sale_album && (
+                        {isLoggedIn && !track.top_sale_track && !track.top_sale_album && track.a_top_price && (
                             <>
-                                {/* <Button
-                                    variant="contained"
-                                    onClick={() =>
-                                        ClickBuyTrack(
-                                            infosAlbum.a_id,
-                                            track.t_id,
-                                            track.t_id_album_track,
-                                            track.t_price
-                                        )
-                                    }
-                                >
-                                    Buy
-                                </Button> */}
-                                <BuyTrack
-                                    idAlbum={infosAlbum.a_id}
-                                    idTrack={track.t_id}
-                                    idTrackAlbum={track.t_id_album_track}
-                                    price={track.t_price}
-                                    verifyInvoice={verifyInvoice}
+                                <BtnBuyItem
+                                    item="Track"
+                                    infosBuyItem={infosBuyItem}
+                                    setInfosInvoice={setInfosInvoice}
                                 />
                             </>
                         )}
@@ -133,26 +103,16 @@ function PageAlbum() {
         );
     });
 
-    console.log("lstTracks", lstTracks);
-
     return (
         <div>
-            {/* if infosInvoice.payment_request is not empty, display the payment request */}
-            {infosInvoice.payementRequest && (
-                <div>
-                    <QRCode
-                        value={infosInvoice.payementRequest}
-                        width="1000"
-                        height="1000"
-                        includeMargin={true}
-                        level="L"
-                        renderAs="canvas"
-                    />
-                    <p>Send {infosAlbum.a_price} satoshis to the address above</p>
-                </div>
-            )}
+            {/* display QrCode if payementRequest */}
+            {infosInvoice.payementRequest && <QrCode infosInvoice={infosInvoice} />}
+
+            {/* display infos Album */}
             <h1>Album : {infosAlbum.a_title}</h1>
             <h2>Artist : {infosAlbum.a_artist}</h2>
+
+            {/* display BtnFollow if user is logged in */}
             <BtnFollow
                 idUser={idUser}
                 isLoggedIn={isLoggedIn}
@@ -166,25 +126,32 @@ function PageAlbum() {
                 style={{ width: "100px", height: "100px" }}
             />
             <h3>Price : {infosAlbum.a_price}</h3>
-            {isLoggedIn && !topAlbumBuy && (
+            {isLoggedIn && (
                 <>
-                    {/* <Button
-                        variant="contained"
-                        onClick={() => ClickBuyAlbum(infosAlbum.a_id, null, null, infosAlbum.a_price)}
-                    >
-                        Buy
-                    </Button> */}
-                    <BuyAlbum
-                        idAlbum={infosAlbum.a_id}
-                        idTrack={null}
-                        idTrackAlbum={null}
-                        price={infosAlbum.a_price}
-                        verifyInvoice={verifyInvoice}
-                    />
-
-                    <BtnFavorisAlbum idUser={idUser} idAlbum={infosAlbum.a_id} topFav={infosAlbum.top_favoris_album} />
+                    {infosAlbum.top_sale_album || infosAlbum.a_top_free ? (
+                        <>{infosAlbum.a_top_free && <BtnDownload idAlbum={infosAlbum.a_id} />}</>
+                    ) : (
+                        <>
+                            <BtnBuyItem
+                                item="Album"
+                                infosBuyItem={{
+                                    idAlbum: infosAlbum.a_id,
+                                    idTrack: null,
+                                    idTrackAlbum: null,
+                                    price: infosAlbum.a_price,
+                                }}
+                                setInfosInvoice={setInfosInvoice}
+                            />
+                            <BtnFavorisAlbum
+                                idUser={idUser}
+                                idAlbum={infosAlbum.a_id}
+                                topFav={infosAlbum.top_favoris_album}
+                            />
+                        </>
+                    )}
                 </>
             )}
+
             <h4>Id : {infosAlbum.a_id}</h4>
             <p>descr : {infosAlbum.a_description}</p>
             {/* <p>Styles : {infosAlbum.a_styles}</p> */}
