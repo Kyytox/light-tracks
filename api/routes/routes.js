@@ -52,7 +52,7 @@ import { getUserById } from "../User/fctsUser.js";
 
 //
 // Globals
-import { getStylesCountries, getStyles } from "../fctsGlobals.js";
+import { getStylesCountriesCurrencies, getStyles } from "../fctsGlobals.js";
 
 //
 // PlayerAudio
@@ -108,7 +108,7 @@ router.post("/deleteUser", deleteUser);
 router.post("/verifyUser", checkToken);
 
 // Global Functions
-router.get("/getStylesCountries", getStylesCountries);
+router.get("/getStylesCountriesCurrencies", getStylesCountriesCurrencies);
 router.get("/getStyles", getStyles);
 
 // Album

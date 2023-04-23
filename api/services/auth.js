@@ -93,35 +93,43 @@ export const login = (req, res) => {
     const password = req.body.password;
 
     // check if username exist in BD
-    pool.query("SELECT * FROM public.users WHERE u_username = ($1)", [username], (err, result) => {
-        if (err) {
-            console.error("Error executing INSERT INTO:", err);
-        } else {
-            if (result.rowCount === 1) {
-                // user exist in BD
-                // Load hash from your password DB.
-                bcrypt.compare(password, result.rows[0].u_password, function (err, resultCrypt) {
-                    console.log("err", err);
-                    console.log("resultCrypt", resultCrypt);
-                    if (resultCrypt === false) {
-                        res.send({ errMdp: "incorrect password" });
-                    } else {
-                        // create token
-                        console.log("result.rows[0]", result.rows[0]);
-                        const token = createToken(result.rows[0]);
-                        res.send({
-                            succes: "LoginSuccess",
-                            id: result.rows[0].u_id,
-                            token: token,
-                            username: result.rows[0].u_username,
-                        });
-                    }
-                });
+    pool.query(
+        `SELECT *
+        FROM users u
+        INNER JOIN profiles p ON p.p_id_user = u.u_id 
+        WHERE u.u_username = $1`,
+        [username],
+        (err, result) => {
+            if (err) {
+                console.error("Error executing SELECT users:", err);
             } else {
-                res.send({ errUsr: "Username not exist" });
+                if (result.rowCount === 1) {
+                    // user exist in BD
+                    // Load hash from your password DB.
+                    bcrypt.compare(password, result.rows[0].u_password, function (err, resultCrypt) {
+                        console.log("err", err);
+                        console.log("resultCrypt", resultCrypt);
+                        if (resultCrypt === false) {
+                            res.send({ errMdp: "incorrect password" });
+                        } else {
+                            // create token
+                            console.log("result.rows[0]", result.rows[0]);
+                            const token = createToken(result.rows[0]);
+                            res.send({
+                                succes: "LoginSuccess",
+                                id: result.rows[0].u_id,
+                                token: token,
+                                username: result.rows[0].u_username,
+                                code_currency: result.rows[0].p_code_currency,
+                            });
+                        }
+                    });
+                } else {
+                    res.send({ errUsr: "Username not exist" });
+                }
             }
         }
-    });
+    );
 };
 
 // delete user

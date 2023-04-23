@@ -5,8 +5,9 @@ import { deleteAlbumInS3 } from "../AwsS3/deleteObjects.js";
 export const getProfileInfos = (req, res) => {
     pool.query(
         `SELECT *
-        FROM public.profiles 
-        LEFT JOIN public.genres_music sm ON gm_id = ANY(p_styles_music)
+        FROM profiles 
+        LEFT JOIN genres_music sm ON gm_id = ANY(p_styles_music)
+        LEFT JOIN currencies cu on cu.cu_code_currency = p_code_currency  
         WHERE p_id_user = $1`,
         [req.query.idUser],
         (err, result) => {
@@ -19,6 +20,8 @@ export const getProfileInfos = (req, res) => {
                     bio: result.rows[0].p_bio,
                     code_country: result.rows[0].p_code_country,
                     country: result.rows[0].p_name_country,
+                    code_currency: result.rows[0].p_code_currency,
+                    currency: result.rows[0].cu_name_currency,
                     styles: result.rows.map((row) => {
                         return {
                             id: row.gm_id,

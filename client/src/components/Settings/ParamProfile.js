@@ -9,6 +9,7 @@ import { AuthContext } from "../../Services/AuthContext";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import SelectGenres from "../Forms/selectGenres";
 import SelectCountry from "../Forms/SelectCountry";
+import SelectCurrency from "../Forms/SelectCurrency";
 import FormParamTextField from "../Forms/FormParamTextField";
 import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 import { postAxiosReqAuth } from "../../Services/AxiosPost";
@@ -19,12 +20,14 @@ function ParamProfile() {
 
     const [lstGenres, setLstGenres] = useState([]);
     const [lstCountries, setLstCountries] = useState([]);
+    const [lstCurrencies, setLstCurrencies] = useState([]);
 
     const [lstParams, setLstParams] = useState({
         avatar: { value: "", error: false, helperText: "" },
         bio: { value: "", error: false, helperText: "" },
         email: { value: "", error: false, helperText: "" },
         country: { value: "", error: false, helperText: "" },
+        currency: { value: "", error: false, helperText: "" },
         styles: { value: [], error: false, helperText: "" },
     });
 
@@ -49,6 +52,11 @@ function ParamProfile() {
                         error: false,
                         helperText: "",
                     },
+                    currency: {
+                        value: response.code_currency,
+                        error: false,
+                        helperText: "",
+                    },
                     styles: {
                         value: response.styles[0].id !== null ? response.styles : [],
                         error: false,
@@ -63,11 +71,12 @@ function ParamProfile() {
 
         //
         // get all genres from getGenres with axios
-        console.log("ParamProfile -- /getStylesCountries");
-        const response2 = getAxiosReq("/getStylesCountries", {});
+        console.log("ParamProfile -- /getStylesCountriesCurrencies");
+        const response2 = getAxiosReq("/getStylesCountriesCurrencies", {});
         response2.then((data) => {
             setLstGenres(data.styles);
             setLstCountries(data.countries);
+            setLstCurrencies(data.currencies);
         });
     }, []);
 
@@ -128,6 +137,7 @@ function ParamProfile() {
                     email: lstParams.email.value,
                     code_country: lstParams.country.value.length > 0 ? lstParams.country.value[0].c_code_country : "",
                     name_country: lstParams.country.value.length > 0 ? lstParams.country.value[0].c_name_country : "",
+                    code_currency: lstParams.currency.value === "" ? "USD" : lstParams.currency.value,
                     styles_music: styles,
                 };
 
@@ -196,6 +206,9 @@ function ParamProfile() {
 
                 {/* Country */}
                 <SelectCountry lstParams={lstParams} setLstParams={setLstParams} lstCountries={lstCountries} />
+
+                {/* Currency */}
+                <SelectCurrency lstParams={lstParams} setLstParams={setLstParams} lstCurrencies={lstCurrencies} />
 
                 {/* Genres Music */}
                 <SelectGenres lstValues={lstParams} setLstValues={setLstParams} lstGenres={lstGenres} />

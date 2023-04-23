@@ -3,7 +3,7 @@ import pool from "./Database/database.js";
 export const getStyles = (req, res) => {
     pool.query(
         `SELECT *
-        FROM public.genres_music
+        FROM genres_music
         ORDER BY gm_name_genre`,
         (err, result) => {
             if (err) {
@@ -16,11 +16,11 @@ export const getStyles = (req, res) => {
 };
 
 // get all genres from database in table genres_music
-export const getStylesCountries = (req, res) => {
+export const getStylesCountriesCurrencies = (req, res) => {
     // retrieve data of table genres_music and countries, make 2 requests, send data to client in an array
     pool.query(
         `SELECT *
-        FROM public.genres_music
+        FROM genres_music
         ORDER BY gm_name_genre`,
         (err, result) => {
             if (err) {
@@ -30,14 +30,28 @@ export const getStylesCountries = (req, res) => {
 
                 pool.query(
                     `SELECT *
-                    FROM public.countries
+                    FROM countries
                     ORDER BY c_name_country`,
                     (err, result) => {
                         if (err) {
                             console.error("Error executing SELECT:", err);
                         } else {
                             const countries = result.rows;
-                            res.send({ styles, countries });
+
+                            // retrieve data of table currencies
+                            pool.query(
+                                `SELECT *
+                                FROM currencies
+                                ORDER BY cu_code_currency`,
+                                (err, result) => {
+                                    if (err) {
+                                        console.error("Error executing SELECT:", err);
+                                    } else {
+                                        const currencies = result.rows;
+                                        res.send({ styles, countries, currencies });
+                                    }
+                                }
+                            );
                         }
                     }
                 );
