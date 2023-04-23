@@ -41,7 +41,9 @@ function BtnBuyItem({ item, infosBuyItem, setInfosInvoice }) {
                 const response = await postAxiosReqAuth(apiBuyItem, dataItem, token);
                 console.log("response", response);
 
-                if (response.top_custom_price) {
+                if (response.top_free) {
+                    console.log("Album Add to Sales");
+                } else if (response.top_custom_price) {
                     console.log("top_custom_price");
                     setTopCustomPrice(response.top_custom_price);
                 } else {

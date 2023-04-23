@@ -29,6 +29,7 @@ function PageAlbum() {
     console.log("PageAlbum -> infosAlbum", infosAlbum);
 
     // states
+    const [topAlbumCreator, setTopAlbumCreator] = useState(false);
     const [lstTracks, setLstTracks] = useState([]);
     const [lstStyles, setLstStyles] = useState([]);
     const [infosInvoice, setInfosInvoice] = useState({
@@ -47,6 +48,13 @@ function PageAlbum() {
                 const response = isLoggedIn
                     ? await getAxiosReqAuth("/getTracksAuth", data, token)
                     : await getAxiosReq("/getTracks", data);
+
+                console.log("PageAlbum -> response", response[0].a_id_user);
+                console.log("PageAlbum -> idUser", idUser);
+
+                if (response[0].a_id_user === parseInt(idUser)) {
+                    setTopAlbumCreator(true);
+                }
 
                 // update lstTracks
                 setLstTracks(response);
@@ -88,15 +96,19 @@ function PageAlbum() {
                         <p className="card-text">{track.t_nb_listen}</p>
                         <p className="card-text">{track.t_lyrics}</p> */}
 
-                        {isLoggedIn && !track.top_sale_track && !track.top_sale_album && track.a_top_price && (
-                            <>
-                                <BtnBuyItem
-                                    item="Track"
-                                    infosBuyItem={infosBuyItem}
-                                    setInfosInvoice={setInfosInvoice}
-                                />
-                            </>
-                        )}
+                        {isLoggedIn &&
+                            !track.top_sale_track &&
+                            !track.top_sale_album &&
+                            track.a_top_price &&
+                            !topAlbumCreator && (
+                                <>
+                                    <BtnBuyItem
+                                        item="Track"
+                                        infosBuyItem={infosBuyItem}
+                                        setInfosInvoice={setInfosInvoice}
+                                    />
+                                </>
+                            )}
                     </div>
                 </div>
             </>
@@ -128,8 +140,10 @@ function PageAlbum() {
             <h3>Price : {infosAlbum.a_price}</h3>
             {isLoggedIn && (
                 <>
-                    {infosAlbum.top_sale_album || infosAlbum.a_top_free ? (
-                        <>{infosAlbum.a_top_free && <BtnDownload idAlbum={infosAlbum.a_id} />}</>
+                    {infosAlbum.top_sale_album || topAlbumCreator ? (
+                        <>
+                            <BtnDownload idAlbum={infosAlbum.a_id} />
+                        </>
                     ) : (
                         <>
                             <BtnBuyItem
@@ -138,7 +152,7 @@ function PageAlbum() {
                                     idAlbum: infosAlbum.a_id,
                                     idTrack: null,
                                     idTrackAlbum: null,
-                                    price: infosAlbum.a_price,
+                                    price: infosAlbum.a_top_free ? 0 : infosAlbum.a_price,
                                 }}
                                 setInfosInvoice={setInfosInvoice}
                             />
