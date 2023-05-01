@@ -1,19 +1,47 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: rgb(73, 73, 73);
+  /* background-color: rgb(73, 73, 73); */
+  background: #141E30;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right,
+    #0e1a29,
+    #05070c);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #0e1a29, #05070c);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
-code {
+* {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
-a,p {
-  text-decoration: none;
-  color: white;
+
+
+
+/* input text field */
+.input-text-field label,
+.input-text-field label.Mui-focused {
+  color: white
+}
+
+
+/* .input-text-field:focus-within fieldset,
+.input-text-field:focus-visible fieldset {
+  border: 1.5px solid white !important;
+} */
+
+
+.MuiTabs-indicator {
+  display: none;
 }

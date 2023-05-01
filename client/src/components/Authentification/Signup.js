@@ -3,7 +3,11 @@ import React, { useState, useContext } from "react";
 // lib Material UI
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+
 import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
 
 // lib Components en global variables en functions
 import { AuthContext } from "../../Services/AuthContext";
@@ -162,12 +166,13 @@ function SignUp() {
     console.log("Signup.js -- render", values);
 
     return (
-        <div>
+        <div className="div-form-auth">
             {succesConnect.success ? (
                 <Success text={succesConnect.text} />
             ) : (
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="form-auth flex flex-col align-center">
                     <TextField
+                        className="input-text-field"
                         required
                         error={values.username.error}
                         id="outlined-error-helper-text"
@@ -177,6 +182,7 @@ function SignUp() {
                     />
 
                     <TextField
+                        className="input-text-field"
                         required
                         error={values.password.error}
                         id="outlined-required"
@@ -187,6 +193,7 @@ function SignUp() {
                     />
 
                     <TextField
+                        className="input-text-field"
                         required
                         error={values.confirmPassword.error}
                         id="outlined-required"
@@ -197,29 +204,42 @@ function SignUp() {
                     />
 
                     {/* Radio group Top Artist */}
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                        <span>
-                            <Radio
-                                checked={values.topArtist.value === true}
-                                onChange={(event) => handleChange("topArtist", true)}
-                                // value={true}
-                                name="radio-buttons"
+                    <FormControl>
+                        <RadioGroup
+                            aria-labelledby="demo-radio-buttons-group-label"
+                            defaultValue="listener"
+                            name="radio-buttons-group"
+                            row
+                            fullWidth
+                            className="flex justify-evenly text-white"
+                        >
+                            <FormControlLabel
+                                value="artist"
+                                control={
+                                    <Radio
+                                        checked={values.topArtist.value === true}
+                                        onChange={(event) => handleChange("topArtist", true)}
+                                        name="radio-buttons"
+                                    />
+                                }
+                                label="I am an Artist"
                             />
-                            Je suis un artiste
-                        </span>
-                        <span>
-                            <Radio
-                                checked={values.topArtist.value === false}
-                                onChange={(event) => handleChange("topArtist", false)}
-                                // value={false}
-                                name="radio-buttons"
+                            <FormControlLabel
+                                value="listener"
+                                control={
+                                    <Radio
+                                        checked={values.topArtist.value === false}
+                                        onChange={(event) => handleChange("topArtist", false)}
+                                        name="radio-buttons"
+                                    />
+                                }
+                                label="I am a Listener"
                             />
-                            Je suis un fan
-                        </span>
-                    </div>
+                        </RadioGroup>
+                    </FormControl>
 
-                    <Button type="submit" variant="contained">
-                        Sign Up
+                    <Button type="submit" variant="contained" color="primary">
+                        Create Account
                     </Button>
                 </form>
             )}

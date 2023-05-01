@@ -1,0 +1,45 @@
+
+
+
+.box-auth {
+    background-color: rgb(74, 85, 97);
+}
+
+/* onglet Auth */
+.css-heg063-MuiTabs-flexContainer {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-bottom: 3rem;
+}
+
+/* Button onglet Auth */
+.box-auth .MuiTabs-root button {
+    color: white;
+    padding-left: 4rem;
+    padding-right: 4rem;
+}
+
+.box-auth .MuiTabs-root button.Mui-selected {
+    background-color: #f6921a;
+    color: white;
+    border-radius: 10px;
+}
+
+
+/* Text Input */
+.box-auth .input-text-field {
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+}
+
+
+/* button Form Auth */
+.form-auth button {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}

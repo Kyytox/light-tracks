@@ -1,23 +1,12 @@
 import { createToken } from "./token.js";
 import pool from "../Database/database.js";
 
-import fs from "fs";
-import path from "path";
-
 // Hash bcrypt
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 
 // Lnbits
 import { createUserLnbits } from "../Lnbits/createUser.js";
-
-// create folder for user
-function createFolderUser(idUser) {
-    const dir = path.join("D:/DEV/LightTracks/api/" + idUser);
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-    }
-}
 
 //
 //

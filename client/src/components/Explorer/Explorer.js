@@ -5,6 +5,9 @@ import LstAlbums from "../Album/LstAlbums";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 
+// import CSS
+import "./Explorer.css";
+
 function Explorer({ option, lstAlbums, setLstAlbums, setLstTracksPlay }) {
     const { idUser, isLoggedIn, checkToken } = useContext(AuthContext);
     const date = new Date();
@@ -49,9 +52,7 @@ function Explorer({ option, lstAlbums, setLstAlbums, setLstTracksPlay }) {
     console.log("MainExplorer -- lstAlbums = ", lstAlbums);
 
     return (
-        <div>
-            <h1>Explorer</h1>
-
+        <div className="div_explorer">
             {/* LstAlbums */}
             <LstAlbums
                 idUser={idUser}

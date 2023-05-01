@@ -5,6 +5,9 @@ import BtnFollow from "../Bouttons/BtnFollow";
 import LinkNavUser from "../User/LinkNavUser";
 import { formatDate } from "../../Globals/GlobalFunctions";
 
+//import CSS
+import "./LstAlbums.css";
+
 function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
     // create a map to display
     // lst albums is an array of objects
@@ -29,7 +32,7 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
         });
 
         return (
-            <div key={key}>
+            <div key={key} className="cell medium-4">
                 <nav id={"album-" + album.a_id} key={album.a_id}>
                     {/* Artist */}
                     <nav id={"artist-" + album.a_id_user} key={album.a_id_user}>
@@ -87,7 +90,7 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
 
     return (
         <div>
-            <div className="row">{LstDisplayAlbums}</div>
+            <div className="grid-x grid-margin-y grid-margin-x">{LstDisplayAlbums}</div>
         </div>
     );
 }

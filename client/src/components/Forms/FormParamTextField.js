@@ -5,6 +5,7 @@ function FormParamTextField({ lstParams, handleChanges, label, name, placeholder
     return (
         <TextField
             id="outlined-basic"
+            className="input-text-field"
             label={label}
             variant="outlined"
             multiline={name === "bio" ? true : false}

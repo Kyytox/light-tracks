@@ -6,6 +6,9 @@ import PlayerAudio from "../PlayerAudio/PlayerAudio";
 import Explorer from "./Explorer";
 import MainSearch from "../Search/MainSearch";
 
+// import CSS
+import "./Explorer.css";
+
 function MainExplorer() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -36,7 +39,7 @@ function MainExplorer() {
     };
 
     return (
-        <div>
+        <div className="div_main_explorer">
             {/* Search Inputs */}
             <MainSearch setLstAlbums={setLstAlbums} />
 

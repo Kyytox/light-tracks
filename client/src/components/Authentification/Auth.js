@@ -28,7 +28,7 @@ function Authentification() {
     };
 
     return (
-        <div>
+        <div className="box-auth max-w-lg mx-auto bg-neutral-700 mt-8 p-4 rounded shadow-lg">
             <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Tabs Login/SignUp">
                 <Tab label="Login" />
                 <Tab label="Sign Up" />

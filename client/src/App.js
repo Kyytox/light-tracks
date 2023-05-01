@@ -13,24 +13,32 @@ import "./App.css";
 import PageUser from "./components/User/PageUser";
 import MainExplorer from "./components/Explorer/MainExplorer";
 
+// Material UI
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./Theme";
+
 // Enable Browser History for Back and Forward Button
 export const appHistory = createBrowserHistory();
 
 function App() {
     return (
-        <div className="wrapper">
-            <Navbar />
-            <Routes>
-                <Route exact path="/" element={<Main />} />
-                <Route path="/authentification/:tab" element={<Authentification />} />
-                <Route path="/explorer/:section" element={<MainExplorer />} />
-                <Route path="/Profile/:username/:tab" element={<MainUserProfile />} />
-                <Route path="/CreateAlbum" element={<MusicAdder />} />
-                <Route path="album/:id" element={<DisplayAlbum />} />
-                <Route path="user/:id" element={<PageUser />} />
-                <Route path="*" element={<NoPage />} />
-            </Routes>
-        </div>
+        <ThemeProvider theme={theme}>
+            <div className="wrapper">
+                <Navbar />
+                <div className="app px-12">
+                    <Routes>
+                        <Route exact path="/" element={<Main />} />
+                        <Route path="/authentification/:tab" element={<Authentification />} />
+                        <Route path="/explorer/:section" element={<MainExplorer />} />
+                        <Route path="/Profile/:username/:tab" element={<MainUserProfile />} />
+                        <Route path="/CreateAlbum" element={<MusicAdder />} />
+                        <Route path="album/:id" element={<DisplayAlbum />} />
+                        <Route path="user/:id" element={<PageUser />} />
+                        <Route path="*" element={<NoPage />} />
+                    </Routes>
+                </div>
+            </div>
+        </ThemeProvider>
     );
 }
 

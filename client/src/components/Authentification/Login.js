@@ -87,12 +87,13 @@ function Login() {
     };
 
     return (
-        <div>
+        <div className="div-form-auth">
             {succesConnect.success ? (
                 <Success text={succesConnect.text} />
             ) : (
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="form-auth flex flex-col align-center">
                     <TextField
+                        className="input-text-field"
                         required
                         error={values.username.error}
                         id="outlined-error-helper-text"
@@ -101,6 +102,7 @@ function Login() {
                         onChange={(event) => handleChange("username", event.target.value)}
                     />
                     <TextField
+                        className="input-text-field"
                         required
                         error={values.password.error}
                         id="outlined-required"
@@ -109,7 +111,7 @@ function Login() {
                         helperText={values.password.helperText}
                         onChange={(event) => handleChange("password", event.target.value)}
                     />
-                    <Button type="submit" variant="contained">
+                    <Button type="submit" variant="contained" color="primary">
                         Login
                     </Button>
                 </form>
