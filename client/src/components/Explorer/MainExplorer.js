@@ -41,7 +41,7 @@ function MainExplorer() {
     return (
         <div className="div_main_explorer">
             {/* Search Inputs */}
-            <MainSearch setLstAlbums={setLstAlbums} />
+            {/* <MainSearch setLstAlbums={setLstAlbums} /> */}
 
             <div>
                 <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Tabs Explorer">

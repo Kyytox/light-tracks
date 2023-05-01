@@ -22,7 +22,7 @@ function SelectGenres({ lstValues, setLstValues, lstGenres }) {
     console.log("SelectGenres -- lstValues.styles.value", lstValues.styles.value);
 
     return (
-        <div>
+        <div className="mb-6">
             {/* Styles Music */}
             <Autocomplete
                 required
@@ -47,7 +47,8 @@ function SelectGenres({ lstValues, setLstValues, lstGenres }) {
                         {...params}
                         error={lstValues.styles.error}
                         variant="outlined"
-                        label="styles"
+                        className="input-text-field"
+                        label="Styles"
                         placeholder="Search"
                         helperText={lstValues.styles.helperText}
                     />

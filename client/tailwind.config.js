@@ -2,7 +2,11 @@
 module.exports = {
     content: ["./src/**/*.{js,jsx,ts,tsx}"],
     theme: {
-        extend: {},
+        extend: {
+            transitionProperty: {
+                height: "height",
+            },
+        },
         screens: {
             sm: "640px",
             // => @media (min-width: 640px) { ... }
@@ -26,4 +30,8 @@ module.exports = {
         },
     },
     plugins: [],
+    variants: {
+        transitionProperty: ["responsive", "motion-safe", "motion-reduce"],
+        height: ["responsive", "hover", "focus"],
+    },
 };

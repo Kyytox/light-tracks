@@ -33,15 +33,21 @@ function FormAddTags({ lstParams, setLstParams }) {
     };
 
     return (
-        <div>
+        <div className="flex flex-row flex-wrap items-center mb-6">
             <TextField
                 id="tag"
-                label="tag"
+                className="input-text-field"
+                label="Tags"
                 variant="outlined"
                 value={inputTag}
                 onChange={(e) => setInputTag(e.target.value)}
             />
-            <Button variant="contained" color="primary" onClick={handleAddTag}>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddTag}
+                sx={{ width: "100px", marginLeft: "10px" }}
+            >
                 Add Tag
             </Button>
             <div>

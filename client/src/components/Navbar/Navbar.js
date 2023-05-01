@@ -1,6 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../../Services/AuthContext";
+
+// import MainSearch
+import MainSearch from "../Search/MainSearch";
 
 // import CSS
 import "./Navbar.css";
@@ -17,8 +20,15 @@ import logo from "../../logo.png";
 const Navbar = () => {
     const { isLoggedIn, handleLogout, username } = useContext(AuthContext);
 
+    const [showSearchBar, setShowSearchBar] = useState(false);
+    const mainSearchRef = useRef(null);
+
+    const toggleSearchBar = () => {
+        setShowSearchBar(!showSearchBar);
+    };
+
     return (
-        <div className="navbar flex flex-nowrap items-center justify-between px-2 text-white">
+        <div className="navbar flex flex-nowrap items-center justify-between px-2 text-white mt-1">
             <ul className="menu-sections flex flex-nowrap items-center space-x-8">
                 <li className="logo">
                     <img src={logo} alt="logo" style={{ width: "50px", height: "50px" }} />
@@ -40,6 +50,32 @@ const Navbar = () => {
                     </>
                 )}
             </ul>
+
+            {/* Search bar */}
+            <div>
+                <button onClick={toggleSearchBar}>Cliquez ici</button>
+                <div
+                    style={{
+                        position: showSearchBar ? "fixed" : "absolute",
+                        // backgroundColor: "white",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        top: showSearchBar ? "0px" : "-500px",
+                        left: "0",
+                        height: "100%",
+                        width: "100%",
+                        height: showSearchBar ? "100%" : "0",
+                        transition: "top 0.5s ease-in-out, height 0.5s ease-in-out",
+                        backgroundColor: "rgba(0,0,0,0.35)",
+                        backdropFilter: "blur(1px)",
+                        zIndex: "1000",
+                    }}
+                >
+                    <button onClick={toggleSearchBar}>X</button>
+                    <MainSearch showSearchBar={showSearchBar} ref={mainSearchRef} />
+                </div>
+            </div>
 
             <ul className="menu-settings flex flex-nowrap space-x-4">
                 {isLoggedIn ? (

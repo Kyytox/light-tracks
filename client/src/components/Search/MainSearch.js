@@ -8,8 +8,14 @@ import FormAddTags from "../Forms/FormAddTags";
 import { AuthContext } from "../../Services/AuthContext";
 import { getLocalStorage } from "../../Globals/GlobalFunctions";
 
+import { useNavigate } from "react-router-dom";
+
+// import CSS
+import "./MainSearch.css";
+
 // create component for search album by style or country
-function MainSearch({ setLstAlbums }) {
+function MainSearch({ showSearchBar }) {
+    const navigate = useNavigate();
     const { isLoggedIn, checkToken, idUser } = useContext(AuthContext);
     const [lstGenres, setLstGenres] = useState([]);
     const [lstCountry, setLstCountry] = useState([]);
@@ -22,6 +28,9 @@ function MainSearch({ setLstAlbums }) {
     });
 
     useEffect(() => {
+        console.log("MainSearch -- showSearchBar", showSearchBar);
+        if (!showSearchBar) return;
+
         console.log("MainSearch -- /getStylesCountryInAlbums");
         const response = getAxiosReq("/getStylesCountryInAlbums", {});
         response.then((data) => {
@@ -48,7 +57,7 @@ function MainSearch({ setLstAlbums }) {
             setLstGenres(arrStyles);
             setLstCountry(arrCountries);
         });
-    }, []);
+    }, [showSearchBar]);
 
     // change value of lstParams search
     const handleChange = (key, value) => {
@@ -69,41 +78,41 @@ function MainSearch({ setLstAlbums }) {
             country: lstParams.country.value,
         };
 
-        console.log("MainSearch -- ", isLoggedIn ? "/getSearchAuth" : "/getSearch");
-        try {
-            const response = isLoggedIn
-                ? await getAxiosReqAuth("/getSearchAuth", data, token)
-                : await getAxiosReq("/getSearch", data);
+        navigate(`/results?search=${data}`);
 
-            setLstAlbums(response);
-        } catch (error) {
-            console.log(error);
-        }
+        // console.log("MainSearch -- ", isLoggedIn ? "/getSearchAuth" : "/getSearch");
+        // try {
+        //     const response = isLoggedIn
+        //         ? await getAxiosReqAuth("/getSearchAuth", data, token)
+        //         : await getAxiosReq("/getSearch", data);
+
+        //     setLstAlbums(response);
+        // } catch (error) {
+        //     console.log(error);
+        // }
     };
 
     return (
-        <div>
-            <form>
+        <>
+            <form className="form-search bg-neutral-700 p-8 flex flex-col w-2/4 z-10 h-max mt-14 rounded">
                 {/* Textfield */}
-                <FormParamTextField
-                    lstParams={lstParams}
-                    handleChanges={handleChange}
-                    name="search"
-                    label="Search"
-                    placeholder="Search"
-                    type="text"
-                    keyVal="search"
-                />
-
+                <div className="grid mb-6">
+                    <FormParamTextField
+                        lstParams={lstParams}
+                        handleChanges={handleChange}
+                        name="search"
+                        label="Title - Artists"
+                        placeholder="Search"
+                        type="text"
+                        keyVal="search"
+                    />
+                </div>
                 {/* Styles */}
                 <SelectGenres lstValues={lstParams} setLstValues={setLstParams} lstGenres={lstGenres} />
-
                 {/* Tags */}
                 <FormAddTags lstParams={lstParams} setLstParams={setLstParams} />
-
                 {/* Country */}
                 <SelectCountry lstParams={lstParams} setLstParams={setLstParams} lstCountries={lstCountry} />
-
                 <Button
                     variant="contained"
                     type="submit"
@@ -114,7 +123,7 @@ function MainSearch({ setLstAlbums }) {
                     Search
                 </Button>
             </form>
-        </div>
+        </>
     );
 }
 
