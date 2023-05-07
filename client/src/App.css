@@ -1,1 +1,40 @@
 
+
+
+
+
+.MuiFilledInput-input {
+    background-color: rgba(0, 0, 0, 0.2);
+    height: 1em;
+    padding: 14px 14px;
+    color: white
+}
+
+
+.MuiInputBase-root{
+    color: white;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* input text field */
+.input-text-field,
+.input-text-field label,
+.input-text-field label.Mui-focused {
+    color: white;
+    color: #f6921a;
+}
+
+
+/* .input-text-field:focus-within fieldset,
+.input-text-field:focus-visible fieldset {
+  border: 1.5px solid white !important;
+} */
+
+
+.MuiTabs-indicator {
+    display: none;
+}
+
+input[type="text"] {
+    color: white;
+}

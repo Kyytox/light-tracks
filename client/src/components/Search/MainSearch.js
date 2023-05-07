@@ -112,7 +112,12 @@ function MainSearch({ showSearchBar }) {
                 {/* Tags */}
                 <FormAddTags lstParams={lstParams} setLstParams={setLstParams} />
                 {/* Country */}
-                <SelectCountry lstParams={lstParams} setLstParams={setLstParams} lstCountries={lstCountry} />
+                <SelectCountry
+                    lstParams={lstParams}
+                    setLstParams={setLstParams}
+                    lstCountries={lstCountry}
+                    multipleSelect={true}
+                />
                 <Button
                     variant="contained"
                     type="submit"

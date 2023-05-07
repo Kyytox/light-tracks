@@ -38,12 +38,12 @@ function FormAddTags({ lstParams, setLstParams }) {
                 id="tag"
                 className="input-text-field"
                 label="Tags"
-                variant="outlined"
+                variant="filled"
                 value={inputTag}
                 onChange={(e) => setInputTag(e.target.value)}
             />
             <Button
-                variant="contained"
+                variant="outlined"
                 color="primary"
                 onClick={handleAddTag}
                 sx={{ width: "100px", marginLeft: "10px" }}

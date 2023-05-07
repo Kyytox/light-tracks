@@ -13,9 +13,13 @@ import SelectCurrency from "../Forms/SelectCurrency";
 import FormParamTextField from "../Forms/FormParamTextField";
 import { getAxiosReq, getAxiosReqAuth } from "../../Services/AxiosGet";
 import { postAxiosReqAuth } from "../../Services/AxiosPost";
+import BtnDeleteAccount from "../Bouttons/BtnDeleteAccount";
+
+// CSS
+import "./settings.css";
 
 function ParamProfile() {
-    const { isLoggedIn, checkToken, handleLogout } = useContext(AuthContext);
+    const { isLoggedIn, checkToken } = useContext(AuthContext);
     const idUser = getLocalStorage("id");
 
     const [lstGenres, setLstGenres] = useState([]);
@@ -74,6 +78,7 @@ function ParamProfile() {
         console.log("ParamProfile -- /getStylesCountriesCurrencies");
         const response2 = getAxiosReq("/getStylesCountriesCurrencies", {});
         response2.then((data) => {
+            console.log("ParamProfile -- /getStylesCountriesCurrencies -- response: ", data.countries);
             setLstGenres(data.styles);
             setLstCountries(data.countries);
             setLstCurrencies(data.currencies);
@@ -83,15 +88,15 @@ function ParamProfile() {
     //
     // remove all element of lstParams.country.value but not the last one
     // because in this page we can only select one country
-    useEffect(() => {
-        if (lstParams.country.value.length > 1) {
-            const lastCountry = lstParams.country.value[lstParams.country.value.length - 1];
-            setLstParams({
-                ...lstParams,
-                country: { value: [lastCountry], error: false, helperText: "" },
-            });
-        }
-    }, [lstParams.country.value]);
+    // useEffect(() => {
+    //     if (lstParams.country.value.length > 1) {
+    //         const lastCountry = lstParams.country.value[lstParams.country.value.length - 1];
+    //         setLstParams({
+    //             ...lstParams,
+    //             country: { value: [lastCountry], error: false, helperText: "" },
+    //         });
+    //     }
+    // }, [lstParams.country.value]);
 
     //
     // handle change for inputs
@@ -150,37 +155,28 @@ function ParamProfile() {
         }
     };
 
-    // delete User
-    const handleDeleteUser = () => {
-        const token = getLocalStorage("token");
-        const data = { idUser: idUser };
-
-        console.log("ParamProfile.js -- /deleteUser");
-        const response = postAxiosReqAuth("/deleteUser", data, token);
-        response.then((data) => {
-            console.log(data);
-            if (data.success === "User deleted") {
-                handleLogout();
-            }
-        });
-    };
-
     console.log("ParamProfile.js -- lstParams: ", lstParams);
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
+        <div className="flex flex-col items-center justify-center w-full h-full">
+            <form
+                id="form-settings"
+                onSubmit={handleSubmit}
+                className="flex w-2/4 flex-col content-center justify-center h-full space-y-8"
+            >
                 {/* Avatar */}
-                <Avatar alt="Avatar" src={lstParams.avatar.value} />
-                <FormParamTextField
-                    lstParams={lstParams}
-                    handleChanges={handleChanges}
-                    label="Avatar"
-                    name="avatar"
-                    placeholder="Url Image"
-                    type="url"
-                    keyVal="avatar"
-                />
+                <div className="flex flex-col w-full">
+                    <Avatar className="mb-2" alt="Avatar" src={lstParams.avatar.value} sx={{ width: 56, height: 56 }} />
+                    <FormParamTextField
+                        lstParams={lstParams}
+                        handleChanges={handleChanges}
+                        label="Avatar"
+                        name="avatar"
+                        placeholder="Url Image"
+                        type="url"
+                        keyVal="avatar"
+                    />
+                </div>
 
                 {/* Bio */}
                 <FormParamTextField
@@ -205,7 +201,12 @@ function ParamProfile() {
                 />
 
                 {/* Country */}
-                <SelectCountry lstParams={lstParams} setLstParams={setLstParams} lstCountries={lstCountries} />
+                <SelectCountry
+                    lstParams={lstParams}
+                    setLstParams={setLstParams}
+                    lstCountries={lstCountries}
+                    multipleSelect={false}
+                />
 
                 {/* Currency */}
                 <SelectCurrency lstParams={lstParams} setLstParams={setLstParams} lstCurrencies={lstCurrencies} />
@@ -214,15 +215,24 @@ function ParamProfile() {
                 <SelectGenres lstValues={lstParams} setLstValues={setLstParams} lstGenres={lstGenres} />
 
                 {/* Submit */}
-                <Button variant="contained" type="submit">
+                <Button className="btn-save-settings w-1/3" variant="contained" type="submit">
                     Save
                 </Button>
             </form>
 
-            {/* Delete Account */}
-            <Button variant="contained" color="error" onClick={handleDeleteUser}>
-                Delete Account
-            </Button>
+            <div className=" mt-12 w-2/4 h-1/4 flex flex-col justify-center items-center space-y-4">
+                <h5>
+                    <span className="font-bold">Delete your account</span>
+                </h5>
+                <p>
+                    <span className="font-bold">Warning:</span> If you delete your account, all your data will be lost.
+                </p>
+                {/* Delete Account */}
+                <BtnDeleteAccount />
+                {/* <Button variant="contained" color="error" onClick={handleDeleteUser}>
+                    Delete Account
+                </Button> */}
+            </div>
         </div>
     );
 }

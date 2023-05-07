@@ -4,15 +4,15 @@ import TextField from "@mui/material/TextField";
 function FormParamTextField({ lstParams, handleChanges, label, name, placeholder, type, keyVal }) {
     return (
         <TextField
-            id="outlined-basic"
+            id="filled-basic"
             className="input-text-field"
             label={label}
-            variant="outlined"
+            variant="filled"
             multiline={name === "bio" ? true : false}
             rows={name === "bio" ? 5 : 1}
             type={type}
             name={name}
-            placeholder={placeholder}
+            // placeholder={placeholder}
             value={lstParams[keyVal].value}
             onChange={(e) => {
                 handleChanges(keyVal, e.target.value);

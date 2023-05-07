@@ -33,12 +33,13 @@ function MainSettings() {
 
     return (
         <div>
-            <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Tabs setProfile/setApp">
+            {/* <Tabs value={tabIndex} onChange={handleTabChange} aria-label="Tabs setProfile/setApp">
                 <Tab label="Settings Profile" />
                 <Tab label="Settings App" />
             </Tabs>
             {tabIndex === 0 && <ParamProfile />}
-            {/* {tabIndex === 1 && <ParamProfile />} */}
+            {tabIndex === 1 && <ParamProfile />} */}
+            <ParamProfile />
         </div>
     );
 }

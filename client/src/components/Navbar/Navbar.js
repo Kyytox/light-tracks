@@ -4,6 +4,7 @@ import { AuthContext } from "../../Services/AuthContext";
 
 // import MainSearch
 import MainSearch from "../Search/MainSearch";
+import MainSearchNew from "../Search/MainSearchNew";
 
 // import CSS
 import "./Navbar.css";
@@ -52,7 +53,10 @@ const Navbar = () => {
             </ul>
 
             {/* Search bar */}
-            <div>
+
+            <MainSearchNew />
+
+            {/* <div>
                 <button onClick={toggleSearchBar}>Cliquez ici</button>
                 <div
                     style={{
@@ -75,7 +79,7 @@ const Navbar = () => {
                     <button onClick={toggleSearchBar}>X</button>
                     <MainSearch showSearchBar={showSearchBar} ref={mainSearchRef} />
                 </div>
-            </div>
+            </div> */}
 
             <ul className="menu-settings flex flex-nowrap space-x-4">
                 {isLoggedIn ? (

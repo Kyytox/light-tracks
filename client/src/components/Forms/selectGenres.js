@@ -46,10 +46,10 @@ function SelectGenres({ lstValues, setLstValues, lstGenres }) {
                     <TextField
                         {...params}
                         error={lstValues.styles.error}
-                        variant="outlined"
+                        variant="filled"
                         className="input-text-field"
                         label="Styles"
-                        placeholder="Search"
+                        placeholder="Search styles"
                         helperText={lstValues.styles.helperText}
                     />
                 )}

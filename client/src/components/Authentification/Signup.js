@@ -238,7 +238,17 @@ function SignUp() {
                         </RadioGroup>
                     </FormControl>
 
-                    <Button type="submit" variant="contained" color="primary">
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        // disabled if one value is empty
+                        disabled={
+                            values.username.value === "" ||
+                            values.password.value === "" ||
+                            values.confirmPassword.value === ""
+                        }
+                    >
                         Create Account
                     </Button>
                 </form>

@@ -1,5 +1,6 @@
 
 
-.form-search {
-    background-color: rgb(74, 85, 97);
+/* first div of form search */
+.form-search>.MuiFormControl-root {
+    width: 100% !important;
 }

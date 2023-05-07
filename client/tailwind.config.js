@@ -27,6 +27,7 @@ module.exports = {
             transparent: "transparent",
             bitcoin: "#f6921a",
             white: "#ffffff",
+            primary: "#f6921a",
         },
     },
     plugins: [],
