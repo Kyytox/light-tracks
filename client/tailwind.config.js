@@ -23,6 +23,9 @@ module.exports = {
             "2xl": "1536px",
             // => @media (min-width: 1536px) { ... }
         },
+        background: {
+            paper: "#EFF7FF", // your color
+        },
         colors: {
             transparent: "transparent",
             bitcoin: "#f6921a",

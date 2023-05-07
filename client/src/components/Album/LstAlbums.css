@@ -1,1 +1,5 @@
 
+.grid-list-albums .MuiPaper-root {
+  background-color: rgb(0,0,0,0.1) !important;
+  box-shadow: 3px 3px 8px 1px rgba(0,0,0,0.75);
+}

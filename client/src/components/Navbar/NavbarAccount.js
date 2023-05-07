@@ -72,7 +72,6 @@ function NavbarAccount() {
                     </ListItemIcon>
                     Add Album
                 </MenuItem>
-                <Divider />
                 <NavLink to={`/profile/${username}/settings`}>
                     <MenuItem onClick={handleClose}>
                         <ListItemIcon>
@@ -81,6 +80,7 @@ function NavbarAccount() {
                         Settings
                     </MenuItem>
                 </NavLink>
+                <Divider />
                 <MenuItem onClick={handleLogout}>
                     <ListItemIcon>
                         <Logout fontSize="medium" />

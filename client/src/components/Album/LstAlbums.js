@@ -12,8 +12,10 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import CardHeader from "@mui/material/CardHeader";
+import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+import { green } from "@mui/material/colors";
 
 //import CSS
 import "./LstAlbums.css";
@@ -42,9 +44,9 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
         });
 
         return (
-            <Grid item xs={1} sm={2} md={3} lg={4} key={key}>
+            <Grid item xs={1} sm={2} md={3} lg={4} key={key} className="grid-list-albums">
                 {/* <Card sx={{ maxWidth: { xs: 345, sm: 345, md: 345, lg: 345 } }}> */}
-                <Card>
+                <Card className="p-3">
                     <nav id={"album-" + album.a_id} key={album.a_id}>
                         <CardHeader
                             avatar={
@@ -60,26 +62,26 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
                                     isFollowedProp={album.top_follow_artist}
                                 />
                             }
-                            sx={{ padding: "10px", marginBottom: "8px" }}
+                            sx={{ padding: "5px", marginBottom: "8px" }}
                         />
-
-                        <CardMedia sx={{ height: 150 }} image={coverPath} title="Cover Album" />
+                        <CardMedia sx={{ height: 240 }} image={coverPath} title="Cover Album" />
                         <CardContent>
                             {/* Album */}
                             <Link to={locationAlbum} state={stateLocationAlbum}>
                                 <div className="flex flex-col">
-                                    <h3 className="card-title">{album.a_title}-- </h3>
+                                    <h1 className="card-title">{album.a_title}-- </h1>
                                     <p className="card-text">{album.a_price}-- </p>
                                     {/* <p className="card-text">{album.a_date_release} -- </p> */}
                                     <p className="card-text">{formatDate(album.a_date_create)} -- </p>
                                     {/* <p className="card-text">{album.a_styles}-- </p> */}
                                     <p className="card-text">{lstStyles}-- </p>
-                                    <p className="card-text">{album.a_description}-- </p>
+                                    {/* <p className="card-text">{album.a_description}-- </p> */}
                                 </div>
                             </Link>
                         </CardContent>
                     </nav>
-                    <CardActions>
+                    <Divider />
+                    <CardActions className="flex flex-row justify-between">
                         {/* Favoris */}
                         {isLoggedIn && (
                             <>
@@ -94,9 +96,12 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
                                 )}
                             </>
                         )}
-                        <button type="button" onClick={() => changeIdAlbumPlay(album.a_id)}>
+                        {/* <button type="button" onClick={() => changeIdAlbumPlay(album.a_id)}>
                             Play
-                        </button>
+                        </button> */}
+                        <Button variant="outlined" onClick={() => changeIdAlbumPlay(album.a_id)}>
+                            <PlayArrowRoundedIcon fontSize="large" sx={{ color: green[500] }} />
+                        </Button>
                     </CardActions>
                 </Card>
             </Grid>
@@ -106,7 +111,7 @@ function LstAlbums({ idUser, isLoggedIn, lstAlbums, changeIdAlbumPlay }) {
     return (
         <div className="flex flex-wrap">
             {/* <div className="grid-x grid-margin-y grid-margin-x">{LstDisplayAlbums}</div> */}
-            <Grid container spacing={{ xs: 1, md: 4, lg: 7 }} columns={{ xs: 1, sm: 4, md: 8, lg: 12 }}>
+            <Grid container spacing={{ xs: 1, md: 4, lg: 4 }} columns={{ xs: 1, sm: 4, md: 8, lg: 12 }}>
                 {LstDisplayAlbums}
             </Grid>
         </div>
