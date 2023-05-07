@@ -47,7 +47,7 @@ function BtnFollow({ idUser, isLoggedIn, idUserFollow, isFollowedProp }) {
     };
 
     return (
-        <div className="btn-follow">
+        <div className="btn-follow mt-1.5 mr-2">
             {parseInt(idUser) !== idUserFollow && isLoggedIn && (
                 <Button id={`follow-user-${idUserFollow}`} variant="contained" onClick={() => toggleFollow()}>
                     {isFollowed ? "Unfollow" : "Follow"}

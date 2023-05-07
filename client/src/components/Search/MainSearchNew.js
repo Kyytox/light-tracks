@@ -112,8 +112,7 @@ function MainSearchNew() {
 
     return (
         <div>
-            <Button variant="outlined" onClick={handleClickOpen}>
-                <SearchIcon />
+            <Button variant="outlined" onClick={handleClickOpen} startIcon={<SearchIcon />}>
                 Search a Album
             </Button>
             <Dialog

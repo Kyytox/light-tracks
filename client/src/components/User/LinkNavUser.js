@@ -13,12 +13,12 @@ function LinkNavUser(props) {
     const stateLocationUser = { user: data.p_id_user };
 
     return (
-        <div>
-            <Link to={locationUser} state={stateLocationUser}>
-                <Avatar alt="Remy Sharp" src={data.p_avatar} />
-                <p>{data.p_username}</p>
-            </Link>
-        </div>
+        <Link to={locationUser} state={stateLocationUser}>
+            <div className="flex flex-row items-center">
+                <Avatar src={data.p_avatar} />
+                <p className="ml-4">{data.p_username}</p>
+            </div>
+        </Link>
     );
 }
 
