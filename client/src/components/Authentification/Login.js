@@ -76,6 +76,7 @@ function Login() {
                 setLocalStorage("id", data.id);
                 setLocalStorage("username", data.username);
                 setLocalStorage("code_currency", data.code_currency);
+                setLocalStorage("avatar", data.avatar);
                 setValues({
                     ...values,
                     username: { value: values.username.value, error: false, helperText: "" },

@@ -13,6 +13,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
+import Typography from "@mui/material/Typography";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
@@ -68,10 +69,12 @@ function BtnDeleteAccount() {
                 <DialogTitle>{"Confirm Delete Account"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description" sx={{ color: "white" }}>
-                        <span className="span-dialog-content space-y-5">
-                            <p>Are you sure you want to delete your account?</p>
-                            <p>This action cannot be undone.</p>
-                        </span>
+                        <Typography variant="body2" gutterBottom>
+                            Are you sure you want to delete your account ?
+                        </Typography>
+                        <Typography variant="body2" gutterBottom>
+                            This action cannot be undone.
+                        </Typography>
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

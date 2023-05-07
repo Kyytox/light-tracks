@@ -9,7 +9,6 @@ import DisplayAlbum from "./components/Album/PageAlbum";
 import MainUserProfile from "./components/Profile/MainUserProfile";
 
 import Navbar from "./components/Navbar/Navbar";
-import "./App.css";
 import PageUser from "./components/User/PageUser";
 import MainExplorer from "./components/Explorer/MainExplorer";
 import ResultsSearch from "./components/Search/ResultsSearch";
@@ -18,15 +17,18 @@ import ResultsSearch from "./components/Search/ResultsSearch";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./Theme";
 
+// CSS
+import "./index.css";
+
 // Enable Browser History for Back and Forward Button
 export const appHistory = createBrowserHistory();
 
 function App() {
     return (
         <ThemeProvider theme={theme}>
-            <div className="wrapper">
-                <Navbar />
-                <div className="app px-12">
+            <div className="wrapper md:mx-40 mb-20">
+                <div className="app">
+                    <Navbar />
                     <Routes>
                         <Route exact path="/" element={<Main />} />
                         <Route path="/authentification/:tab" element={<Authentification />} />

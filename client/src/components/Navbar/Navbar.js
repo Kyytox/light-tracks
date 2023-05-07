@@ -2,9 +2,9 @@ import React, { useContext, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../../Services/AuthContext";
 
-// import MainSearch
-import MainSearch from "../Search/MainSearch";
+// Components
 import MainSearchNew from "../Search/MainSearchNew";
+import NavbarAccount from "./NavbarAccount";
 
 // import CSS
 import "./Navbar.css";
@@ -29,7 +29,7 @@ const Navbar = () => {
     };
 
     return (
-        <div className="navbar flex flex-nowrap items-center justify-between px-2 text-white mt-1">
+        <div className="navbar w-full flex flex-nowrap items-center justify-between px-2 text-white mt-1">
             <ul className="menu-sections flex flex-nowrap items-center space-x-8">
                 <li className="logo">
                     <img src={logo} alt="logo" style={{ width: "50px", height: "50px" }} />
@@ -84,13 +84,16 @@ const Navbar = () => {
             <ul className="menu-settings flex flex-nowrap space-x-4">
                 {isLoggedIn ? (
                     <>
-                        <li>
+                        {/* <li>
                             <a href="/#" onClick={handleLogout}>
                                 Logout
                             </a>
-                        </li>
+                        </li> */}
                         <li>
                             <NavLink to="/CreateAlbum">Add Music</NavLink>
+                        </li>
+                        <li>
+                            <NavbarAccount />
                         </li>
                     </>
                 ) : (

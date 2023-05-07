@@ -5,9 +5,9 @@
 
 body {
   margin: 0;
-  margin-bottom: 10rem;
-  margin-left: 10rem;
-  margin-right: 10rem;
+  /* margin-bottom: 10rem; */
+  /* margin-left: 10rem;
+  margin-right: 10rem; */
   /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif; */
@@ -37,4 +37,50 @@ body {
   height: max-content;
   color : white;
   width: 100%;
+}
+
+.MuiPaper-root {
+  position: relative;
+  /* min-height: 5rem !important; */
+  /* height: 25rem; */
+  background-color: rgb(46, 46, 46) !important;
+  color: white !important;
+}
+
+
+/* input Filled */
+.MuiFilledInput-input {
+  background-color: rgba(0, 0, 0, 0.2);
+  height: 1em;
+  padding: 14px 14px;
+  color: white
+}
+
+
+.MuiInputBase-root {
+  color: white;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* input text field */
+.input-text-field,
+.input-text-field label,
+.input-text-field label.Mui-focused {
+  color: white;
+  color: #f6921a;
+}
+
+
+/* .input-text-field:focus-within fieldset,
+.input-text-field:focus-visible fieldset {
+  border: 1.5px solid white !important;
+} */
+
+
+.MuiTabs-indicator {
+  display: none;
+}
+
+input[type="text"] {
+  color: white;
 }

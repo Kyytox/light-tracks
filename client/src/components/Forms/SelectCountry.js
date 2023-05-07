@@ -7,7 +7,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import OutlinedInput from "@mui/material/OutlinedInput";
 
 // CSS
 import "../../App.css";
@@ -64,7 +63,6 @@ function SelectCountry({ lstParams, setLstParams, lstCountries, multipleSelect }
                     labelId="select-country"
                     label="Country"
                     id="select-country"
-                    listboxId="select-country-listbox"
                     variant="filled"
                     value={lstParams.country.value ? lstParams.country.value.map((c) => c.c_code_country) : []}
                     onChange={(e) => handleCountryChange(e)}

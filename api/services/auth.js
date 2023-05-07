@@ -109,6 +109,7 @@ export const login = (req, res) => {
                                 id: result.rows[0].u_id,
                                 token: token,
                                 username: result.rows[0].u_username,
+                                avatar: result.rows[0].p_avatar,
                                 code_currency: result.rows[0].p_code_currency,
                             });
                         }
